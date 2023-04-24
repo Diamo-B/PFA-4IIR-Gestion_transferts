@@ -1,0 +1,26 @@
+//Done: Error Management in /Api/users/createUser.js
+//Done: Unlink authorisation from agent
+//Done: Remove authorisation
+//Done: Postman API documentation for the users and authorisations part
+//Done: Git Commit
+//Done: Setup register & login routes and Api endpoints
+//Done: Setup JWT Auth (effort: 5)
+//Done: Develop a JWT Verification middleware
+//Done: Secure Routes with middlewares
+//Done: Git Commit
+//Done: Create Login page (front-end)
+//Done: Link it with the corresponding API
+//Done: Setup Redux state Management
+//Done: setup jwt with the front-end
+//Done: setup routes protection using react-router-dom and an HOC and jwt.verify in the front-end
+//Done: test login with account
+//Done: Create logout functionality
+//Done: Re-check cookies implementation (try to put it totally in the backend)
+//Doing:separating routes protection in the front-end between admin and user
+//TODO: Make an api endpoint to retrieve a user by ID
+//TODO: Test it with redux
+//TODO: Prisma Schema => add the Venue/Path (lieu, trajet) classes with their relations
+//TODO: Venues CRUD
+//TODO: Paths CRUD
+//TODO: Assign middlewares
+//TODO: Git commit
