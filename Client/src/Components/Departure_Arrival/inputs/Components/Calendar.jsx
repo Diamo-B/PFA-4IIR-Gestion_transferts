@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
+
 import { UilArrowLeft, UilArrowRight } from "@iconscout/react-unicons";
+
 import { parse, format, startOfToday, isEqual, isSameMonth} from "date-fns";
+
 import CalculateNewDays from './Helpers/CalculateNewDays';
 import nextMonth from './Helpers/nextMonth';
 import previousMonth from './Helpers/previousMonth';
+
+import { useSelector, useDispatch } from "react-redux";
+import {setSelectedDay} from '../../../../Redux/dates';
 
 const Calendar = ({deactivate, inputType}) => {
 
@@ -11,20 +17,14 @@ const Calendar = ({deactivate, inputType}) => {
         let ID = document.getElementById('topLevel');
         ID.classList.add("overflow-hidden");
     },[])
-
-    let close = () => {
-        let ID = document.getElementById("topLevel");       
-        ID.classList.remove("overflow-hidden");
-        deactivate(false);
-    }
     
     let Today = startOfToday();
-    let [selectedDay, setSelectedDay] = useState()
+    const selectedDay = useSelector(state => state.tarvelDates.selectedDay.value);
+    const dispatcher = useDispatch();
     let [currentMonth, setCurrentMonth] = useState(format(Today, 'MMM yyyy'))
     let firstDayCurrentMonth = parse(currentMonth, 'MMM yyyy', new Date());
 
     let newDays = CalculateNewDays(firstDayCurrentMonth);
-    console.log(newDays[0]);
     return ( 
         <>
             <p className=" text-xl font-bold capitalize mb-3">{inputType} Date</p>
@@ -59,7 +59,7 @@ const Calendar = ({deactivate, inputType}) => {
                             newDays.map((day,index)=>(
                                 <button
                                     key={day.toString()}
-                                    onClick={()=>{setSelectedDay(day)}}
+                                    onClick={()=>{dispatcher(setSelectedDay(day.toISOString()))}}
                                     className={`
                                         ${isEqual(Today,day) && !isEqual(selectedDay,Today)? 'text-pink-600':''}
                                         hover:bg-indigo-400 hover:disabled:bg-transparent h-8 w-8 rounded-full font-medium

@@ -12,3 +12,29 @@
       font-family: 'Roboto', sans-serif;
     }
 }
+
+@layer components{
+  .btn{
+    @apply border-2 rounded-full px-5 py-1 font-semibold text-lg bg-white text-black hover:bg-indigo-600 hover:text-purple-700
+  }
+}
+
+@layer utilities 
+{
+  .timeColon {
+    animation: blink 2s infinite;
+  }
+  
+  @keyframes blink {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+}

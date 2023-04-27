@@ -9,21 +9,23 @@ import {AgentAuthOutlet} from './tools/AgentAuthOutlet';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
+    <span id="darkModeSwitch">
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
 
-        <Route path="/" element={<ClientAuthOutlet />} >
-          <Route index element={<Home />} />
-        </Route>
-        
-        <Route path="/admin" element={<AgentAuthOutlet />} >
-          <Route index element={<AdminHome />} />
-        </Route>
+          <Route path="/" element={<ClientAuthOutlet />} >
+            <Route index element={<Home />} />
+          </Route>
+          
+          <Route path="/admin" element={<AgentAuthOutlet />} >
+            <Route index element={<AdminHome />} />
+          </Route>
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-  </Router>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+    </Router>
+    </span>
 
   );
 }

@@ -1,57 +1,84 @@
-import { UilAngleDoubleUp, UilAngleDoubleDown } from '@iconscout/react-unicons';
-import { parse, format, add, sub } from 'date-fns';
-import { useState } from 'react';
+import { UilAngleDoubleUp, UilAngleDoubleDown } from "@iconscout/react-unicons";
+import { parse, format } from "date-fns";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addDepartureHour,
+  subDepartureHour,
+  addDepartureMinute,
+  subDepartureMinute,
+  addArrivalHour,
+  subArrivalHour,
+  addArrivalMinute,
+  subArrivalMinute,
+} from "../../../../Redux/dates";
+import { useState } from "react";
 
-const Clock = () => {
-  const currentTime = new Date();
-  let StringHours = format(currentTime, 'HH');
-  let StringMins = format(currentTime, 'mm');
+const Clock = ({inputType}) => {
+  const dispatcher = useDispatch();
+  const time = useSelector((state) => 
+    inputType == "Departure"?
+      state.tarvelDates.itinerary.departureTime.value
+    :
+      state.tarvelDates.itinerary.arrivalTime.value
+  );
+  const timeObj = parse(time, "HH:mm", new Date());
 
-  let [Hour,setHour] = useState(StringHours);
-  let [Min,setMin] = useState(StringMins);
+  const [holdInterval, setHoldInterval] = useState(null);
 
-  let addHour = (StringHours) => {
-    let dateHours = parse(StringHours, 'HH', new Date());
-    let newHour = add(dateHours,{hours: 1});
-    setHour(format(newHour,'HH'))
-  }
+  const handleMouseDown = (op,interval) => {
+    setHoldInterval(setInterval(() => {
+      switch(op)
+      {
+        case "addH":
+          dispatcher(inputType == "Departure"?addDepartureHour():addArrivalHour())
+          break;
+        case "subH":
+          dispatcher(inputType == "Departure"?subDepartureHour():subArrivalHour())
+          break;
+        case "addM":
+          dispatcher(inputType == "Departure"?addDepartureMinute():addArrivalMinute())
+          break;
+        case "subM":
+          dispatcher(inputType == "Departure"?subDepartureMinute():subArrivalMinute())
+          break;
+      }
+    }, interval)); // Set the interval to 1 second (1000 milliseconds)
+  };
 
-  let removeHour = (StringHours) => {
-    let dateHours = parse(StringHours, 'HH', new Date());
-    let newHour = sub(dateHours,{hours: 1});
-    setHour(format(newHour,'HH'))
-  }
-
-  let addMin = (StringMins) => {
-    let dateMins = parse(StringMins, 'mm', new Date());
-    let newMin = add(dateMins,{minutes: 1});
-    setMin(format(newMin,'mm'))
-  }
-
-  let removeMin = (StringMins) => {
-    let dateMins = parse(StringMins, 'mm', new Date());
-    let newMin = sub(dateMins,{minutes: 1});
-    setMin(format(newMin,'mm'))
-  }
+  const handleMouseUp = () => {
+    clearInterval(holdInterval);
+  };
 
   return (
-    <div className='flex justify-center items-center gap-3'>
+    <div className="flex justify-center items-center gap-2">
       <div className="flex flex-col justify-center items-center">
-        <span onClick={()=>addHour(Hour)}>
+        <span
+          onMouseDown={()=>{handleMouseDown("addH",300)}}
+          onMouseUp={handleMouseUp}
+        >
           <UilAngleDoubleUp />
         </span>
-        {Hour}
-        <span onClick={()=>removeHour(Hour)}>
+        {format(timeObj, "HH")}
+        <span
+          onMouseDown={()=>{handleMouseDown("subH",300)}}
+          onMouseUp={handleMouseUp}
+        >
           <UilAngleDoubleDown />
         </span>
       </div>
-      <span>:</span>
+      <span className="timeColon">:</span>
       <div className="flex flex-col justify-center items-center">
-        <span onClick={()=>addMin(Min)}>
+        <span
+          onMouseDown={()=>{handleMouseDown("addM",100)}}
+          onMouseUp={handleMouseUp}
+        >
           <UilAngleDoubleUp />
         </span>
-        {Min}
-        <span onClick={()=>removeMin(Min)}>
+        {format(timeObj, "mm")}
+        <span
+          onMouseDown={()=>{handleMouseDown("subM",100)}}
+          onMouseUp={handleMouseUp}
+        >
           <UilAngleDoubleDown />
         </span>
       </div>

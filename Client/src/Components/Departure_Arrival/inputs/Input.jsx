@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-const Input = ({type, placeholder, icon, activate, setInputType, inptype}) => {
+const Input = ({type, placeholder, value, icon, activate, setInputType, inptype}) => {
     let [luxuary, isLuxuary] = useState(false);
+
   return (
     <div className="flex w-full h-full justify-center items-center relative">
     {
@@ -19,6 +20,7 @@ const Input = ({type, placeholder, icon, activate, setInputType, inptype}) => {
             <input
                 type={type}
                 placeholder={placeholder}
+                value={value}
                 className="border-2 border-black rounded-lg w-full h-3/5 text-center"
                 onFocus={(event) => {
                 if (activate) {
