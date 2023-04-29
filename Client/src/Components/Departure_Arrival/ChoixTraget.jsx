@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Input from "./inputs/Input";
 import {
   UilSearch,
@@ -8,25 +8,64 @@ import {
   UilTrophy,
 } from "@iconscout/react-unicons";
 import Frame from "./inputs/Frame";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  compareDepartureWithArrival,
+  resetImproperDate,
+} from "../../Redux/dates";
+import { format } from "date-fns";
 
 const ChoixTraget = () => {
+  const dispatcher = useDispatch();
   const [showFrame, setShowFrame] = useState(false);
   const [inputType, setInputType] = useState("");
   const departureDate = useSelector(
     (state) => state.tarvelDates.itinerary.departureDate
   );
-  const departureTime = useSelector(
-    (state) => state.tarvelDates.itinerary.departureTime
-  );
   const arrivalDate = useSelector(
     (state) => state.tarvelDates.itinerary.arrivalDate
   );
-  const arrivalTime = useSelector(
-    (state) => state.tarvelDates.itinerary.arrivalTime
+
+  //explain: turning the date from a unixSerializable to date objects
+  const depDateValue = useMemo(
+    () => new Date(departureDate.value),
+    [departureDate.value]
   );
+  const arrDateValue = useMemo(
+    () => new Date(arrivalDate.value),
+    [arrivalDate.value]
+  );
+
+  let [depDate, setDepDate] = useState(depDateValue);
+  let [arrDate, setArrDate] = useState(arrDateValue);
+
+  useEffect(() => {
+    setDepDate(depDateValue);
+  }, [depDateValue]);
+
+  useEffect(() => {
+    setArrDate(arrDateValue);
+  }, [arrDateValue]);
+
+  const improperDates = useSelector(
+    (state) => state.tarvelDates.itinerary.improperDates
+  );
+
+  let VerifyData = () => {
+    dispatcher(resetImproperDate());
+    dispatcher(compareDepartureWithArrival());
+  };
+
+  useEffect(() => {
+    if (improperDates.value) {
+      console.log("render error");
+    } else {
+      console.log("good render");
+    }
+  }, [improperDates]);
+
   return (
-    <div className=" w-5/6 h-36 bg-white rounded-xl">
+    <div className=" w-5/6 h-36 bg-white rounded-xl dark:bg-slate-700">
       <div className="grid grid-cols-10 w-full h-full">
         <div className="h-full w-full col-span-9 px-3">
           <div className="flex justify-center items-center h-1/2 gap-3">
@@ -38,15 +77,17 @@ const ChoixTraget = () => {
 
             <Input
               placeholder={
-                departureDate.isModified == false &&
-                departureTime.isModified == false
-                  ? departureDate.value + " " + departureTime.value
+                departureDate.isModified == false
+                  ? format(depDate, "dd-MM-yyyy") +
+                    " " +
+                    format(depDate, "HH:mm")
                   : ""
               }
               value={
-                departureDate.isModified == true &&
-                departureTime.isModified == true
-                  ? departureDate.value + " " + departureTime.value
+                departureDate.isModified == true
+                  ? format(depDate, "dd-MM-yyyy") +
+                    " " +
+                    format(depDate, "HH:mm")
                   : ""
               }
               type="text"
@@ -72,15 +113,16 @@ const ChoixTraget = () => {
 
             <Input
               placeholder={
-                arrivalDate.isModified == false &&
-                arrivalTime.isModified == false
-                  ? arrivalDate.value + " " + arrivalTime.value
-                  : ""
+                arrivalDate.isModified == false ?
+                  format(arrDate, "dd-MM-yyyy") + " " + format(arrDate, "HH:mm")
+                :
+                  ""
               }
               value={
-                arrivalDate.isModified == true && arrivalTime.isModified == true
-                  ? arrivalDate.value + " " + arrivalTime.value
-                  : ""
+                arrivalDate.isModified == true ?
+                  format(arrDate, "dd-MM-yyyy") + " " + format(arrDate, "HH:mm")
+                :
+                  ""
               }
               type="text"
               icon={<UilCalender className="absolute left-2" />}
@@ -97,7 +139,10 @@ const ChoixTraget = () => {
           </div>
         </div>
         <div className="flex justify-center items-center">
-          <button className=" flex items-center justify-center gap-2 border-2 bg-indigo-300 rounded-r-lg w-full h-full text-black text-lg font-bold hover:bg-indigo-400 hover:text-white">
+          <button
+            className=" flex items-center justify-center gap-2 border-2 bg-indigo-300 rounded-r-lg w-full h-full text-black text-lg font-bold hover:bg-indigo-400 hover:text-white dark:bg-slate-700"
+            onClick={VerifyData}
+          >
             Search
             <UilSearch />
           </button>

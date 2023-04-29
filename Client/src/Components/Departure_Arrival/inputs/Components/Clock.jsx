@@ -15,13 +15,13 @@ import { useState } from "react";
 
 const Clock = ({inputType}) => {
   const dispatcher = useDispatch();
-  const time = useSelector((state) => 
+  const unixDate = useSelector((state) => 
     inputType == "Departure"?
-      state.tarvelDates.itinerary.departureTime.value
+      state.tarvelDates.itinerary.departureDate.value
     :
-      state.tarvelDates.itinerary.arrivalTime.value
+      state.tarvelDates.itinerary.arrivalDate.value
   );
-  const timeObj = parse(time, "HH:mm", new Date());
+  const dateObj = new Date(unixDate);
 
   const [holdInterval, setHoldInterval] = useState(null);
 
@@ -58,7 +58,7 @@ const Clock = ({inputType}) => {
         >
           <UilAngleDoubleUp />
         </span>
-        {format(timeObj, "HH")}
+        {format(dateObj, "HH")}
         <span
           onMouseDown={()=>{handleMouseDown("subH",300)}}
           onMouseUp={handleMouseUp}
@@ -74,7 +74,7 @@ const Clock = ({inputType}) => {
         >
           <UilAngleDoubleUp />
         </span>
-        {format(timeObj, "mm")}
+        {format(dateObj, "mm")}
         <span
           onMouseDown={()=>{handleMouseDown("subM",100)}}
           onMouseUp={handleMouseUp}

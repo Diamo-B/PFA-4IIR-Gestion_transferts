@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <div
       id="topLevel"
-      className="bg-indigo-200 dark:bg-slate-700 flex flex-col min-h-screen "
+      className="bg-indigo-200 dark:bg-gray-900 flex flex-col min-h-screen "
     >
       <div className="h-10 flex justify-between">
         <Logout />

@@ -9,9 +9,9 @@ import nextMonth from './Helpers/nextMonth';
 import previousMonth from './Helpers/previousMonth';
 
 import { useSelector, useDispatch } from "react-redux";
-import {setSelectedDay} from '../../../../Redux/dates';
+import {setArrivalDate, setDepartureDate} from '../../../../Redux/dates';
 
-const Calendar = ({deactivate, inputType}) => {
+const Calendar = ({inputType}) => {
 
     useEffect(()=>{
         let ID = document.getElementById('topLevel');
@@ -19,7 +19,14 @@ const Calendar = ({deactivate, inputType}) => {
     },[])
     
     let Today = startOfToday();
-    const selectedDay = useSelector(state => state.tarvelDates.selectedDay.value);
+    
+    let selectedDay;
+    if(inputType == "Departure")
+        selectedDay = useSelector(state => state.tarvelDates.itinerary.departureDate.value);
+    else
+        selectedDay = useSelector(state => state.tarvelDates.itinerary.arrivalDate.value);
+    selectedDay = new Date(selectedDay);
+
     const dispatcher = useDispatch();
     let [currentMonth, setCurrentMonth] = useState(format(Today, 'MMM yyyy'))
     let firstDayCurrentMonth = parse(currentMonth, 'MMM yyyy', new Date());
@@ -56,12 +63,14 @@ const Calendar = ({deactivate, inputType}) => {
                     </div>
                     <div className="grid grid-cols-7 justify-items-center align-middle w-full gap-y-3">
                         {
-                            newDays.map((day,index)=>(
+                            newDays.map((day)=>(
                                 <button
                                     key={day.toString()}
-                                    onClick={()=>{dispatcher(setSelectedDay(day.toISOString()))}}
+                                    onClick={()=>{
+                                        inputType == "Departure"? dispatcher(setDepartureDate(day.getTime())) : dispatcher(setArrivalDate(day.getTime()))
+                                    }}
                                     className={`
-                                        ${isEqual(Today,day) && !isEqual(selectedDay,Today)? 'text-pink-600':''}
+                                        ${isEqual(Today,day) && !isEqual(selectedDay,Today)? 'text-pink-600 bg-indigo-400':''}
                                         hover:bg-indigo-400 hover:disabled:bg-transparent h-8 w-8 rounded-full font-medium
                                         ${isEqual(selectedDay,day)?'bg-indigo-400 text-white':''}
                                         ${isSameMonth(day,firstDayCurrentMonth)?'':'text-gray-400'}

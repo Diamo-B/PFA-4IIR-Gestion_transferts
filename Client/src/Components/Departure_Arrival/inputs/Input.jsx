@@ -9,7 +9,7 @@ const Input = ({type, placeholder, value, icon, activate, setInputType, inptype}
         type == "Category"?
             <div
                 placeholder={placeholder}
-                className={`flex justify-center items-center border-2 border-black rounded-lg w-full h-3/5 text-center hover:cursor-pointer ${luxuary && "bg-indigo-400"}`}
+                className={`flex justify-center items-center border-2 border-black rounded-lg w-full h-3/5 text-center hover:cursor-pointer dark:bg-transparent ${luxuary && "bg-indigo-400 dark:bg-orange-500"}`}
                 onClick={() => isLuxuary(prev => !prev)}
             >
                 {icon}
@@ -20,7 +20,7 @@ const Input = ({type, placeholder, value, icon, activate, setInputType, inptype}
             <input
                 type={type}
                 placeholder={placeholder}
-                value={value}
+                defaultValue={value}
                 className="border-2 border-black rounded-lg w-full h-3/5 text-center"
                 onFocus={(event) => {
                 if (activate) {

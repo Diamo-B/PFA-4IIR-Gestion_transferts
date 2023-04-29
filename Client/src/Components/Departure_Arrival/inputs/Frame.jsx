@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import Clock from "./Components/Clock";
 import Calendar from './Components/Calendar'
-import {useDispatch, useSelector} from "react-redux";
-import {setArrivalDate, setDepartureDate,setDepartureModifiedTrue, setArrivalModifiedTrue} from "../../../Redux/dates";
-import { format } from "date-fns";
+import {useDispatch} from "react-redux";
+import {setDepartureModifiedTrue, setArrivalModifiedTrue} from "../../../Redux/dates";
 
 const Frame = ({activate, inputType}) => {
     
@@ -15,7 +14,7 @@ const Frame = ({activate, inputType}) => {
     let [renderTime,setRenderTime] = useState(false);
     
     let dispatcher = useDispatch();
-    const selectedDay = useSelector(state => state.tarvelDates.selectedDay.value);
+
 
     let close = () => {
         let ID = document.getElementById("topLevel");       
@@ -25,16 +24,12 @@ const Frame = ({activate, inputType}) => {
 
     let validateDate = () => {
         setRenderTime(true);
-        inputType == "Departure"?
-            dispatcher(setDepartureDate(format(selectedDay,'dd-MM-yyyy')))
-        :
-        dispatcher(setArrivalDate((format(selectedDay,'dd-MM-yyyy'))))
     }
 
     let validateTime = () => {
-        inputType == "Departure"?
+        if(inputType == "Departure")
             dispatcher(setDepartureModifiedTrue())
-        :
+        else
             dispatcher(setArrivalModifiedTrue())
         close();
     }
