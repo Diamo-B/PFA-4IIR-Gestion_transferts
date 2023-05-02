@@ -5,7 +5,7 @@ import {
   UilMapMarker,
   UilCalender,
   UilUserPlus,
-  UilTrophy,
+  UilCarSideview,
 } from "@iconscout/react-unicons";
 import Frame from "./inputs/Frame";
 import { useSelector, useDispatch } from "react-redux";
@@ -20,10 +20,10 @@ const ChoixTraget = () => {
   const [showFrame, setShowFrame] = useState(false);
   const [inputType, setInputType] = useState("");
   const departureDate = useSelector(
-    (state) => state.tarvelDates.itinerary.departureDate
+    (state) => state.travelDates.itinerary.departureDate
   );
   const arrivalDate = useSelector(
-    (state) => state.tarvelDates.itinerary.arrivalDate
+    (state) => state.travelDates.itinerary.arrivalDate
   );
 
   //explain: turning the date from a unixSerializable to date objects
@@ -48,7 +48,7 @@ const ChoixTraget = () => {
   }, [arrDateValue]);
 
   const improperDates = useSelector(
-    (state) => state.tarvelDates.itinerary.improperDates
+    (state) => state.travelDates.itinerary.improperDates.value
   );
 
   let VerifyData = () => {
@@ -56,13 +56,6 @@ const ChoixTraget = () => {
     dispatcher(compareDepartureWithArrival());
   };
 
-  useEffect(() => {
-    if (improperDates.value) {
-      console.log("render error");
-    } else {
-      console.log("good render");
-    }
-  }, [improperDates]);
 
   return (
     <div className=" w-5/6 h-36 bg-white rounded-xl dark:bg-slate-700">
@@ -134,7 +127,7 @@ const ChoixTraget = () => {
             <Input
               placeholder="Category"
               type="Category"
-              icon={<UilTrophy className="absolute left-2" />}
+              icon={<UilCarSideview className="absolute left-2" />}
             />
           </div>
         </div>

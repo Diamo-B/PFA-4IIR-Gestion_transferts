@@ -1,17 +1,12 @@
-import {configureStore, createSerializableStateInvariantMiddleware} from '@reduxjs/toolkit'
+import {configureStore} from '@reduxjs/toolkit'
 import {userAuthSlice} from './auth'
+import { usersPanelSlice } from './UsersPanel'
 import datesReducer from './dates'
-
-/* const ignoredPaths = ['tarvelDates.itinerary.departureDate','tarvelDates.itinerary.arrivalDate'];
-
-const serializableMiddleware = createSerializableStateInvariantMiddleware({
-    ignoredPaths: ignoredPaths,
-  }); */
 
 export default configureStore({
     reducer: {
         authUser: userAuthSlice.reducer,
-        tarvelDates: datesReducer, 
+        travelDates: datesReducer,
+        userPanel: usersPanelSlice.reducer
     } ,
-/*     middleware: [serializableMiddleware],
- */})
+})

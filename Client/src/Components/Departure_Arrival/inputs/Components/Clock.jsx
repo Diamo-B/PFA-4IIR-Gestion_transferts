@@ -17,9 +17,9 @@ const Clock = ({inputType}) => {
   const dispatcher = useDispatch();
   const unixDate = useSelector((state) => 
     inputType == "Departure"?
-      state.tarvelDates.itinerary.departureDate.value
+      state.travelDates.itinerary.departureDate.value
     :
-      state.tarvelDates.itinerary.arrivalDate.value
+      state.travelDates.itinerary.arrivalDate.value
   );
   const dateObj = new Date(unixDate);
 

@@ -22,9 +22,9 @@ const Calendar = ({inputType}) => {
     
     let selectedDay;
     if(inputType == "Departure")
-        selectedDay = useSelector(state => state.tarvelDates.itinerary.departureDate.value);
+        selectedDay = useSelector(state => state.travelDates.itinerary.departureDate.value);
     else
-        selectedDay = useSelector(state => state.tarvelDates.itinerary.arrivalDate.value);
+        selectedDay = useSelector(state => state.travelDates.itinerary.arrivalDate.value);
     selectedDay = new Date(selectedDay);
 
     const dispatcher = useDispatch();

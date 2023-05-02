@@ -4,14 +4,17 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "front": "npm run build:css && vite",
-    "build_front": "vite build",
+    "front": "vite",
+    "build_front": "npm run build:css && vite build",
     "preview": "vite preview",
     "build:css": "postcss src/App.css -o src/index.css"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.1.0",
     "@iconscout/react-unicons": "^2.0.2",
     "@reduxjs/toolkit": "^1.9.5",
+    "@tanstack/react-query": "^4.29.5",
+    "axios": "^1.4.0",
     "date-fns": "^2.29.3",
     "date-fns-tz": "^2.0.0",
     "dotenv": "^16.0.3",
@@ -19,8 +22,10 @@
     "postcss-cli": "^10.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.43.9",
     "react-redux": "^8.0.5",
-    "react-router-dom": "^6.10.0"
+    "react-router-dom": "^6.10.0",
+    "yup": "^1.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",

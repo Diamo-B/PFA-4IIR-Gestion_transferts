@@ -1,7 +1,7 @@
 const prisma = require("../../prisma/prismaInstance");
 
 let getByMail = async (req,res) => {
-  let {email} = req.body;
+  let email = req.params.mail;
   try {
     let user = await prisma.user.findUniqueOrThrow({
       where:{

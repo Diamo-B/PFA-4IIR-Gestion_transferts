@@ -1,21 +1,20 @@
 import Cookies from 'js-cookie';
 import {useNavigate} from 'react-router-dom';
+import { UilSignout } from "@iconscout/react-unicons";
 
-const Logout = () => {
-    let navigate = useNavigate();
-
+const logout = ({classNames}) => {
+    const navigate = useNavigate();
+    
     let logout = () => {
         localStorage.removeItem("jwt");
         Cookies.remove('userType');
         navigate('/login');
     }
     return ( 
-        <button className="btn capitalize"
-            onClick={logout}
-        >
-            logout
+        <button onClick={logout}>
+          <UilSignout className={classNames.join(' ')}/> {/* log out */}
         </button>
     );
 }
  
-export default Logout;
+export default logout;

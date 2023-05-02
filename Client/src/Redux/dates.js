@@ -75,7 +75,7 @@ export const itinerarySlice = createSlice({
         ...state,
         improperDates: {
           ...state.improperDates,
-          value: null
+          value: false
         }
       };
     },

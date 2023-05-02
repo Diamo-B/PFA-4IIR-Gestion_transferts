@@ -5,14 +5,18 @@ const {updateUser} = require('../Api/users/updateUser');
 const { getByMail } = require("../Api/users/getByMail");
 const {getAllUsers} = require('../Api/users/getAll');
 const {requireAuthAgent} = require('../middlewares/agentAuth');
+const {getByTerm} = require("../Api/users/getByTerm");
+const { countUsers } = require("../Api/users/countUsers");
 
 const {login} = require('../Api/login');
 router.post('/login',login);
 
 router.use(requireAuthAgent); // auth middleware (agent)
-router.get('/getAll',getAllUsers)
-router.get('/getMail',getByMail);
-router.put('/update',updateUser)
+router.get('/getAll',getAllUsers);
+router.get('/getMail/:mail',getByMail);
+router.get('/termSearch/:term',getByTerm);
+router.get("/count/:type",countUsers);
+router.put('/update',updateUser);
 router.delete('/remove',removeUser);
 
 

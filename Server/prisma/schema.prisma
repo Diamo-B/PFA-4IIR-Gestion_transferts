@@ -32,11 +32,18 @@ model Agent {
   authorisations Authorisation[]
 }
 
-enum authorisationLevels {
+enum authorisationLevels { 
+  //TODO: turn this into it's own table
   read
   write
   add
   remove
+}
+
+model AuthorisationLevel{
+  id String @id @default(uuid())
+  category String @unique
+  action String @unique
 }
 
 model Authorisation {
@@ -45,3 +52,4 @@ model Authorisation {
   level  authorisationLevels
   agents Agent[]
 }
+
