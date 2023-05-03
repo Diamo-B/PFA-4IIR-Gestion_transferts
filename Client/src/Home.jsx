@@ -1,8 +1,8 @@
 import "./index.css";
-import ChoixTraget from "./Components/Departure_Arrival/ChoixTraget";
+import ChoixTraget from "./Components/Client/Departure_Arrival/ChoixTraget";
 import Toast from "./Components/Toast/Toast";
-import Logout from "./Components/other/Logout";
-import Night_Day from "./Components/other/Night_Day";
+import Logout from "./Components/Client/other/Logout";
+import Night_Day from "./Components/Client/other/Night_Day";
 import { useSelector } from "react-redux";
 import { resetImproperDate } from "./Redux/dates";
 import { useState } from "react";

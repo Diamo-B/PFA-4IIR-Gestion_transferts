@@ -9,7 +9,7 @@ import {
   UilInbox,
   UilSetting,
 } from "@iconscout/react-unicons";
-import Logout from "../other/Logout";
+import Logout from "../Components/Client/other/Logout";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {

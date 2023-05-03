@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   compareDepartureWithArrival,
   resetImproperDate,
-} from "../../Redux/dates";
+} from "../../../Redux/dates";
 import { format } from "date-fns";
 
 const ChoixTraget = () => {

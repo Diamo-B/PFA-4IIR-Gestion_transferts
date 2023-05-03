@@ -1,11 +1,11 @@
 import Card from "../Components/Admin/users/Card";
 import CreateAgent from "../Components/Admin/users/CreatePanel";
-import Table from "../Components/Admin/users/table";
 import Toast from "../Components/Toast/Toast";
 import { useSelector, useDispatch } from "react-redux";
-import { setUsersData, setUsersFetchingErrors, resetFetchingErrors } from "../Redux/UsersPanel";
+import { setUsersData, setUsersFetchingErrors, resetFetchingErrors, setToastType } from "../Redux/UsersPanel";
 import { useEffect } from "react";
 import { useFetchFilter } from "../Components/Admin/users/hooks/useFetchFilter";
+import TableFrame from "./tableFrame";
 
 const Users = () => {
     let users = useSelector(state => state.userPanel.usersData);
@@ -14,6 +14,7 @@ const Users = () => {
     );
     const fetchingType = useSelector((state) => state.userPanel.fetchingType);
     const errors = useSelector((state) => state.userPanel.usersFetchingErrors);
+    const ToastType = useSelector((state)=> state.userPanel.toastType);
     const dispatcher = useDispatch();
     const { data, error, isError, isLoading } = useFetchFilter(fetchingType);
 
@@ -24,6 +25,7 @@ const Users = () => {
             }
             if (isError && error) {
                 dispatcher(setUsersFetchingErrors(error.message));
+                dispatcher(setToastType("Error"));
             }
         }
     }, [data, isError, error]);
@@ -32,7 +34,7 @@ const Users = () => {
             <div className="flex flex-col items-center w-full gap-3 ">
                 <Card />
                 <div className=" flex flex-col items-center w-full">
-                    {isLoading ? <p>Loading</p> : data || errors ? <Table error={error} users={users}/> : null}
+                    {isLoading ? <p>Loading</p> : data || errors ? <TableFrame error={error} users={users}/> : null}
                 </div>
             </div>
             {userCreationPanel && (
@@ -45,7 +47,7 @@ const Users = () => {
                 errors.map((err, index) => (
                     <Toast
                         key={index}
-                        Type="Error"
+                        Type={ToastType}
                         Message={err}
                         trigger={resetFetchingErrors}
                     />

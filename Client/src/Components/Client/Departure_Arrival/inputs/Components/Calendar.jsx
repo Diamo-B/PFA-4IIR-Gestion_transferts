@@ -9,7 +9,7 @@ import nextMonth from './Helpers/nextMonth';
 import previousMonth from './Helpers/previousMonth';
 
 import { useSelector, useDispatch } from "react-redux";
-import {setArrivalDate, setDepartureDate} from '../../../../Redux/dates';
+import {setArrivalDate, setDepartureDate} from '../../../../../Redux/dates';
 
 const Calendar = ({inputType}) => {
 

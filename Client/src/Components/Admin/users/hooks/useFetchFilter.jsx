@@ -16,7 +16,6 @@ export const useFetchFilter = (type) => {
             url = `/api/user/termSearch/${type}`
     }
 
-    console.log("url: "+url);
     const { isError, data, error, isLoading } = useQuery(
         ["userData", type],
         async () => {

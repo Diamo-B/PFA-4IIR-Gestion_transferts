@@ -1,11 +1,40 @@
 import { UilAngleDown } from "@iconscout/react-unicons";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { show, setFetchingType } from "../../../Redux/UsersPanel";
+import { show, setFetchingType, setUsersFetchingErrors, setToastType } from "../../../Redux/UsersPanel";
 
 const ActionBtn = () => {
     let [toggle, setToggle] = useState(false);
     const dispatcher = useDispatch();
+
+    let remove = () => {
+        fetch("/api/user/remove",{
+            method: "delete",
+            headers:{
+                "Content-Type" : "application/json",
+                Authorization: `Bearer ${localStorage.getItem('jwt')}`
+            },
+            body:JSON.stringify({
+                email: "azerty@gmail.com"
+            })
+        }).then(async res => {
+            let data = await res.json();
+            console.log(data);
+            if(data.code === "notFound")
+            {
+                dispatcher(setUsersFetchingErrors("The required user was not found"));
+                dispatcher(setToastType("Error"));
+            }
+            else
+            {
+                dispatcher(setToastType("Info"));
+                dispatcher(setUsersFetchingErrors("User was deleted successfully"));
+                location.reload();
+            }
+        }).catch(err=>{
+            console.log(err);
+        })
+    }
     return (
         <div>
             <button
@@ -38,7 +67,7 @@ const ActionBtn = () => {
                     >
                         New User 
                     </button>
-                    <button className="py-2 px-4 font-bold rounded-b-lg bg-red-600 text-white hover:bg-red-500">
+                    <button className="py-2 px-4 font-bold rounded-b-lg bg-red-600 text-white hover:bg-red-500" onClick={remove}>
                         Delete Users
                     </button>
                 </div>

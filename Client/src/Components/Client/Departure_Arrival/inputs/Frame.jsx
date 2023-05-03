@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Clock from "./Components/Clock";
 import Calendar from './Components/Calendar'
 import {useDispatch} from "react-redux";
-import {setDepartureModifiedTrue, setArrivalModifiedTrue} from "../../../Redux/dates";
+import {setDepartureModifiedTrue, setArrivalModifiedTrue} from "../../../../Redux/dates";
 
 const Frame = ({activate, inputType}) => {
     

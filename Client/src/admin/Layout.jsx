@@ -1,4 +1,4 @@
-import Navbar from "../Components/Admin/Navbar";
+import Navbar from "./Navbar";
 const AdminLayout = ({children}) => {
   return (
     <div className="w-full h-full bg-indigo-200 dark:bg-gray-900 text-white">

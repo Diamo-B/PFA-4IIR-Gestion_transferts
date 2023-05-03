@@ -1,30 +1,42 @@
-import { useRef, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import './App.css';
 import { Navigate } from 'react-router-dom';
+import {useForm} from "react-hook-form";
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
+import { useDispatch } from 'react-redux';
 
 let Login = () => {
-    let email = useRef();
-    let password = useRef();
-    let [userType, setUserType] = useState(null);
 
-    useEffect(()=>{
-        let type = Cookies.get('userType');
-        setUserType(type);
-    },[]);
+    const Schema = yup.object().shape({
+       email: yup.string().email().required(),
+       password: yup.string().min(4).max(20).required(),
+    });
+    const {register, handleSubmit, formState: {errors}} = useForm({
+        resolver: yupResolver(Schema)
+    });
+
+    let [userType, setUserType] = useState(null);
+    let [loginError, setloginError] = useState(false);
     
-    let login = () => {
+    let onSubmit = (data) => {
         fetch('/api/user/login',{
             method: "post",
             body:JSON.stringify({
-                email : email.current.value,
-                password : password.current.value
+                email : data.email,
+                password : data.password
             }),
             headers: {
                 "Content-Type": "application/json"
             }
         }).then(async (res)=>{
             let data = await res.json();
+            if(data.err)
+            {
+                setloginError(true);
+                return;
+            }
             localStorage.setItem('jwt',data.token);
             Cookies.set('userType', data.type, {expires: 1});
             setUserType(data.type);
@@ -33,6 +45,13 @@ let Login = () => {
             console.error(err);
         })
     }
+    
+
+    useEffect(()=>{
+        let type = Cookies.get('userType');
+        setUserType(type);
+    },[]);
+
 
     if(userType === "client")
     {
@@ -50,26 +69,33 @@ let Login = () => {
         return(
             <>
                 <div className='h-full w-full flex flex-col justify-center items-center bg-slate-600'>
-                    <div className=' min-w-fit w-1/2 flex flex-col gap-3 items-center bg-white rounded-lg py-6 '>
+                    <form className=' min-w-fit w-1/2 flex flex-col gap-3 items-center bg-white rounded-lg py-6 '
+                        onSubmit={handleSubmit(onSubmit)}
+                    >
                         <h1 className=' text-3xl font-normal '>Login</h1>
+                        {
+                            loginError && <small className="text-red-600 font-medium">Incorrect email and/or Password</small>
+                        }
                         <input
-                            ref={email}
-                            type="email"
+                            type="text"
                             placeholder="email address"
                             className="border-2 border-black rounded-full w-2/4 h-10 text-center"
+                            {...register('email')}
                         />
+                        <small className="text-red-600 font-medium">{errors.email?.message}</small>
                         <input
-                            ref={password}
                             type='password'
                             placeholder='password'
                             className="border-2 border-black rounded-full w-2/4 h-10 text-center"
+                            {...register('password')}
                         />
+                        <small className="text-red-600 font-medium">{errors.password?.message}</small>
                         <button className='border-2 border-black rounded-full py-2 px-10 text-center hover:bg-indigo-300 hover:text-rose-600 hover:font-bold'
-                        onClick={login}
+                        type='submit'
                         >
                             Sign In
                         </button>
-                    </div>
+                    </form>
                 </div>
             </>
         );
