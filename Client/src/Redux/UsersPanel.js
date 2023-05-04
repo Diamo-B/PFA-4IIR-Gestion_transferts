@@ -4,6 +4,10 @@ export const usersPanelSlice = createSlice({
     name: "usersPanel_slice",
     initialState: {
         showCreateUserPanel: false,
+        showUpdateUserPanel: {
+            value: false,
+            user: null
+        },
         usersData: [],
         fetchingType: "all",
         usersFetchingErrors: [],
@@ -16,6 +20,14 @@ export const usersPanelSlice = createSlice({
         },
         hide: (state) => {
             state.showCreateUserPanel = false;
+        },
+        showUpdate: (state,action) => {
+            state.showUpdateUserPanel.value = true;
+            state.showUpdateUserPanel.user = action.payload
+        },
+        hideUpdate: (state) => {
+            state.showUpdateUserPanel.value = false;
+            state.showUpdateUserPanel.user = {}
         },
         setUsersData: (state, action) => {
             state.usersData = action.payload;
@@ -47,6 +59,8 @@ export const usersPanelSlice = createSlice({
 export const {
     show,
     hide,
+    showUpdate,
+    hideUpdate,
     setUsersData,
     setFetchingType,
     setUsersFetchingErrors,

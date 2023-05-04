@@ -1,5 +1,5 @@
 import {useSelector, useDispatch} from 'react-redux';
-import {setSelectedUsers, removeUserFromSelection, resetSelectedUsers} from '../../../Redux/UsersPanel'
+import {showUpdate ,setSelectedUsers, removeUserFromSelection, resetSelectedUsers} from '../../../Redux/UsersPanel'
 import { useEffect, useState } from 'react';
 
 const Table = ({error, users}) => {
@@ -11,10 +11,6 @@ const Table = ({error, users}) => {
     const fetchingType = useSelector((state) => state.userPanel.fetchingType);
     const selectedUsers = useSelector((state) => state.userPanel.selectedUsers);
     const dispatcher = useDispatch();
-
-    useEffect(()=>{
-        console.log(selectedUsers);
-    },[selectedUsers])
 
     const [selectedUsersSet, setSelectedUsersSet] = useState(new Set(selectedUsers.map(user=>user.id)));
 
@@ -33,7 +29,6 @@ const Table = ({error, users}) => {
     }   
     
     let selectAllUsers = (e) => {
-        //TODO: map every user in the filteredUsers and execute the AddItemToSelection on it
         dispatcher(resetSelectedUsers());
         if(e.target.checked)
         {
@@ -62,7 +57,7 @@ const Table = ({error, users}) => {
                             <input
                                 type="checkbox"
                                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
-                                disabled={users.length === 0 ? true : false}
+                                disabled={(filteredUsers.length === 0 || error) ? true : false}
                                 onChange={selectAllUsers}
                             />
                         </div>
@@ -123,14 +118,17 @@ const Table = ({error, users}) => {
                                 </div>
                             </td>
                             <td className="px-6 py-4">
-                                <a
+                                <span
                                     href="#"
                                     type="button"
                                     data-modal-show="editUserModal"
-                                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline hover:cursor-pointer"
+                                    onClick={()=>{
+                                        dispatcher(showUpdate(user))
+                                    }}
                                 >
                                     Edit user
-                                </a>
+                                </span>
                             </td>
                         </tr>
                     ))

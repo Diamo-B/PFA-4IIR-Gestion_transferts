@@ -1,40 +1,34 @@
 import { UilAngleDown } from "@iconscout/react-unicons";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { show, setFetchingType, setUsersFetchingErrors, setToastType } from "../../../Redux/UsersPanel";
 
 const ActionBtn = () => {
     let [toggle, setToggle] = useState(false);
+    const selectedUsers = useSelector((state) => state.userPanel.selectedUsers);
     const dispatcher = useDispatch();
 
     let remove = () => {
-        fetch("/api/user/remove",{
+        let usersMails = selectedUsers.map(user => user.email);
+        fetch("/api/user/removeBatch",{
             method: "delete",
             headers:{
                 "Content-Type" : "application/json",
                 Authorization: `Bearer ${localStorage.getItem('jwt')}`
             },
             body:JSON.stringify({
-                email: "azerty@gmail.com"
+                emails: usersMails
             })
         }).then(async res => {
             let data = await res.json();
-            console.log(data);
-            if(data.code === "notFound")
-            {
-                dispatcher(setUsersFetchingErrors("The required user was not found"));
-                dispatcher(setToastType("Error"));
-            }
-            else
-            {
-                dispatcher(setToastType("Info"));
-                dispatcher(setUsersFetchingErrors("User was deleted successfully"));
-                location.reload();
-            }
+            dispatcher(setToastType("Info"));
+            dispatcher(setUsersFetchingErrors(data+" Users "+data>1?"were":"was"+"deleted successfully"));
+            location.reload();
         }).catch(err=>{
             console.log(err);
         })
     }
+    
     return (
         <div>
             <button
@@ -62,14 +56,17 @@ const ActionBtn = () => {
                     >
                         Agents Only
                     </button>
-                    <button className="py-2 px-4 font-bold  bg-emerald-500 text-white hover:bg-emerald-400"
+                    <button className={`py-2 px-4 font-bold bg-emerald-500 text-white hover:bg-emerald-400 ${selectedUsers.length == 0 && "rounded-b-lg"}`}
                         onClick={() => dispatcher(show())}
                     >
-                        New User 
+                        New Agent 
                     </button>
-                    <button className="py-2 px-4 font-bold rounded-b-lg bg-red-600 text-white hover:bg-red-500" onClick={remove}>
-                        Delete Users
-                    </button>
+                    {
+                        selectedUsers.length > 0 && 
+                        <button className="py-2 px-4 font-bold rounded-b-lg bg-red-600 text-white hover:bg-red-500" onClick={remove}>
+                            Delete Users
+                        </button>
+                    }
                 </div>
             )}
         </div>

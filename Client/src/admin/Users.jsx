@@ -1,5 +1,5 @@
 import Card from "../Components/Admin/users/Card";
-import CreateAgent from "../Components/Admin/users/CreatePanel";
+import CreateUpdateAgent from "../Components/Admin/users/CreateUpdatePanel";
 import Toast from "../Components/Toast/Toast";
 import { useSelector, useDispatch } from "react-redux";
 import { setUsersData, setUsersFetchingErrors, resetFetchingErrors, setToastType } from "../Redux/UsersPanel";
@@ -9,9 +9,8 @@ import TableFrame from "./tableFrame";
 
 const Users = () => {
     let users = useSelector(state => state.userPanel.usersData);
-    const userCreationPanel = useSelector(
-        (state) => state.userPanel.showCreateUserPanel
-    );
+    const userCreationPanel = useSelector((state) => state.userPanel.showCreateUserPanel);
+    const userUpdatePanel = useSelector((state) => state.userPanel.showUpdateUserPanel.value);
     const fetchingType = useSelector((state) => state.userPanel.fetchingType);
     const errors = useSelector((state) => state.userPanel.usersFetchingErrors);
     const ToastType = useSelector((state)=> state.userPanel.toastType);
@@ -37,12 +36,11 @@ const Users = () => {
                     {isLoading ? <p>Loading</p> : data || errors ? <TableFrame error={error} users={users}/> : null}
                 </div>
             </div>
-            {userCreationPanel && (
+            {(userCreationPanel || userUpdatePanel) && (
                 <div className="h-full w-full z-10 absolute top-0 left-0 flex justify-center items-center bg-gray-700 bg-opacity-70 ">
-                    <CreateAgent />
+                    <CreateUpdateAgent opType={userCreationPanel?"create":"update"}/>
                 </div>
             )}
-
             {errors &&
                 errors.map((err, index) => (
                     <Toast

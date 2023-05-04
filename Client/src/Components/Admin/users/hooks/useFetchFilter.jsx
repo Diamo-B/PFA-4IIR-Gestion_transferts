@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 
 export const useFetchFilter = (type) => {
     let url;
@@ -16,6 +17,25 @@ export const useFetchFilter = (type) => {
             url = `/api/user/termSearch/${type}`
     }
 
+    const [currentUser, setCurrentUser] = useState(null);
+
+    useEffect(() => {
+        const token = localStorage.getItem("jwt");
+        fetch("/api/verifyJWT",{
+            method: 'post',
+            headers:{
+                "Content-Type" : "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        }).then(async(res)=>{
+            let result = await res.json();
+            setCurrentUser(result.email);
+        }).catch(err=>{
+            console.log(err);
+        })
+    }, []);
+
+    
     const { isError, data, error, isLoading } = useQuery(
         ["userData", type],
         async () => {
@@ -34,7 +54,8 @@ export const useFetchFilter = (type) => {
                 if(data && data.length === 0) {
                     throw new Error("No users were found");
                 }
-                return data;
+                let object = data.filter(item => item.email !== "Bachar@gmail.com");
+                return object;
             })
         }
     );
