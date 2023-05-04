@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
 import './App.css';
 import { Navigate } from 'react-router-dom';
 import {useForm} from "react-hook-form";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
-import { useDispatch } from 'react-redux';
 
 let Login = () => {
 
@@ -38,7 +36,6 @@ let Login = () => {
                 return;
             }
             localStorage.setItem('jwt',data.token);
-            Cookies.set('userType', data.type, {expires: 1});
             setUserType(data.type);
         })
         .catch(err=>{
@@ -46,10 +43,23 @@ let Login = () => {
         })
     }
     
-
+    let data;
     useEffect(()=>{
-        let type = Cookies.get('userType');
-        setUserType(type);
+        fetch("/api/verifyJWT",{
+            method:"post",
+            headers:{
+                "Content-Type" : "application/json",
+                Authorization: `Bearer ${localStorage.getItem('jwt')}`
+            }
+        }).then(async(res)=>{
+            data = await res.json();
+            if(data.client)
+                setUserType("client");
+            else if (data.agent)
+                setUserType("agent")
+        }).catch(err=>{
+            console.log(err);
+        });
     },[]);
 
 

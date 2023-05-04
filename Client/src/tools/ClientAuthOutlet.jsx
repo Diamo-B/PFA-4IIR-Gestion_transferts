@@ -1,16 +1,41 @@
 import { Outlet,Navigate, Link } from "react-router-dom"
-import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 
 export function ClientAuthOutlet() {
-    let type = Cookies.get('userType');
+  let [userType, setUserType] = useState(null);
+  let [isLoading, setIsLoading] = useState(true);
+  useEffect(()=>{
+    let checkUser = () => {
+    fetch("/api/verifyJWT",{
+        method:"post",
+        headers:{
+            "Content-Type" : "application/json",
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
+    }).then(async(res)=>{
+        let data = await res.json();
+        if(data.client)
+            setUserType("client");
+        else if (data.agent)
+            setUserType("agent")
+    }).catch(err=>{
+        console.log(err);
+    }).finally(() => {
+      setIsLoading(false);
+    });
+    }
+    checkUser();
+  },[]);
   return (
     <>
-      {
-        !type ?
+    {
+      !isLoading &&
+      (
+        userType == null?
             <Navigate to="/login" />
         :
         (
-          type === 'client' ?
+          userType === 'client' ?
             <Outlet />
           : 
           <>
@@ -20,8 +45,8 @@ export function ClientAuthOutlet() {
             </Link>
           </>
         )
-      }
-      
+      )
+    }
     </>
   )
 }

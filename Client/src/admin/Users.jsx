@@ -3,6 +3,7 @@ import CreateUpdateAgent from "../Components/Admin/users/CreateUpdatePanel";
 import Toast from "../Components/Toast/Toast";
 import { useSelector, useDispatch } from "react-redux";
 import { setUsersData, setUsersFetchingErrors, resetFetchingErrors, setToastType } from "../Redux/UsersPanel";
+import { setUser } from "../Redux/auth";
 import { useEffect } from "react";
 import { useFetchFilter } from "../Components/Admin/users/hooks/useFetchFilter";
 import TableFrame from "./tableFrame";
@@ -18,6 +19,16 @@ const Users = () => {
     const { data, error, isError, isLoading } = useFetchFilter(fetchingType);
 
     useEffect(() => {
+        fetch('/api/verifyJWT',{
+            method:"post",
+            headers:{
+                "Content-Type" : "application/json",
+                Authorization : `Bearer ${localStorage.getItem('jwt')}`
+            }
+        }).then(async res=>{
+            let data = await res.json();
+            dispatcher(setUser(data.email));
+        })
         if (!isLoading) {
             if (data) {
                 dispatcher(setUsersData(data));

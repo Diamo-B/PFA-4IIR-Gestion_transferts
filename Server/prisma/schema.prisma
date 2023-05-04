@@ -29,27 +29,35 @@ model Client {
 model Agent {
   user           User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId         String          @id @unique
-  authorisations Authorisation[]
+  categories  AgentCategoryPermission[]
 }
 
-enum authorisationLevels { 
-  //TODO: turn this into it's own table
-  read
-  write
-  add
-  remove
-}
-
-model AuthorisationLevel{
+model Category {
   id String @id @default(uuid())
-  category String @unique
-  action String @unique
+  name String @unique
+  categories  AgentCategoryPermission[]
 }
 
-model Authorisation {
-  id     String              @id @default(uuid())
-  name   String              @unique
-  level  authorisationLevels
-  agents Agent[]
+model AgentCategoryPermission {
+  id          String    @id @default(uuid())
+  agent       Agent     @relation(fields: [agentId], references: [userId])
+  agentId     String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  permissions  Permission[]
+}
+
+model Permission{
+  id String @id @default(uuid())
+  value Value
+  agents AgentCategoryPermission[]
+}
+
+enum Value {
+  read
+  create
+  update
+  delete
+  crud
 }
 

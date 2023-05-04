@@ -3,11 +3,13 @@ import {showUpdate ,setSelectedUsers, removeUserFromSelection, resetSelectedUser
 import { useEffect, useState } from 'react';
 
 const Table = ({error, users}) => {
-    
+    console.log(users);
     const filteredUsers = users.map((obj) => {
         return obj.hasOwnProperty("userId") ? obj.user : obj;
     });
-      
+    const currentUserEmail = useSelector(state  => state.authUser.value);
+    const filteredUsers_Email =  filteredUsers.filter(item => item.email !== currentUserEmail)
+
     const fetchingType = useSelector((state) => state.userPanel.fetchingType);
     const selectedUsers = useSelector((state) => state.userPanel.selectedUsers);
     const dispatcher = useDispatch();
@@ -32,7 +34,7 @@ const Table = ({error, users}) => {
         dispatcher(resetSelectedUsers());
         if(e.target.checked)
         {
-            filteredUsers.map((user)=>{
+            filteredUsers_Email.map((user)=>{
                 dispatcher(setSelectedUsers(user));
             })
         }
@@ -57,7 +59,7 @@ const Table = ({error, users}) => {
                             <input
                                 type="checkbox"
                                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
-                                disabled={(filteredUsers.length === 0 || error) ? true : false}
+                                disabled={(filteredUsers_Email.length === 0 || error) ? true : false}
                                 onChange={selectAllUsers}
                             />
                         </div>
@@ -78,8 +80,8 @@ const Table = ({error, users}) => {
             </thead>
             <tbody>
                 {
-                    filteredUsers && !error && 
-                    filteredUsers.map((user)=>(
+                    filteredUsers_Email && !error && 
+                    filteredUsers_Email.map((user)=>(
                         <tr className="bg-white hover:bg-gray-50" key={user.id}>
                             <td className="w-4 p-4">
                                 <div className="flex items-center">
@@ -134,7 +136,7 @@ const Table = ({error, users}) => {
                     ))
                 }    
                 {
-                    (filteredUsers.length === 0 || error )&&
+                    (filteredUsers_Email.length === 0 || error )&&
                     <tr className="bg-white hover:bg-gray-50">
                         <td className="w-4 p-4">
                             <div className="flex items-center">

@@ -11,7 +11,11 @@ let login = async (req,res) => {
                 email: email
             },
             include:{
-                agent: true,
+                agent: {
+                    include:{
+                        authorisations: true
+                    }
+                },
                 client: true
             }
         })
