@@ -1,18 +1,28 @@
 const prisma = require("../../prisma/prismaInstance");
+const bcrypt = require('bcrypt');
+
+let hashPassword = async (pass) =>{
+  let salt = await bcrypt.genSalt();
+  return await bcrypt.hash(pass,salt); 
+}
 
 let updateUser = async (req,res) => {
-  let {email, newMail, firstName, lastName, password} = req.body;
+  const { email, newEmail, firstName, lastName, password } = req.body;
+  
+  const updatedData = {};
+
+  if (newEmail!==null) updatedData.email = newEmail;
+  if (firstName!==null) updatedData.firstName = firstName;
+  if (lastName!==null) updatedData.lastName = lastName;
+  if (password!==null) updatedData.password = await hashPassword(password);
+  
+  
   try {
     let updatedUser = await prisma.user.update({
       where: {
         email: email
       },
-      data:{
-        email: newMail,
-        firstName: firstName,
-        lastName: lastName,
-        password: password
-      }
+      data:updatedData
     })
     return res.status(200).json(updatedUser)
   } catch (err) {

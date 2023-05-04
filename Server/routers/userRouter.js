@@ -7,6 +7,7 @@ const {getAllUsers} = require('../Api/users/getAll');
 const {requireAuthAgent} = require('../middlewares/agentAuth');
 const {getByTerm} = require("../Api/users/getByTerm");
 const { countUsers } = require("../Api/users/countUsers");
+const { removeUsers } = require("../Api/users/removeUsers");
 
 const {login} = require('../Api/login');
 router.post('/login',login);
@@ -18,6 +19,7 @@ router.get('/termSearch/:term',getByTerm);
 router.get("/count/:type",countUsers);
 router.put('/update',updateUser);
 router.delete('/remove',removeUser);
+router.delete('/removeBatch',removeUsers);
 
 
 

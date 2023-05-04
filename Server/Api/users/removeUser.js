@@ -9,7 +9,6 @@ let removeUser = async (req,res) => {
           }
         })
         return res.status(200).json(userD);
-
     } catch (err) {
       return err.code == "P2025" ? 
       res.status(500).json({code: "notFound",message: "There is no user with the email '"+email+"'"})
