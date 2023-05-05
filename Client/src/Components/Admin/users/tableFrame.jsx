@@ -1,6 +1,6 @@
-import Search from "../Components/Admin/users/Search";
-import ActionBtn from "../Components/Admin/users/action_button";
-import Table from "../Components/Admin/users/table";
+import Search from "./Search";
+import ActionBtn from "./action_button";
+import Table from "./table";
 
 const TableFrame = ({users, error}) => {
     return ( 

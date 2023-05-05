@@ -6,7 +6,7 @@ import { setUsersData, setUsersFetchingErrors, resetFetchingErrors, setToastType
 import { setUser } from "../Redux/auth";
 import { useEffect } from "react";
 import { useFetchFilter } from "../Components/Admin/users/hooks/useFetchFilter";
-import TableFrame from "./tableFrame";
+import TableFrame from "../Components/Admin/users/tableFrame";
 
 const Users = () => {
     let users = useSelector(state => state.userPanel.usersData);

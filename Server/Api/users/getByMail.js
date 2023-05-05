@@ -8,11 +8,7 @@ let getByMail = async (req,res) => {
         email: email
       },
       include:{
-        agent:{
-          include:{
-            authorisations: true
-          }
-        },
+        agent: true,
         client: true
       }
     })

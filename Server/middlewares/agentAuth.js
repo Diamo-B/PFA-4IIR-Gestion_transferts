@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 
 const requireAuthAgent = (req,res,next) => {
-    // Retrieve token from Authorization header or from cookies;
     let token = req.header('Authorization')?.replace('Bearer ', '');
+    
     if(token)
     {
         jwt.verify(token,process.env.JWT_SECRET, (err, decodedToken) => {
