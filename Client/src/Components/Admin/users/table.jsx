@@ -3,7 +3,6 @@ import {showUpdate ,setSelectedUsers, removeUserFromSelection, resetSelectedUser
 import { useEffect, useState } from 'react';
 
 const Table = ({error, users}) => {
-    console.log(users);
     const filteredUsers = users.map((obj) => {
         return obj.hasOwnProperty("userId") ? obj.user : obj;
     });

@@ -3,18 +3,30 @@ import {
     setAuthorizations,
     setIsLoading,
     setAgents,
-    setSelectedAuthorization
+    setSelectedAuthorization,
+    activateModifyMode,
+    disableModifyMode,
+    resetModification,
 } from "../Redux/Authorizations";
 import { setUser } from "../Redux/auth";
 import { useEffect, useRef, useState } from "react";
+import Button from "../Components/Admin/Authorizations/Button";
 
 const Authorizations = () => {
     const dispatch = useDispatch();
     const authoSelect = useRef();
-    const { Authorizations, Agents, isLoading, selectedAuthorization } = useSelector(
-        (state) => state.authorizationPanel
-    );
+    const {
+        Authorizations,
+        Agents,
+        isLoading,
+        selectedAuthorization,
+        modifyMode,
+        modification
+    } = useSelector((state) => state.authorizationPanel);
     const currentUser = useSelector((state) => state.authUser.value);
+
+    let [unfiltredAgents, setUnfiltredAgents] = useState([]);
+    let [filteredAgents, setFilteredAgents] = useState([]);
 
     useEffect(() => {
         let token = localStorage.getItem("jwt");
@@ -44,69 +56,87 @@ const Authorizations = () => {
                 Authorization: `Bearer ${token}`,
             },
         })
+        .then(async (res) => {
+            let data = await res.json();
+            dispatch(setUser(data.email));
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }, []);
+
+    useEffect(() => {
+        let token = localStorage.getItem("jwt");
+        fetch("/api/agent/permissions/getAll", {
+            method: "get",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        })
             .then(async (res) => {
                 let data = await res.json();
-                dispatch(setUser(data.email));
-                fetch("/api/agent/permissions/getAll", {
-                    method: "get",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                    .then(async (res) => {
-                        let data = await res.json();
-                        dispatch(setAgents(data));
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
+                setUnfiltredAgents(data);
             })
             .catch((err) => {
                 console.log(err);
             });
     }, []);
 
-    let [filteredAgents, setFilteredAgents]=useState([]);
-    useEffect(()=>{
-        setFilteredAgents(Agents.filter((ag) => ag.user.email !== currentUser))
-    },[Agents])
+    useEffect(() => {
+        setFilteredAgents(
+            unfiltredAgents.filter((ag) => ag.user.email !== currentUser)
+        );
+    }, [unfiltredAgents]);
+
+    useEffect(() => {
+        dispatch(setAgents(filteredAgents));
+    }, [filteredAgents, dispatch, Agents]);
 
     let selectAuthorization = () => {
-        let value = authoSelect.current.value !== "---" ? authoSelect.current.value : null
+        let value =
+            authoSelect.current.value !== "Categories"
+                ? authoSelect.current.value
+                : null;
         dispatch(setSelectedAuthorization(value));
-    }
-    
-    let renderColors = (agent,op) => {
-        let color;
-        switch(op)
-        {
-            case "read":
-                color = 'text-green-500'
-                break;
-            case "create":
-                color = 'text-amber-500'
-                break;
-            case "update":
-                color = 'text-blue-500'
-                break;
-            case "delete":
-                color = 'text-red-500'
-                break;
-            case "crud":
-                color = 'text-violet-500'
-                break;
-        }
-        if(agent.categories?.some(cat => (cat.category.name == selectedAuthorization) && (cat.permissions.some(permission => permission.value.toLowerCase() == op.toLowerCase()))))
-            return color;
-        else
-            return 'text-gray-500';
-    }
-    
+    };
 
+    let saveOrModify = () => {
+        if(selectedAuthorization!== null)
+        {
+            if(modifyMode == null)
+                dispatch(activateModifyMode())
+            else if(modifyMode == false)
+                dispatch(activateModifyMode())
+            else
+            {
+                dispatch(disableModifyMode());
+                let token = localStorage.getItem("jwt");                
+                modification.forEach(mod => {   
+                    fetch('/api/permission/link',{
+                        method: "POST",
+                        headers:{
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                        body:JSON.stringify({
+                            email: mod.email,
+                            category: mod.category[0].value,
+                            permissions: mod.category[0].permissions
+                        })
+                    }).then(async(res)=>{
+                        let data = await res.json();
+                        location.reload();
+                    }).catch(err=>{
+                        console.log(err);
+                    })
+                });
+            }                
+        }
+    }
     return (
         <>
-            {!isLoading && Authorizations.length > 0  && (
+            {!isLoading && Authorizations.length > 0 && (
                 <div className="w-full pt-[10%] flex flex-col justify-center items-center gap-10">
                     <div className="max-h-[25rem] w-full flex justify-center overflow-y-auto">
                         <table className="w-11/12 bg-white text-gray-700 ">
@@ -123,12 +153,18 @@ const Authorizations = () => {
                                         className="px-6 py-3"
                                         colSpan={4}
                                     >
-                                        <select className=" p-2 text-sm text-center text-gray-900 border rounded-lg bg-gray-50 focus:outline-1 focus:outline-slate-400"
+                                        <select
+                                            className=" p-2 text-sm text-center text-gray-900 border rounded-lg bg-gray-50 focus:outline-1 focus:outline-slate-400"
                                             onChange={selectAuthorization}
                                             ref={authoSelect}
+                                            disabled={modifyMode}
                                         >
-                                            <option defaultChecked value="---">
-                                                ---
+                                            <option
+                                                defaultChecked
+                                                hidden
+                                                value="Categories"
+                                            >
+                                                Categories
                                             </option>
                                             {Authorizations.map((auth) => (
                                                 <option
@@ -143,8 +179,8 @@ const Authorizations = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredAgents.length > 0 &&
-                                    filteredAgents.map((agent) => (
+                                {Agents.length > 0 &&
+                                    Agents.map((agent) => (
                                         <tr
                                             className="bg-white hover:bg-gray-50"
                                             key={agent.userId}
@@ -164,24 +200,32 @@ const Authorizations = () => {
                                                 </div>
                                             </th>
                                             <td className="px-6 py-4 text-center">
-                                                <button className={`font-bold ${renderColors(agent,"read")}`}>
-                                                    Read
-                                                </button>
+                                                <Button
+                                                    text="Read"
+                                                    agent={agent}
+                                                    op="read"
+                                                />
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <button className={`font-bold ${renderColors(agent,"create")}`}>
-                                                    Write
-                                                </button>
+                                                <Button
+                                                    text="Write"
+                                                    agent={agent}
+                                                    op="create"
+                                                />
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <button className={`font-bold ${renderColors(agent,"update")}`}>
-                                                    Update
-                                                </button>
+                                                <Button
+                                                    text="Update"
+                                                    agent={agent}
+                                                    op="update"
+                                                />
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <button className={`font-bold ${renderColors(agent,"delete")}`}>
-                                                    Delete
-                                                </button>
+                                                <Button
+                                                    text="Delete"
+                                                    agent={agent}
+                                                    op="delete"
+                                                />
                                             </td>
                                         </tr>
                                     ))}
@@ -190,9 +234,15 @@ const Authorizations = () => {
                     </div>
                     <button
                         type="submit"
-                        className="px-10 py-1 border-2 border-slate-800 rounded-full font-bold text-slate-800 hover:border-white hover:bg-indigo-300 hover:text-white"
+                        className={`px-10 py-1 border-2 border-slate-800 rounded-full font-bold text-slate-800 hover:text-white hover:border-white ${
+                            modifyMode
+                                ? "hover:bg-emerald-500"
+                                : "hover:bg-indigo-300"
+                        }`}
+                        onClick={saveOrModify}
+                        disabled={selectedAuthorization?false:true}
                     >
-                        Save
+                        {modifyMode ? "Save" : "Modify"}
                     </button>
                 </div>
             )}

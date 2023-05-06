@@ -40,9 +40,9 @@ model Category {  //DONE
 
 model AgentCategoryPermission { //TODO
   id          String    @id @default(uuid())
-  agent       Agent     @relation(fields: [agentId], references: [userId])
+  agent       Agent     @relation(fields: [agentId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
   agentId     String
-  category    Category  @relation(fields: [categoryId], references: [id])
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId  String
   permissions  Permission[]
 }
