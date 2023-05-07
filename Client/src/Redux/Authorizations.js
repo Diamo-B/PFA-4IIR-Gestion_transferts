@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { startOfDay } from "date-fns/esm/fp";
 
 export const authorizationsSlice = createSlice({
     name:'authorization_slice',

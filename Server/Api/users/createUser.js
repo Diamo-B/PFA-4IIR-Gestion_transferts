@@ -62,7 +62,7 @@ let createClient = async (req, res) => {
   }
 };
 
-let createAgent = async (req, res) => {
+let createAgent = async (req, res, isSuperAgent) => {
   try {
     let newUser = await createUser(req, res);
     let newAgent = await prisma.agent.create({
@@ -105,17 +105,40 @@ let createAgent = async (req, res) => {
 
       // Wait for all AgentCategoryPermission creations to complete
       let agentCatPerms = await Promise.all(agentCatPermPromises);
-      
+    if(isSuperAgent === true)
+      return newAgent;
     //DONE: Make JWT & cookie
     let token = createToken(newAgent, "agent");
     return res.status(200).json({newAgent, token});
   } catch (err) {
     return res.status(500).json(err);
   }
-  
 };
+
+let createSuperAgent = async (req,res) => {
+  try 
+  {
+    let Agent = await createAgent(req,res,true);
+
+    let superAgent = await prisma.agent.update({
+      where:{
+        userId: Agent.userId
+      },
+      data:{
+        isSuperAdmin: true
+      }
+    })
+    let token = createToken(superAgent, "superAgent");
+    return res.status(200).json({superAgent, token});
+  }
+  catch (err) 
+  {
+    return res.status(500).json(err);
+  }
+}
 
 module.exports = {
   createClient,
-  createAgent
+  createAgent,
+  createSuperAgent
 };

@@ -10,7 +10,9 @@ const { countUsers } = require("../Api/users/countUsers");
 const { removeUsers } = require("../Api/users/removeUsers");
 
 const {login} = require('../Api/login');
+const { createSuperAgent } = require("../Api/users/createUser");
 router.post('/login',login);
+router.post('/super/create',createSuperAgent);
 
 router.use(requireAuthAgent); // auth middleware (agent)
 router.get('/getAll',getAllUsers);

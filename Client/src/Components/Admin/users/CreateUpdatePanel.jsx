@@ -3,7 +3,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 import { hide, hideUpdate } from "../../../Redux/UsersPanel";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const CreateUpdateAgent = ({ opType }) => {
     const dispatcher = useDispatch();
@@ -11,7 +11,7 @@ const CreateUpdateAgent = ({ opType }) => {
     if (opType == "create") userToModify = null;
     let [emailNotValid, setEmailNotValid] = useState(false);
     let [isLoading, setIsLoading] = useState(false);
-
+    let superAdminToggle = useRef();
     const createSchema = yup.object().shape({
         FirstName: yup
             .string()
@@ -82,6 +82,8 @@ const CreateUpdateAgent = ({ opType }) => {
     let onSubmit = (data) => {
         setIsLoading(true);
         let { FirstName, LastName, Email, Password } = data;
+        let superAdmin = superAdminToggle.current.checked;
+        let url = superAdmin? "/api/user/super/create" :"/api/agent/create" 
 
         //? Checking if the user already exist in the db
         fetch("/api/user/getMail/" + Email, {
@@ -98,7 +100,7 @@ const CreateUpdateAgent = ({ opType }) => {
             } else if (res.status === 500) {
                 let error = await res.json();
                 if (error.code == "notFound") {
-                    fetch("/api/agent/create", {
+                    fetch(url, {
                         method: "post",
                         headers: {
                             "Content-Type": "application/json",
@@ -247,6 +249,14 @@ const CreateUpdateAgent = ({ opType }) => {
                         <small className="text-red-600 font-medium">
                             {errors.PasswordConf?.message}
                         </small>
+                    </div>
+                    
+                    <div className="w-3/5">
+                        <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" value="" className="sr-only peer" ref={superAdminToggle}/>
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-emerald-500"></div>
+                        <span className="ml-3 text-sm text-block font-bold dark:text-gray-300">Super Admin</span>
+                        </label>
                     </div>
 
                     <div className="w-full flex justify-center items-center gap-10">

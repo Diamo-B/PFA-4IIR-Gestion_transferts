@@ -6,7 +6,6 @@ import {
     setSelectedAuthorization,
     activateModifyMode,
     disableModifyMode,
-    resetModification,
 } from "../Redux/Authorizations";
 import { setUser } from "../Redux/auth";
 import { useEffect, useRef, useState } from "react";
@@ -85,7 +84,7 @@ const Authorizations = () => {
 
     useEffect(() => {
         setFilteredAgents(
-            unfiltredAgents.filter((ag) => ag.user.email !== currentUser)
+            unfiltredAgents.filter((ag) => ag.user.email !== currentUser && ag.isSuperAdmin == false )
         );
     }, [unfiltredAgents]);
 
@@ -138,15 +137,15 @@ const Authorizations = () => {
         <>
             {!isLoading && Authorizations.length > 0 && (
                 <div className="w-full pt-[10%] flex flex-col justify-center items-center gap-10">
-                    <div className="max-h-[25rem] w-full flex justify-center overflow-y-auto">
-                        <table className="w-11/12 bg-white text-gray-700 ">
+                    <div className="max-h-[25rem] rounded-lg w-11/12 flex justify-center overflow-y-auto">
+                        <table className="w-full bg-white text-gray-700 ">
                             <thead className=" text-gray-700 uppercase bg-gray-50">
                                 <tr>
                                     <th
                                         scope="col"
                                         className="flex items-center justify-center px-6 py-4 "
                                     >
-                                        <p className="text-center">Agent</p>
+                                        <p className="text-center">Agents</p>
                                     </th>
                                     <th
                                         scope="col"
