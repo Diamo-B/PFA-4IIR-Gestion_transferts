@@ -23,5 +23,9 @@ router.get('/',(req,res) => {
   return res.status(200).json("hello api root");
 })
 
+router.get('/images/:filename', (req, res) => {
+  const { filename } = req.params;
+  res.sendFile(`../public/imgs/${filename}`, { root: __dirname });
+});
 
 module.exports = router;

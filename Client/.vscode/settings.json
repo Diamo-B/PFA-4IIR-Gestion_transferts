@@ -5,7 +5,18 @@
         "**/.hg": true,
         "**/CVS": true,
         "**/.DS_Store": true,
-        "**/Thumbs.db": true
+        "**/Thumbs.db": true,
+        "src/admin/Reservations.jsx": true,
+        "src/admin/Extras.jsx": true,
+        "src/admin/Billing.jsx": true,
+        "src/admin/Periods.jsx": true,
+        "src/admin/Vehicules.jsx": true
     },
-    "hide-files.files": []
+    "hide-files.files": [
+        "src/admin/Reservations.jsx",
+        "src/admin/Extras.jsx",
+        "src/admin/Billing.jsx",
+        "src/admin/Periods.jsx",
+        "src/admin/Vehicules.jsx"
+    ]
 }

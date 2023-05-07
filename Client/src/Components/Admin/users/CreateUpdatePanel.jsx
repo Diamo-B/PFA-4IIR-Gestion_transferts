@@ -179,7 +179,7 @@ const CreateUpdateAgent = ({ opType }) => {
                                         ? userToModify.firstName
                                         : "First Name"
                                 }
-                                className="border-2 relative border-black rounded-lg w-full h-10 text-center"
+                                className="input"
                                 autoComplete="off"
                                 {...register("FirstName")}
                             />
@@ -195,7 +195,7 @@ const CreateUpdateAgent = ({ opType }) => {
                                         ? userToModify.firstName
                                         : "Last Name"
                                 }
-                                className="border-2 relative border-black rounded-lg w-full h-10 text-center"
+                                className="input"
                                 autoComplete="off"
                                 {...register("LastName")}
                             />
@@ -211,7 +211,7 @@ const CreateUpdateAgent = ({ opType }) => {
                             placeholder={
                                 userToModify ? userToModify.email : "Email"
                             }
-                            className="border-2 relative border-black rounded-lg w-full h-10 text-center"
+                            className="input"
                             autoComplete="off"
                             {...register("Email")}
                         />
@@ -229,7 +229,7 @@ const CreateUpdateAgent = ({ opType }) => {
                             placeholder={
                                 userToModify ? "New Password" : "Password"
                             }
-                            className="border-2 relative border-black rounded-lg w-full h-10 text-center"
+                            className="input"
                             autoComplete="off"
                             {...register("Password")}
                         />
@@ -242,7 +242,7 @@ const CreateUpdateAgent = ({ opType }) => {
                         <input
                             type="password"
                             placeholder="Confirm Password"
-                            className="border-2 relative border-black rounded-lg w-full h-10 text-center"
+                            className="input"
                             autoComplete="off"
                             {...register("PasswordConf")}
                         />
@@ -288,7 +288,7 @@ const CreateUpdateAgent = ({ opType }) => {
                         ) : (
                             <button
                                 type="submit"
-                                className="w-3/12 py-1 border-2 border-black rounded-full font-bold hover:border-green-700 hover:bg-emerald-500 hover:text-white"
+                                className="btn w-3/12 hover:border-green-700 hover:bg-emerald-500 hover:text-white"
                             >
                                 {opType == "update" ? "Update" : "Submit"}
                             </button>
@@ -296,7 +296,7 @@ const CreateUpdateAgent = ({ opType }) => {
 
                         <button
                             type="button"
-                            className="w-3/12 py-1 border-2 border-black rounded-full font-bold hover:border-red-700 hover:bg-red-600 hover:text-white "
+                            className="btn w-3/12 hover:border-red-700 hover:bg-red-600 hover:text-white "
                             onClick={() =>
                                 dispatcher(
                                     opType == "update" ? hideUpdate() : hide()

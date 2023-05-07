@@ -14,7 +14,10 @@
 
 @layer components{
   .btn{
-    @apply border-2 rounded-full px-5 py-1 font-semibold text-lg bg-white text-black hover:bg-indigo-600 hover:text-purple-700
+    @apply py-1 border-2 border-black rounded-full font-bold
+  }
+  .input{
+    @apply border-2 relative border-black rounded-lg w-full h-10 text-center
   }
 }
 
