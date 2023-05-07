@@ -5,9 +5,9 @@ const { getAll } = require("../Api/Categories/getAll");
 const { remove } = require("../Api/Categories/remove");
 const { update } = require("../Api/Categories/update");
 
-const {requireAuthAgent} = require('../middlewares/agentAuth');
+const { requireAuthSuperAgent } = require("../middlewares/superAgentAuth");
  
-router.use(requireAuthAgent); // auth middleware (agent)
+router.use(requireAuthSuperAgent); // auth middleware (agent)
 router.get('/getAll',getAll);
 router.post('/create',create);
 router.put('/update',update);

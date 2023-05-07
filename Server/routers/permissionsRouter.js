@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const {requireAuthAgent} = require('../middlewares/agentAuth');
+const {requireAuthSuperAgent} = require('../middlewares/superAgentAuth');
 const { create } = require("../Api/Permissions/create");
 const { changeAgentPermissions } = require("../Api/Permissions/linkAgentPermissions");
 
 
-router.use(requireAuthAgent);
+router.use(requireAuthSuperAgent);
 router.post('/create',create);
 router.post('/link',changeAgentPermissions);
 

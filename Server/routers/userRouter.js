@@ -8,17 +8,19 @@ const {requireAuthAgent} = require('../middlewares/agentAuth');
 const {getByTerm} = require("../Api/users/getByTerm");
 const { countUsers } = require("../Api/users/countUsers");
 const { removeUsers } = require("../Api/users/removeUsers");
-
 const {login} = require('../Api/login');
 const { createSuperAgent } = require("../Api/users/createUser");
+const { requireAuthSuperAgent } = require("../middlewares/superAgentAuth");
+
 router.post('/login',login);
-router.post('/super/create',createSuperAgent);
 
 router.use(requireAuthAgent); // auth middleware (agent)
 router.get('/getAll',getAllUsers);
 router.get('/getMail/:mail',getByMail);
 router.get('/termSearch/:term',getByTerm);
 router.get("/count/:type",countUsers);
+router.use(requireAuthSuperAgent) // auth middleware (SuperAgent)
+router.post('/super/create',createSuperAgent);
 router.put('/update',updateUser);
 router.delete('/remove',removeUser);
 router.delete('/removeBatch',removeUsers);
