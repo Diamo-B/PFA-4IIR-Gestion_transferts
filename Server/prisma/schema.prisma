@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native"]
 }
 
 datasource db {
@@ -10,9 +11,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//DONE: Users
+//DONE: Users management
 
-model User { 
+model User {
   id        String   @id @default(uuid())
   firstName String?
   lastName  String?
@@ -23,38 +24,38 @@ model User {
   agent     Agent?
 }
 
-model Client { 
+model Client {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String @id @unique
 }
 
-model Agent { 
-  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId         String          @id @unique
-  categories  AgentCategoryPermission[]
-  isSuperAdmin  Boolean @default(false)
+model Agent {
+  user         User                      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId       String                    @id @unique
+  categories   AgentCategoryPermission[]
+  isSuperAdmin Boolean                   @default(false)
 }
 
 //DONE: Authorizations
 
-model Category {  
-  id String @id @default(uuid())
-  name String @unique
-  categories  AgentCategoryPermission[]
+model Category {
+  id         String                    @id @default(uuid())
+  name       String                    @unique
+  categories AgentCategoryPermission[]
 }
 
-model AgentCategoryPermission { 
-  id          String    @id @default(uuid())
-  agent       Agent     @relation(fields: [agentId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
+model AgentCategoryPermission {
+  id          String       @id @default(uuid())
+  agent       Agent        @relation(fields: [agentId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
   agentId     String
-  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  category    Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId  String
-  permissions  Permission[]
+  permissions Permission[]
 }
 
-model Permission{ 
-  id String @id @default(uuid())
-  value Value
+model Permission {
+  id     String                    @id @default(uuid())
+  value  Value
   agents AgentCategoryPermission[]
 }
 
@@ -65,29 +66,34 @@ enum Value {
   delete
 }
 
-//Doing : Locations & Targets
+//Doing : Places & Paths
 
-model Location {
-  id String @id @default(uuid())
-  name String
-  longitude String?
-  latitude String?
-  image Image[]
-  createdAt DateTime @default(now())
-  transferPaths transferPath[]
+model Place {
+  id            String         @id @default(uuid())
+  name          String         @unique
+  longitude     Float?
+  latitude      Float?
+  image         Image[]
+  createdAt     DateTime       @default(now())
+  isDepartureOf transferPath[] @relation("PlaceDeparture")
+  isArrivalOf   transferPath[] @relation("PlaceArrival")
 }
 
 model Image {
-  id String @id @default(uuid())
-  path String
-  locationId String
-  location Location @relation(fields: [locationId],references: [id], onDelete: Cascade, onUpdate: Cascade) 
+  id      String @id @default(uuid())
+  path    String
+  placeId String
+  place   Place  @relation(fields: [placeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model transferPath {
-  id String @id @default(uuid())
-  distance Float?
-  active Boolean
-  createdAt DateTime @default(now())
-  locations Location[]
+  id          String   @id @default(uuid())
+  distance    Float?
+  price       Float?
+  active      Boolean
+  createdAt   DateTime @default(now())
+  departure   Place    @relation("PlaceDeparture", fields: [departureId], references: [id])
+  departureId String
+  arrival     Place    @relation("PlaceArrival", fields: [arrivalId], references: [id])
+  arrivalId   String
 }

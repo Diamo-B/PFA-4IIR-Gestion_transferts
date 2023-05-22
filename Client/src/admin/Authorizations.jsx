@@ -7,7 +7,6 @@ import {
     activateModifyMode,
     disableModifyMode,
 } from "../Redux/Authorizations";
-import { setUser } from "../Redux/auth";
 import { useEffect, useRef, useState } from "react";
 import Button from "../Components/Admin/Authorizations/Button";
 
@@ -44,24 +43,6 @@ const Authorizations = () => {
             .catch((err) => {
                 console.log(err);
             });
-    }, []);
-
-    useEffect(() => {
-        let token = localStorage.getItem("jwt");
-        fetch("/api/verifyJWT", {
-            method: "post",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-        })
-        .then(async (res) => {
-            let data = await res.json();
-            dispatch(setUser(data.email));
-        })
-        .catch((err) => {
-            console.log(err);
-        });
     }, []);
 
     useEffect(() => {

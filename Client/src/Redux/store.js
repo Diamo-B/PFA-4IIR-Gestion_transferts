@@ -4,6 +4,7 @@ import { usersPanelSlice } from './UsersPanel'
 import datesReducer from './dates'
 import { authorizationsSlice } from './Authorizations'
 import { locationsSlice } from "./locations"
+import { othersSlice } from "./others";
 
 export default configureStore({
     reducer: {
@@ -11,6 +12,7 @@ export default configureStore({
         travelDates: datesReducer,
         userPanel: usersPanelSlice.reducer,
         authorizationPanel: authorizationsSlice.reducer,
-        locationPanel: locationsSlice.reducer
+        locationPanel: locationsSlice.reducer,
+        others: othersSlice.reducer
     },
 })

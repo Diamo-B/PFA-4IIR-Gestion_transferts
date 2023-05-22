@@ -11,27 +11,9 @@ import {
 } from "@iconscout/react-unicons";
 import Logout from "../Components/Client/other/Logout";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import {setUser} from '../Redux/auth';
 
-const Navbar = () => { 
-  let dispatch = useDispatch();
-  useEffect(()=>{
-    fetch("/api/verifyJWT",{
-      method: 'post',
-      headers:{
-        "Content-Type" : "application/json",
-        Authorization: `Bearer ${localStorage.getItem('jwt')}`
-      }
-    }).then(async (res)=>{
-      let data = await res.json();
-      dispatch(setUser(data));
-    }).catch(err=>{
-      console.log(err);
-    })
-  })
-  let currentUser = useSelector(state => state.authUser.value);
+const Navbar = ({currentUser}) => { 
+  console.log(currentUser);
   return (
     <div className="flex z-50 flex-col gap-7 px-5 justify-center items-start bg-emerald-500 rounded-r-2xl">
       <Link to={'/admin/reservation'} className="flex justify-center items-center gap-2 group hover:cursor-pointer">
