@@ -10,6 +10,8 @@ let create = async (req,res) => {
         });
         return res.status(200).json(permission);
     } catch (err) {
+        if(err.code == "P2002")
+            return res.status(400).json({err:"Duplicate permission name"})
         return res.status(500).json(err);
     }
 

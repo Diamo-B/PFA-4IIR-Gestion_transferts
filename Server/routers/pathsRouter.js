@@ -11,8 +11,7 @@ router.use(requireAuthAgent);
 router.post("/create",create);
 router.get("/getAll",getAll);
 router.put("/update",update);
-/*router.delete("/remove",remove);
-router.delete("/removeMany",removeMany);
- */
+router.delete("/remove",remove);
+//router.delete("/removeMany",removeMany);
 
 module.exports = router;

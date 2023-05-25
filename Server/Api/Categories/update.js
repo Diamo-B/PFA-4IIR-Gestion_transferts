@@ -1,16 +1,20 @@
 const prisma = require('../../prisma/prismaInstance');
 
 let update = async (req,res) => {
-    let {name, data} = req.body;
+    let {categoryName, newCategoryName} = req.body;
     try {
         let category = await prisma.category.update({
-            data:data,
+            data:{
+                name: newCategoryName
+            },
             where:{
-                name: name
+                name: categoryName
             }
         });
-        return res.status(200).json(category)
+        return res.status(200).json(category);
     } catch (err) {
+        if(err.code == "P2025")
+            return res.status(400).json({err: `There is no category with the name of ${categoryName}`})
         return res.status(500).json(err);
     }
 }

@@ -6,10 +6,12 @@ const { getAll } = require("../Api/Authorisations/getAll");
 const { unlinkAgent } = require("../Api/Authorisations/unlinkAgent");
 const { removeAuthorisation } = require("../Api/Authorisations/remove");
 const {requireAuthAgent} = require('../middlewares/agentAuth');
+const { getByAgent } = require("../Api/Authorisations/getByAgent");
 
 router.use(requireAuthAgent); // auth middleware (agent)
 
 router.get('/getAll',getAll);
+router.get('/getByAgentID/:id',getByAgent);
 router.post('/create',createAuthorisation);
 router.put('/link',linkAgent);
 router.put('/unlink',unlinkAgent);

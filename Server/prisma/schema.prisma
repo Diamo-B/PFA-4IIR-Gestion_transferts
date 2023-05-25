@@ -36,7 +36,7 @@ model Agent {
   isSuperAdmin Boolean                   @default(false)
 }
 
-//DONE: Authorizations
+//Doing: Authorizations
 
 model Category {
   id         String                    @id @default(uuid())
@@ -55,15 +55,8 @@ model AgentCategoryPermission {
 
 model Permission {
   id     String                    @id @default(uuid())
-  value  Value
+  value  String                    @unique
   agents AgentCategoryPermission[]
-}
-
-enum Value {
-  read
-  create
-  update
-  delete
 }
 
 //Doing : Places & Paths
@@ -92,8 +85,10 @@ model transferPath {
   price       Float?
   active      Boolean
   createdAt   DateTime @default(now())
-  departure   Place    @relation("PlaceDeparture", fields: [departureId], references: [id])
+  departure   Place    @relation("PlaceDeparture", fields: [departureId], references: [id], onDelete: Cascade)
   departureId String
-  arrival     Place    @relation("PlaceArrival", fields: [arrivalId], references: [id])
+  arrival     Place    @relation("PlaceArrival", fields: [arrivalId], references: [id], onDelete: Cascade)
   arrivalId   String
+
+  @@unique([departureId, arrivalId])
 }

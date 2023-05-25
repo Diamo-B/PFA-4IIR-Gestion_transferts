@@ -2,69 +2,84 @@ const prisma = require('../../prisma/prismaInstance');
 
 
 let linkAgent = async (req,res) => {
-    let {email, authName} = req.body;
+    let {agentId, categoryName, permissionNames} = req.body;
     try {
-        let agent = await prisma.agent.findFirstOrThrow({
-            include:{
-                user: true,
-                authorisations: true
-            },
+        let agent = await prisma.agent.findFirst({
             where:{
-                user:{
-                    email: email
-                }  
+                userId: agentId
             }
         })
-        for (let i = 0; i < agent.authorisations.length; i++) {
-            const element = agent.authorisations[i];
-            if (element.name == authName)
-                return res.status(500).json({
-                    code: "already_linked",
-                    message: "The agent is already linked to the '"+authName+"' authorization"
-                })
-        }
-        let link = await prisma.authorisation.update({
+        if(agent === null)
+            return res.status(400).json({err: `There is no agent with the ID ${agentId}`})
+        
+        let category = await prisma.category.findFirst({
             where:{
-                name: authName
+                name: categoryName
+            }
+        })
+        if(category === null )
+            return res.status(400).json({err: `There is no category with the name of ${categoryName}`})
+
+        let permissions
+        try {
+            permissions = await prisma.permission.findMany({
+                where: {
+                value: {
+                    in: permissionNames
+                }
+                }
+            });
+
+            if (permissions.length === 0) {
+                return res.status(404).json({ error: 'No matching permissions found.' });
+            }
+
+            //? Check if any input values were not found in the results
+            const validPermissionNames = permissions.map((permission) => permission.value);
+            const invalidPermissionNames = permissionNames.filter((name) => !validPermissionNames.includes(name));
+
+            if (invalidPermissionNames.length > 0) {
+                return res.status(400).json({ error: `Invalid permission names: ${invalidPermissionNames.join(', ')}` });
+            }
+        } catch (error) {
+            return res.status(500).json(error)
+        }
+
+        let thisAgentAuthorisations = await prisma.agentCategoryPermission.findMany({
+            where:{
+                agentId: agent.userId
+            },
+            include:{
+                category: true
+            }
+        })
+
+        let wantedAuthorisation = thisAgentAuthorisations.filter(field=>field.category.name.toLowerCase() == categoryName.toLowerCase());
+        console.log(wantedAuthorisation);
+        let permissionIDS = permissions.map(perm=>perm.id);
+
+        let link = await prisma.agentCategoryPermission.update({
+            where:{
+                id: wantedAuthorisation[0].id
             },
             data:{
-                agents:{
-                    connect:{
-                        userId: agent.userId
-                    }
-                }
+                permissions: {
+                    set: permissionIDS.map(id => ({ id })),
+                },
             },
             include:{
-                agents:{
+                agent:{
                     include:{
                         user: true
-                    },
-                    where:{
-                        user:{
-                            email:email
-                        }
                     }
-                }
+                },
+                category: true,
+                permissions: true
             }
-        })
+        }) 
         return res.status(200).json(link);
     } catch (err) {
-        return err.code == "P2025" ? 
-        res.status(500).json({
-            code:"notFound",
-            message:"The agent with the email '"+email+"' was not found"
-        })
-        :
-        (
-            err.code == "P2016"?
-            res.status(500).json({
-                code:"notFound",
-                message:"The authorisation '"+authName+"' doesn't exist!!"
-            })
-            :
-            res.status(500).json(err)
-        )
-        ;
+        console.log(err);
     }
 }
 

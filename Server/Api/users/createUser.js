@@ -77,34 +77,35 @@ let createAgent = async (req, res, isSuperAgent) => {
         user:true
       }
     });
-    //TODO: Create an AgentCategoryPermission for each Category for this agent
-      //?Fetch the Ids of the available categories in the format [{id: @value}]
-      let categories = await prisma.category.findMany({
-        select:{
-          id: true
-        }
-      });
-
-      // Loop through categories and create AgentCategoryPermission for each
-      let agentCatPermPromises = categories.map(category => {
-        return prisma.agentCategoryPermission.create({
-          data: {
-            agent: {
-              connect: {
-                userId: newAgent.userId
-              }
-            },
-            category: {
-              connect: {
-                id: category.id
-              }
-            }
+    //DONE: Create an AgentCategoryPermission for each Category for this agent
+        //?Fetch the Ids of the available categories in the format [{id: @value}]
+        let categories = await prisma.category.findMany({
+          select:{
+            id: true
           }
         });
-      });
 
-      // Wait for all AgentCategoryPermission creations to complete
-      let agentCatPerms = await Promise.all(agentCatPermPromises);
+        //? Loop through categories and create AgentCategoryPermission for each
+        let agentCatPermPromises = categories.map(category => {
+          return prisma.agentCategoryPermission.create({
+            data: {
+              agent: {
+                connect: {
+                  userId: newAgent.userId
+                }
+              },
+              category: {
+                connect: {
+                  id: category.id
+                }
+              }
+            }
+          });
+        });
+
+        //? Wait for all AgentCategoryPermission creations to complete
+        let agentCatPerms = await Promise.all(agentCatPermPromises);
+
     if(isSuperAgent === true)
       return newAgent;
     //DONE: Make JWT & cookie
