@@ -3,87 +3,70 @@ import { createSlice } from "@reduxjs/toolkit";
 export const authorizationsSlice = createSlice({
     name:'authorization_slice',
     initialState:{
-        Authorizations: [],
-        selectedAuthorization: null,
         Agents: [],
+        options: [],
+        selectedCat: null,
+        AgentsXCatsXPerms: [], //? this array will hold the permissions for each agent according to the selected category
+        SelectedPermissions: [], //? this array will hold each agent with it's permissions for the currently selected category 
         isLoading: true,
         modifyMode: false,
-        modification:[]
     },
     reducers:{
-        setAuthorizations: (state,action)=>{
-            state.Authorizations = action.payload
+        setAgents: (state,action) => {
+          state.Agents = action.payload;
         },
-        addAuthorization: (state,action)=>{
-            state.Authorizations.push(action.payload)
+        setOptions: (state,action) => {
+            state.options = action.payload;
         },
-        resetAuthorizations: (state) => {
-            state.Authorizations = []
+        setSelectedCat: (state,action) => {
+            state.selectedCat = action.payload;
         },
-        setIsLoading: (state, action) => {
-            state.isLoading =action.payload
+        setAgentsXCatsXPerms: (state, action) => {
+            state.AgentsXCatsXPerms = action.payload
         },
-        setAgents: (state, action) => {
-            state.Agents = action.payload
+        setSelectedPermissions: (state, action) => {
+          state.SelectedPermissions = action.payload; 
         },
-        setSelectedAuthorization: (state, action)=>{
-            state.selectedAuthorization = action.payload
+        addPermissionToAgent: (state,action) => {
+            let {agentId, newPermission} = action.payload;
+            const agentIndex = state.SelectedPermissions.findIndex((item) => item.agentId === agentId);
+            if(agentIndex !== -1)
+            {
+                state.SelectedPermissions[agentIndex].permissions.push(newPermission);
+            }
         },
-        activateModifyMode:(state) => {
-            state.modifyMode = true
+        removePermissionFromAgent: (state, action) => {
+            let { agentId, permissionToRemove } = action.payload;
+            const agentIndex = state.SelectedPermissions.findIndex((item) => item.agentId === agentId);
+          
+            if (agentIndex !== -1) {
+              state.SelectedPermissions[agentIndex].permissions = state.SelectedPermissions[agentIndex].permissions.filter(
+                (item) => item !== permissionToRemove
+              );
+            }
+        },          
+        setIsLoading: (state,action) =>{
+            state.isLoading = action.payload;
+        },  
+        triggerModifyMode: (state) => {
+            state.modifyMode = !state.modifyMode
         },
-        disableModifyMode:(state) => {
+        disableModifyMode: (state) => {
             state.modifyMode = false
-        },
-        //TODO:---------------------------CombineReducers later------------------------------------
-        //! modification state
-        addUser: (state, action) => {
-            state.modification.findIndex(field => field.email === action.payload.email) === -1 &&
-            state.modification.push(action.payload);
-        },
-        addCategory: (state, action) => {
-            const userIndex = state.modification.findIndex(user => user.email === action.payload.email);
-            state.modification[userIndex].category.findIndex(cat => cat.value === action.payload.category.value) === -1 
-            &&
-            state.modification[userIndex].category.push(action.payload.category);
-        },
-        addPermission: (state, action) => {
-            const userIndex = state.modification.findIndex(user => user.email === action.payload.email); //! needs to be >= 0
-            
-            const categoryIndex = state.modification[userIndex].category.findIndex(category => category.value === action.payload.category.value);
-            //! needs to be >= 0
-            
-            const permissionExists = state.modification[userIndex].category[categoryIndex].permissions.some(
-                (permission) => permission.value === action.payload.category.permission
-            ); //! needs to be false
-
-            if(userIndex >= 0 && categoryIndex >= 0 && !permissionExists)
-            {            
-                state.modification[userIndex].category[categoryIndex].permissions.push({value: action.payload.category.permission})
-            }
-            
-        },
-        removePermission: (state, action) => {
-            const userIndex = state.modification.findIndex(user => user.email === action.payload.email); //! needs to be >= 0
-            
-            const categoryIndex = state.modification[userIndex].category.findIndex(category => category.value === action.payload.category.value);
-            //! needs to be >= 0
-            
-            const permissionExists = state.modification[userIndex].category[categoryIndex].permissions.some(
-                (permission) => permission.value === action.payload.category.permission
-            ); //! needs to be true
-
-            if (userIndex >= 0 && categoryIndex >= 0 && permissionExists) {            
-                state.modification[userIndex].category[categoryIndex].permissions = state.modification[userIndex].category[categoryIndex].permissions.filter((permission) => permission.value !== action.payload.category.permission);
-            }
-              
-        },
-        //TODO: Make a resetModifications action that will launch onClick on the button save to prepare for another modification
-        resetModification: (state) =>{
-            state.modification = []
         }
     }
 })
 
-export const {setAuthorizations, addAuthorization, resetAuthorizations, setIsLoading, setAgents, setSelectedAuthorization, disableModifyMode, activateModifyMode, resetModification, addUser, addCategory, addPermission, removePermission} = authorizationsSlice.actions;
+export const {
+    setAgents,
+    setOptions,
+    setSelectedCat,
+    setAgentsXCatsXPerms,
+    setSelectedPermissions,
+    addPermissionToAgent,
+    removePermissionFromAgent,
+    setIsLoading,
+    triggerModifyMode,
+    disableModifyMode
+} = authorizationsSlice.actions;
 export default authorizationsSlice.reducer;

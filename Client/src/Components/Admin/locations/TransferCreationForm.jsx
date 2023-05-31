@@ -1,14 +1,14 @@
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { closeWindow } from "../../../Redux/locations";
+import { SetToast, closeWindow, triggerRefetch } from "../../../Redux/locations";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { useEffect,useState } from "react";
 
 const TransferCreationForm = () => {
     let disptach = useDispatch();
-    let { locations } = useSelector((state) => state.locationPanel);
+    let { locations } = useSelector((state) => state.mapPanel.locations);
 
     const transferSchema = yup.object().shape({
         Departure: yup
@@ -53,9 +53,16 @@ const TransferCreationForm = () => {
             })
         }).then(async(res)=>{
             let result = await res.json();
+            console.log(result);
+            disptach(triggerRefetch());
+            result.code == "P2002" ?
+            disptach(SetToast({type: "Error", message: "Another Path with the same departure/arrival combination already exists!!", reload: false}))
+            :
+            disptach(SetToast({type: "Success", message: "A new Path was created successfully!!", reload: false}))
             disptach(closeWindow());
         }).catch(err=>{
             console.log(err);
+            disptach(SetToast({type: "Error", message: "Another Path with the same departure/arrival combination already exists!!", reload: false}))
         })
     };
 

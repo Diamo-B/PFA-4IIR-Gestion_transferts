@@ -1,15 +1,40 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { combineReducers, createSlice } from "@reduxjs/toolkit";
 
-export const locationsSlice = createSlice({
+const locationsSlice = createSlice({
+    name: "locations",
+    initialState:{
+        locations: [],
+        locationToUpdate: null,
+    },
+    reducers:{
+        setLocations: (state, action) => {
+            return { ...state, locations: action.payload };
+        },
+        setLocationToUpdate: (state,action) => {
+            return {...state, locationToUpdate: action.payload};
+        },
+    }
+})
+const pathsSlice = createSlice({
+    name: "paths",
+    initialState:{
+        paths:[],
+    },
+    reducers:{
+        setPaths: (state, action) => {
+            return {...state, paths: action.payload} 
+        },
+    }
+})
+
+export const windowSlice = createSlice({
     name: "locations_slice",
     initialState: {
         triggerWindow: null,
+        Refetch: false,
         windowType: null, // Can be create or update
         triggerType: "Location", // Can be locations or transfers
-        locations: [],
-        paths: [],
         selected: [],
-        locationToUpdate: null,
         toast:{
             type: "",
             message: "",
@@ -30,27 +55,6 @@ export const locationsSlice = createSlice({
         setType: (state, action) => {
             return { ...state, triggerType: action.payload };
         },
-        setPaths: (state, action) => {
-            return {...state, paths: action.payload} 
-        },
-        setLocations: (state, action) => {
-            return { ...state, locations: action.payload };
-        },
-        addSelection: (state, action) => {
-            const updatedSelected = [...state.selected, action.payload];
-            return { ...state, selected: updatedSelected };
-        },
-        removeSelection: (state, action) => {
-            let set = new Set(state.selected);
-            set.delete(action.payload);
-            return { ...state, selected: [...set] };
-        },
-        resetSelection: (state) => {
-            return { ...state, selected: [] };
-        },
-        setLocationToUpdate: (state,action) => {
-            return {...state, locationToUpdate: action.payload};
-        },
         SetToast: (state, action) => {
             let toast= {
                 type: action.payload.type,
@@ -68,22 +72,60 @@ export const locationsSlice = createSlice({
                 reload: false
             }
             return { ...state, toast: toast };
-        }
+        },
+
+        //? Selection mechanism
+        addSelection: (state, action) => {
+            const updatedSelected = [...state.selected, action.payload];
+            return { ...state, selected: updatedSelected };
+        },
+        removeSelection: (state, action) => {
+            let set = new Set(state.selected);
+            set.delete(action.payload);
+            return { ...state, selected: [...set] };
+        },
+        resetSelection: (state) => {
+            return { ...state, selected: [] };
+        },
+
+        //? Refetch mechanism
+        triggerRefetch: (state) => {
+            return { ...state,Refetch: true}
+        },
+        disableRefetch: (state) => {
+            return { ...state, Refetch: false}
+        },
     },
 });
+
+const locationsReducers = combineReducers({
+    locations: locationsSlice.reducer,
+    paths: pathsSlice.reducer,
+    window: windowSlice.reducer
+});
+  
 
 export const {
     setWindowType,
     openWindow,
     closeWindow,
     setType,
-    setPaths,
-    setLocations,
+    SetToast,
+    disableToast,
     addSelection,
     removeSelection,
     resetSelection,
+    triggerRefetch,
+    disableRefetch
+} = windowSlice.actions;
+  
+export const {
+    setLocations,
     setLocationToUpdate,
-    SetToast,
-    disableToast
 } = locationsSlice.actions;
-export default locationsSlice.reducer;
+
+export const {
+    setPaths
+} = pathsSlice.actions;
+
+export default locationsReducers;

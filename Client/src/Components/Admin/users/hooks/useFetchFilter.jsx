@@ -2,8 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 
 export const useFetchFilter = (type) => {
-    
-    const connectedUser = useSelector(state => state.authUser.value);
     let url;
     switch (type) {
         case "clients":
@@ -38,7 +36,7 @@ export const useFetchFilter = (type) => {
                 if(data && data.length === 0) {
                     throw new Error("No users were found");
                 }
-                return data
+                return data;
             })
         }
     );

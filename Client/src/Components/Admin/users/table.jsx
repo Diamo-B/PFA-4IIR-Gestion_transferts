@@ -6,7 +6,8 @@ const Table = ({error, users}) => {
     const filteredUsers = users.map((obj) => {
         return obj.hasOwnProperty("userId") ? obj.user : obj;
     });
-    const currentUserEmail = useSelector(state  => state.authUser.value);
+    const currentUser = useSelector(state  => state.authUser.value);
+    const currentUserEmail = currentUser.email;
     const filteredUsers_Email =  filteredUsers.filter(item => item.email !== currentUserEmail)
 
     const fetchingType = useSelector((state) => state.userPanel.fetchingType);

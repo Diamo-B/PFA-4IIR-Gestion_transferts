@@ -1,29 +1,39 @@
+import { UilAsterisk } from '@iconscout/react-unicons';
+
 import TableCard from "../../../Components/Admin/locations/TableCard";
 import LocationsForm from "./LocationsForm";
 
 import {
     openWindow,
     setLocations,
-    addSelection,
-    removeSelection,
     resetSelection,
     setLocationToUpdate,
     SetToast,
-    setWindowType
+    setWindowType,
+    triggerRefetch,
+    disableRefetch
 } from "../../../Redux/locations";
 
-import { openPanel } from "../../../Redux/others";
+import { openPanel, closePanel } from "../../../Redux/confirmationPanel";
 import ConfirmOp from "../../ConfirmOperation/ConfirmOp";
+
 
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
+import useLocationHelpers  from "./useLocationHelpers";
 
 const LocationsTable = () => {
     let dispatcher = useDispatch();
-    let { windowType,triggerWindow, triggerType, locations, selected } = useSelector(
-        (state) => state.locationPanel
+    let { locations } = useSelector(
+        (state) => state.mapPanel.locations
     );
-    const {confirmOp} = useSelector(state => state.others)
+    let { selected } = useSelector((state) => state.mapPanel.window);
+    let {windowType, triggerWindow, triggerType, Refetch} = useSelector(state => state.mapPanel.window);
+    
+    const { selectOrDeselect, selectOrDeselectAll } = useLocationHelpers();
+
+    const {confirmOp} = useSelector(state => state.confirmationPanel)
+
     useEffect(() => {
         fetch("/api/place/getAll", {
             method: "get",
@@ -35,30 +45,13 @@ const LocationsTable = () => {
         .then(async (res) => {
             let locations = await res.json();
             dispatcher(setLocations(locations));
-            console.log(locations);
         })
         .catch((err) => {
             console.log(err);
         });
-        //TODO: trigger the fetch on update or create
-    }, []);
-
-    let selectOrDeselect = async (id, ischecked) => {
-        if(ischecked && !selected.includes(id))
-            dispatcher(addSelection(id));
-        else
-            dispatcher(removeSelection(id));
-    }
-
-    let selectOrDeselectAll = async (isChecked) => {
-        dispatcher(resetSelection());
-        if(isChecked)
-        {
-            locations.map((location)=>{
-                dispatcher(addSelection(location.id));
-            })
-        }
-    }
+        //DONE: trigger the fetch on update or create
+        dispatcher(disableRefetch())
+    }, [Refetch]);
 
     let DeleteLocations = () => {
         fetch("/api/place/removeMany",{
@@ -70,14 +63,15 @@ const LocationsTable = () => {
             body:JSON.stringify({IDs: selected})
         }).then(async(res)=>{
             let result = await res.json();
-            dispatcher(SetToast({type: "Info", message: result.count+" places were deleted successfully!!", reload: true}))
+            dispatcher(triggerRefetch());
+            dispatcher(resetSelection());
+            dispatcher(SetToast({type: "Success", message: `${result.count > 1? result.count+" places were":"1 place was"} deleted successfully!!`, reload: false}))
         }).catch(err=>{
             console.log(err);
         })
     }
 
     let DeleteSingleLocation = (id) => {
-        console.log(id);
         fetch("/api/place/remove",{
             method:"delete",
             headers:{
@@ -87,7 +81,9 @@ const LocationsTable = () => {
             body:JSON.stringify({id: id})
         }).then(async(res)=>{
             let result = await res.json();
-            dispatcher(SetToast({type: "Info", message: "one place was deleted successfully!!", reload: true}))
+            dispatcher(triggerRefetch());
+            dispatcher(closePanel());
+            dispatcher(SetToast({type: "Success", message: "1 place was deleted successfully!!", reload: false}))
         }).catch(err=>{
             console.log(err);
         })
@@ -132,7 +128,7 @@ const LocationsTable = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {locations.length > 0 &&
+                            {locations.length > 0 ?
                                 locations.map((location) => (
                                     <tr
                                         className="text-center hover:bg-slate-200"
@@ -173,7 +169,34 @@ const LocationsTable = () => {
                                             </button>
                                         </td>
                                     </tr>
-                                ))}
+                                ))
+                                :
+                                <tr className="text-center">
+                                    <th className="">
+                                        <input type="checkbox" />
+                                    </th>
+                                    <td className="">
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                    </td>
+                                    <td className="">
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                    </td>
+                                    <td className="">
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                    </td>
+                                    <td className="">
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>

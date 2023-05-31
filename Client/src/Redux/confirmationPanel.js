@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const othersSlice = createSlice({
+export const confirmationPanel = createSlice({
     name:'others_auth_slice',
     initialState:{
         confirmOp: {
@@ -26,5 +26,5 @@ export const othersSlice = createSlice({
     }
 })
 
-export const {openPanel, closePanel} = othersSlice.actions;
-export default othersSlice.reducer;
+export const {openPanel, closePanel} = confirmationPanel.actions;
+export default confirmationPanel.reducer;

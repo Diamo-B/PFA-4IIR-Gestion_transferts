@@ -1,12 +1,15 @@
+import { UilAsterisk } from '@iconscout/react-unicons';
 import TableCard from '../../../Components/Admin/locations/TableCard';
-import { openWindow, setPaths } from "../../../Redux/locations"
+import { disableRefetch, triggerRefetch, openWindow, setPaths, SetToast } from "../../../Redux/locations"
 import { useSelector, useDispatch } from 'react-redux';
 import TransferCreationForm from './TransferCreationForm';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const TransferTable = () => {
     let dispatcher = useDispatch();
-    let {triggerWindow,triggerType, paths} = useSelector(state => state.locationPanel)
+    let {triggerWindow,triggerType, Refetch, selected} = useSelector(state => state.mapPanel.window);
+    let {paths} = useSelector(state => state.mapPanel.paths);
+
     useEffect(()=>{
         fetch("/api/path/getAll",{
             method: "get",
@@ -20,11 +23,10 @@ const TransferTable = () => {
         }).catch(err=>{
             console.log(err);
         })
-        //TODO: trigger the fetch on create or update
-    },[])
+        dispatcher(disableRefetch())
+    },[Refetch])
 
     let changeStatus = (id, newStatus) => {
-        console.log(id);
         fetch("/api/path/update",{
             method:"put",
             headers:{
@@ -39,8 +41,33 @@ const TransferTable = () => {
             })
         }).then(async(res)=>{
             let result = await res.json();
+            let message = newStatus === true ?"activated":"disabled"
+            dispatcher(triggerRefetch());
+            dispatcher(SetToast({type: "Success", message:`Path was ${message} successfully!!`, reload: false}))
         }).catch(err=>{
             console.log(err);
+        })
+    }
+
+    let DeleteSinglePath = (id) => {
+        console.log(id);
+        fetch("/api/path/remove",{
+            method: "delete",
+            headers:{
+                "Content-Type" : "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`
+            },
+            body:JSON.stringify({
+                id: id
+            })
+        }).then(async(res)=>{
+            let result = await res.json();
+            console.log(result);
+            dispatcher(triggerRefetch()); 
+            dispatcher(SetToast({type:"Success", message: `The path linking between ${result.departure.name} and ${result.arrival.name} was deleted successfully!`,reload:false}))
+        }).catch((err)=>{
+            console.log(err);
+            dispatcher(SetToast({type:"Error", message: `An Unknown error occured. If it persists, contact a SuperAdmin`,reload:false}))
         })
     }
 
@@ -74,7 +101,7 @@ const TransferTable = () => {
                         </thead>
                         <tbody>
                             {
-                                paths && 
+                                paths.length > 0 ?
                                 paths.map((path) => (
                                     <tr key={path.id} className="text-center">
                                         <th className="">
@@ -97,10 +124,52 @@ const TransferTable = () => {
                                                 {path.active? "Disable" : "Activate"}
                                             </button>
                                             <button className='font-bold hover:text-amber-500'>Update</button>
-                                            <button className='font-bold hover:text-red-500'>Delete</button>
+                                            <button className='font-bold hover:text-red-500'
+                                                onClick={()=>{
+                                                    DeleteSinglePath(path.id)
+                                                }}
+                                            >
+                                                Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 ))
+                                :
+                                (<tr className="text-center">
+                                    <th className="">
+                                        <input type="checkbox" />
+                                    </th>
+                                    <td className="">
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                    </td>
+                                    <td className="">
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                    </td>
+                                    <td className="">
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                    </td>
+                                    <td className="">
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                    </td>
+                                    <td className="">
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                    </td>
+                                    <td className="">
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                        <UilAsterisk className="inline"/>
+                                    </td>
+                                </tr>)
                             }
                         </tbody>
                     </table>

@@ -46,45 +46,50 @@ let getAgents = async (req, res) => {
     }
 };
 
-let getAgentsWithPermissions = async (req, res) => {
+let getNormalAgentsOnly = async (req,res) => {
     try {
         let agents = await prisma.agent.findMany({
-            include: {
-                user: {
-                    select:{
-                        email:true,
-                        firstName:true,
-                        lastName:true
-                    }
-                },
-                categories:{
-                    select: {
-                        id: false,
-                        agentId: false,
-                        categoryId: false,
-                        category: {
-                            select: {
-                                name: true
-                            }
-                        },
-                        permissions: {
-                            select: {
-                                value: true
-                            }
-                        }
-                    }
-                }
+            where:{
+                isSuperAdmin: false
             },
+            include:{
+                user: true
+            }
         });
+        if(agents.length === 0)
+        {
+            return res.status(400).json({err: "No Agents were found"})
+        }
         return res.status(200).json(agents);
-    } catch (error) {
-        return res.status(500).json(error);
+    } catch (err) {
+        return res.status(500).josn(err);
     }
-};
+}
+
+let getSuperAgentsOnly = async (req,res) => {
+    try {
+        let agents = await prisma.agent.findMany({
+            where:{
+                isSuperAdmin: true
+            },
+            include:{
+                user: true
+            }
+        });
+        if(agents.length === 0)
+        {
+            return res.status(400).json({err: "No SuperAgents were found"})
+        }
+        return res.status(200).json(agents);
+    } catch (err) {
+        return res.status(500).josn(err);
+    }
+}
 
 module.exports = {
     getClients,
     getAgents,
     getAllUsers,
-    getAgentsWithPermissions
+    getNormalAgentsOnly,
+    getSuperAgentsOnly
 };

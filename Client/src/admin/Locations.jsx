@@ -4,10 +4,9 @@ import LocationsTable from "../Components/Admin/locations/LocationsTable";
 import TransferTable from "../Components/Admin/locations/TransferTable";
 import Toast from "../Components/Toast/Toast"
 import {disableToast} from "../Redux/locations"
-import ConfirmOp from '../Components/ConfirmOperation/ConfirmOp';
 
 const Locations = () => {
-    const {triggerType, toast} = useSelector(state => state.locationPanel)
+    const {triggerType, toast} = useSelector(state => state.mapPanel.window)
     return ( 
         <div className="w-full h-full flex flex-col justify-center items-center gap-10">
             <Card />

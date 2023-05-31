@@ -13,7 +13,6 @@ import Logout from "../Components/Client/other/Logout";
 import { Link } from "react-router-dom";
 
 const Navbar = ({currentUser}) => { 
-  console.log(currentUser);
   return (
     <div className="flex z-50 flex-col gap-7 px-5 justify-center items-start bg-emerald-500 rounded-r-2xl">
       <Link to={'/admin/reservation'} className="flex justify-center items-center gap-2 group hover:cursor-pointer">

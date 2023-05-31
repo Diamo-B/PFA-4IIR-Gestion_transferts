@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { closeWindow, setLocationToUpdate } from "../../../Redux/locations"
+import { closeWindow, triggerRefetch } from "../../../Redux/locations"
 import { useDispatch, useSelector } from "react-redux";
 import { SetToast } from "../../../Redux/locations";
 import { useEffect, useState } from "react";
@@ -9,8 +9,8 @@ import { useEffect, useState } from "react";
 const LocationsForm = ({windowType}) => {
 
     let disptach = useDispatch();
-    let {selected} = useSelector(state => state.locationPanel);
-    
+    let {locationToUpdate} = useSelector(state => state.mapPanel.locations);
+    //! locationToUpdate Coming from the update btn in the locations table and has the ID of the location to update
     const locationCreationSchema = yup.object().shape({
         name: yup
             .string()
@@ -77,9 +77,14 @@ const LocationsForm = ({windowType}) => {
                 if(New_location.err)
                     disptach(SetToast({type: "Error", message: New_location.err, reload: false}))
                 else
-                disptach(SetToast({type: "Info", message: "New Location Created Successfully!", reload: false}))
+                {
+                    disptach(triggerRefetch());
+                    disptach(closeWindow());
+                    disptach(SetToast({type: "Success", message: "New Location Created Successfully!", reload: false}))
+                }
             }).catch((error)=>{
                 console.log(error);
+                disptach(SetToast({type: "Error", message: "Unknown Error! Contact the admins!!", reload: false}))
             })
         }
         else if (windowType == "update")
@@ -99,15 +104,17 @@ const LocationsForm = ({windowType}) => {
             })
             .then(async (res) => {
                 let result = await res.json();
-                location.reload();
+                disptach(triggerRefetch());
+                disptach(closeWindow());
+                disptach(SetToast({type: "Info", message: "Location Updated Successfully!", reload: false}))
             })
             .catch(err=>{
                 console.log(err);
+                disptach(SetToast({type: "Error", message: "Unknown Error! Contact the admins!!", reload: false}))
             })
         }
     };
     
-    let {locationToUpdate} = useSelector(state=>state.locationPanel); //! Coming from the update btn in the locations table and has the ID of the location to update
     let [locationObj, setLocationObj] = useState(); //! Contains the location to update
     useEffect(()=>{
         if(windowType == "update")
@@ -123,6 +130,7 @@ const LocationsForm = ({windowType}) => {
                 setLocationObj(result);
             }).catch(err=>{
                 console.log(err);
+                disptach(SetToast({type: "Error", message: "Unknown Error! Contact the admins!!", reload: false}))
             })
         }
     },[])
@@ -135,6 +143,7 @@ const LocationsForm = ({windowType}) => {
             <div className="flex flex-col items-center">
                 <input
                     type="text"
+                    autoFocus={true}
                     placeholder={windowType == "create" ? "Location's Name" : locationObj && locationObj.name ? locationObj.name : ""}
                     className="input font-bold"
                     {...register("name")}
