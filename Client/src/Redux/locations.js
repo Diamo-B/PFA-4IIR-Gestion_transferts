@@ -19,16 +19,20 @@ const pathsSlice = createSlice({
     name: "paths",
     initialState:{
         paths:[],
+        pathToUpdate: null,
     },
     reducers:{
         setPaths: (state, action) => {
             return {...state, paths: action.payload} 
         },
+        setPathToUpdate: (state,action) => {
+            return {...state, pathToUpdate: action.payload}
+        }
     }
 })
 
 export const windowSlice = createSlice({
-    name: "locations_slice",
+    name: "window",
     initialState: {
         triggerWindow: null,
         Refetch: false,
@@ -125,7 +129,8 @@ export const {
 } = locationsSlice.actions;
 
 export const {
-    setPaths
+    setPaths,
+    setPathToUpdate
 } = pathsSlice.actions;
 
 export default locationsReducers;
