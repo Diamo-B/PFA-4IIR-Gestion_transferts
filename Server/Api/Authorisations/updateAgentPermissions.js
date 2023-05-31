@@ -41,20 +41,35 @@ let updateAgentPermissions = async (req,res) => {
                             id: true
                         }
                     })
+                    try {
+                        let modifiedAgent = await prisma.agentCategoryPermission.update({
+                            where:{
+                                id: agentPermissions.id
+                            },
+                            data:{
+                                permissions:{
+                                    disconnect: permsObjsToRemove.map((obj) => ({ id: obj.id })),
+                                    connect: permsObjsToAdd.map((obj) => ({ id: obj.id }))
+                                }
+                            },
+                            include:{
+                                permissions: true,
+                                agent: true
+                            }
+                        })
+                    } catch (err) {
+                        throw {"err": "error updating the agentPermissions"}
+                    }
                     
                 } catch (err) {
                     throw {"err": "error: either the agentID doesn't exist or the categoryID doesn't exist"}
                 }
-                /* let modifiedAgent = await prisma.agentCategoryPermission.update({
-                    where:{
-                        id: agentPermissions.id
-                    }
-                }) */
-                return res.status(200).json(agentPermissions);
+                
             } catch (err) {
                 throw err
             }
         }
+        return res.status(200).json("Modification were applied successfully!")
     } catch (err) {
         return res.status(500).json(err)
     }
