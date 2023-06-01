@@ -15,7 +15,9 @@ import {
     disableModifyMode,
 } from "../Redux/Authorizations";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { SetToast, disableToast } from "../Redux/toast";
+import Toast from "../Components/Toast/Toast";
 
 const Authorizations = () => {
     const dispatch = useDispatch();
@@ -29,6 +31,8 @@ const Authorizations = () => {
         AgentsXCatsXPerms,
         SelectedPermissions,
     } = useSelector((state) => state.authorizationPanel);
+
+    const { toast } = useSelector(state => state.toast);
 
     useEffect(() => {
         //DONE: Getting all categories
@@ -193,9 +197,22 @@ const Authorizations = () => {
             })
         }).then(async(res)=>{
             let result = await res.json();
-            console.log(result);
-        }).catch((err)=>{
-            console.log(err);
+            dispatch(
+                SetToast({
+                  type: "Success",
+                  message: result.msg,
+                  reload: false,
+                })
+            )
+        }).catch(async (err)=>{
+            let error = await err.json();
+            dispatch(
+                SetToast({
+                    type: "Error",
+                    message:error.err,
+                    reload: false,
+                })
+            )
         })
     };
 
@@ -381,6 +398,10 @@ const Authorizations = () => {
                             </button>
                         </>
                     )}
+                    {
+                    toast.active == true &&
+                    <Toast Message={toast.message} Type={toast.type} trigger={disableToast} reload={toast.reload}/>
+                    }
                 </div>
             )}
         </>

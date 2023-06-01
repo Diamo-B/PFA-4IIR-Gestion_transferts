@@ -8,7 +8,6 @@ import {
     setLocations,
     resetSelection,
     setLocationToUpdate,
-    SetToast,
     setWindowType,
     triggerRefetch,
     disableRefetch
@@ -21,6 +20,7 @@ import ConfirmOp from "../../ConfirmOperation/ConfirmOp";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import useLocationHelpers  from "./useLocationHelpers";
+import { SetToast } from '../../../Redux/toast';
 
 const LocationsTable = () => {
     let dispatcher = useDispatch();
@@ -47,7 +47,7 @@ const LocationsTable = () => {
             dispatcher(setLocations(locations));
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
         });
         //DONE: trigger the fetch on update or create
         dispatcher(disableRefetch())
@@ -67,7 +67,7 @@ const LocationsTable = () => {
             dispatcher(resetSelection());
             dispatcher(SetToast({type: "Success", message: `${result.count > 1? result.count+" places were":"1 place was"} deleted successfully!!`, reload: false}))
         }).catch(err=>{
-            console.log(err);
+            console.error(err);
         })
     }
 
@@ -85,7 +85,7 @@ const LocationsTable = () => {
             dispatcher(closePanel());
             dispatcher(SetToast({type: "Success", message: "1 place was deleted successfully!!", reload: false}))
         }).catch(err=>{
-            console.log(err);
+            console.error(err);
         })
     }   
 

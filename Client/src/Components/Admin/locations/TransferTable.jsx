@@ -6,7 +6,6 @@ import {
   setWindowType,
   openWindow,
   setPaths,
-  SetToast,
   addSelection,
   removeSelection,
   resetSelection,
@@ -15,6 +14,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import TransferForm from "./TransferForm";
 import { useEffect } from "react";
+import { SetToast } from "../../../Redux/toast";
 
 const TransferTable = () => {
   let dispatcher = useDispatch();
@@ -36,7 +36,7 @@ const TransferTable = () => {
         dispatcher(setPaths(results));
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
     dispatcher(disableRefetch());
   }, [Refetch]);
@@ -61,19 +61,18 @@ const TransferTable = () => {
         dispatcher(triggerRefetch());
         dispatcher(
           SetToast({
-            type: "Success",
+            type: "Info",
             message: `Path was ${message} successfully!!`,
             reload: false,
           })
         );
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
   let DeleteSinglePath = (id) => {
-    console.log(id);
     fetch("/api/path/remove", {
       method: "delete",
       headers: {
@@ -86,7 +85,6 @@ const TransferTable = () => {
     })
       .then(async (res) => {
         let result = await res.json();
-        console.log(result);
         dispatcher(triggerRefetch());
         dispatcher(
           SetToast({
@@ -97,7 +95,7 @@ const TransferTable = () => {
         );
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         dispatcher(
           SetToast({
             type: "Error",

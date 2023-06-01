@@ -19,7 +19,7 @@ export function SuperAgentAuthOutlet() {
                 else if (data.agent.isSuperAdmin == true) setUserType("superAgent")
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             })
             .finally(() => {
                 setIsLoading(false);

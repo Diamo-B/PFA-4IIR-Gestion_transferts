@@ -18,7 +18,7 @@ const AdminLayout = ({children}) => {
       let data = await res.json();
       dispatch(setUser(data));
     }).catch(err=>{
-      console.log(err);
+      console.error(err);
     })
   },[])
   

@@ -3,10 +3,11 @@ import Card from '../Components/Admin/locations/Card';
 import LocationsTable from "../Components/Admin/locations/LocationsTable";
 import TransferTable from "../Components/Admin/locations/TransferTable";
 import Toast from "../Components/Toast/Toast"
-import {disableToast} from "../Redux/locations"
+import {disableToast} from "../Redux/toast"
 
 const Locations = () => {
-    const {triggerType, toast} = useSelector(state => state.mapPanel.window)
+    const {triggerType} = useSelector(state => state.mapPanel.window)
+    const {toast} = useSelector(state => state.toast);
     return ( 
         <div className="w-full h-full flex flex-col justify-center items-center gap-10">
             <Card />

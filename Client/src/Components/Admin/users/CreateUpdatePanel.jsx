@@ -149,7 +149,7 @@ const CreateUpdateAgent = ({ opType }) => {
                 location.reload();
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             });
         setIsLoading(false);
     };

@@ -2,13 +2,13 @@ import { useForm, Controller, set } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  SetToast,
   closeWindow,
   triggerRefetch,
 } from "../../../Redux/locations";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { useEffect, useState } from "react";
+import { SetToast } from "../../../Redux/toast";
 
 const TransferForm = ({ windowType }) => {
   let disptach = useDispatch();
@@ -90,7 +90,6 @@ const TransferForm = ({ windowType }) => {
       })
         .then(async (res) => {
           let result = await res.json();
-          console.log(result);
           disptach(triggerRefetch());
           result.code == "P2002"
             ? disptach(
@@ -111,12 +110,11 @@ const TransferForm = ({ windowType }) => {
           disptach(closeWindow());
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
           disptach(
             SetToast({
               type: "Error",
-              message:
-                "Another Path with the same departure/arrival combination already exists!!",
+              message: err,
               reload: false,
             })
           );
@@ -128,7 +126,6 @@ const TransferForm = ({ windowType }) => {
       data.Arrival = data.Arrival ?? pathToUpdate.arrivalId;
       data.Distance = data.Distance ?? pathToUpdate.distance;
       data.Price = data.Price ?? pathToUpdate.price;
-      console.log(recordId,data);
       fetch('/api/path/update',{
         method:"put",
         headers:{
@@ -141,15 +138,16 @@ const TransferForm = ({ windowType }) => {
         })
       }).then(async(res)=>{
         let response = await res.json();
-        console.log("res",response);
         disptach(triggerRefetch());
         if(response.err)
         {
-          SetToast({
+          disptach(
+            SetToast({
             type: "Error",
             message:response.err,
             reload: false,
-          })
+            })
+          )
         }
         if(response.code == 'P2002') //TODO: Fix this Not Being Shown on existing path error
         {
@@ -165,7 +163,7 @@ const TransferForm = ({ windowType }) => {
         {
           disptach(
             SetToast({
-              type: "Success",
+              type: "Info",
               message:
                 "A path was updated successfully !!",
               reload: false,
@@ -174,7 +172,7 @@ const TransferForm = ({ windowType }) => {
         }
         disptach(closeWindow());
       }).catch(err=>{
-        console.log("err",err);
+        console.error(err);
         disptach(
           SetToast({
             type: "Error",

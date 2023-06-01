@@ -3,7 +3,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { closeWindow, triggerRefetch } from "../../../Redux/locations"
 import { useDispatch, useSelector } from "react-redux";
-import { SetToast } from "../../../Redux/locations";
+import { SetToast } from "../../../Redux/toast";
 import { useEffect, useState } from "react";
 
 const LocationsForm = ({windowType}) => {
@@ -83,7 +83,7 @@ const LocationsForm = ({windowType}) => {
                     disptach(SetToast({type: "Success", message: "New Location Created Successfully!", reload: false}))
                 }
             }).catch((error)=>{
-                console.log(error);
+                console.error(error);
                 disptach(SetToast({type: "Error", message: "Unknown Error! Contact the admins!!", reload: false}))
             })
         }
@@ -109,7 +109,7 @@ const LocationsForm = ({windowType}) => {
                 disptach(SetToast({type: "Info", message: "Location Updated Successfully!", reload: false}))
             })
             .catch(err=>{
-                console.log(err);
+                console.error(err);
                 disptach(SetToast({type: "Error", message: "Unknown Error! Contact the admins!!", reload: false}))
             })
         }
@@ -129,7 +129,7 @@ const LocationsForm = ({windowType}) => {
                 let result = await res.json();
                 setLocationObj(result);
             }).catch(err=>{
-                console.log(err);
+                console.error(err);
                 disptach(SetToast({type: "Error", message: "Unknown Error! Contact the admins!!", reload: false}))
             })
         }

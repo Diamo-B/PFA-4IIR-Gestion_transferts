@@ -25,7 +25,7 @@ const ActionBtn = () => {
             dispatcher(setUsersFetchingErrors(data+" Users "+data>1?"were":"was"+"deleted successfully"));
             location.reload();
         }).catch(err=>{
-            console.log(err);
+            console.error(err);
         })
     }
     

@@ -38,13 +38,7 @@ export const windowSlice = createSlice({
         Refetch: false,
         windowType: null, // Can be create or update
         triggerType: "Location", // Can be locations or transfers
-        selected: [],
-        toast:{
-            type: "",
-            message: "",
-            active: false,
-            reload: false
-        }
+        selected: []
     },
     reducers: {
         setWindowType: (state, action) => {
@@ -58,24 +52,6 @@ export const windowSlice = createSlice({
         },
         setType: (state, action) => {
             return { ...state, triggerType: action.payload };
-        },
-        SetToast: (state, action) => {
-            let toast= {
-                type: action.payload.type,
-                message: action.payload.message,
-                active: true,
-                reload: action.payload.reload,
-            }
-            return { ...state, toast: toast };
-        },
-        disableToast: (state) => {
-            let toast= {
-                type: "",
-                message: "",
-                active: false,
-                reload: false
-            }
-            return { ...state, toast: toast };
         },
 
         //? Selection mechanism
@@ -114,8 +90,6 @@ export const {
     openWindow,
     closeWindow,
     setType,
-    SetToast,
-    disableToast,
     addSelection,
     removeSelection,
     resetSelection,

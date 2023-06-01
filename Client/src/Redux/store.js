@@ -5,6 +5,7 @@ import datesReducer from './dates'
 import { authorizationsSlice } from './Authorizations'
 import locationsReducers from "./locations"
 import { confirmationPanel } from "./confirmationPanel";
+import { ToastSlice } from './toast'
 
 export default configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export default configureStore({
         userPanel: usersPanelSlice.reducer,
         authorizationPanel: authorizationsSlice.reducer,
         mapPanel: locationsReducers,
-        confirmationPanel: confirmationPanel.reducer
+        confirmationPanel: confirmationPanel.reducer,
+        toast: ToastSlice.reducer
     },
 })
