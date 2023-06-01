@@ -2,18 +2,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addSelection, removeSelection, resetSelection } from '../../../Redux/locations';
 
 const useLocationHelpers = () => {
-    let dispatcher = useDispatch();
-    let {selected} = useSelector(state => state.mapPanel.window);
-    let {locations} = useSelector(state=>state.mapPanel.locations);
+  let dispatcher = useDispatch();
+  let {selected} = useSelector(state => state.mapPanel.window);
+  let {locations} = useSelector(state=>state.mapPanel.locations);
+  let { paths } = useSelector((state) => state.mapPanel.paths);
 
-    const selectOrDeselect = async (id, isChecked) => {
+  const selectOrDeselect = async (id, isChecked) => {
     if (isChecked && !selected.includes(id))
       dispatcher(addSelection(id));
     else
       dispatcher(removeSelection(id));
   };
 
-  const selectOrDeselectAll = async (isChecked) => {
+  const selectOrDeselectAllLocations = async (isChecked) => {
     dispatcher(resetSelection());
     if (isChecked) {
       locations.forEach((location) => {
@@ -22,9 +23,19 @@ const useLocationHelpers = () => {
     }
   };
 
+  const selectOrDeselectAllPaths = async (isChecked) => {
+    dispatcher(resetSelection());
+    if (isChecked) {
+      paths.forEach((path) => {
+        dispatcher(addSelection(path.id));
+      });
+    }
+  };
+
   return {
     selectOrDeselect,
-    selectOrDeselectAll,
+    selectOrDeselectAllLocations,
+    selectOrDeselectAllPaths
   };
 };
 

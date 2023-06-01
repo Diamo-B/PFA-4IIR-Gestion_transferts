@@ -192,7 +192,7 @@ const CreateUpdateAgent = ({ opType }) => {
                                 type="text"
                                 placeholder={
                                     userToModify
-                                        ? userToModify.firstName
+                                        ? userToModify.lastName
                                         : "Last Name"
                                 }
                                 className="input"

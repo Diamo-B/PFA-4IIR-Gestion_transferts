@@ -11,6 +11,7 @@ import {
   resetSelection,
   setPathToUpdate,
 } from "../../../Redux/locations";
+import useLocationHelpers from "./useLocationHelpers";
 import { useSelector, useDispatch } from "react-redux";
 import TransferForm from "./TransferForm";
 import { useEffect } from "react";
@@ -22,6 +23,8 @@ const TransferTable = () => {
     (state) => state.mapPanel.window
   );
   let { paths } = useSelector((state) => state.mapPanel.paths);
+
+  const { selectOrDeselectAllPaths, selectOrDeselect } = useLocationHelpers();
 
   useEffect(() => {
     fetch("/api/path/getAll", {
@@ -106,10 +109,50 @@ const TransferTable = () => {
       });
   };
 
+  let deleteSelectedPaths = () => {
+    fetch("/api/path/removeMany",{
+      method: "delete",
+      headers:{
+        "Content-Type" : "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`
+      },
+      body:JSON.stringify({
+        ids: selected
+      })
+    }).then(async (res) => {
+      let response = await res.json();
+      console.log(response);
+      if(response.err)
+      {  dispatcher(SetToast({
+          type:"Error",
+          message:response.err,
+          reload: false
+        }))
+      }
+      else
+      {
+        dispatcher(SetToast({
+          type: "Success",
+          message:response.msg,
+          reload: false
+        }))
+        dispatcher(triggerRefetch());
+      }
+      
+    }).catch((err)=>{
+      console.error(err);
+      dispatcher(SetToast({
+        type: "Error",
+        message:"An unknown error occured",
+        reload: false
+      }))
+    })
+  }
+  
   return (
     <div className="relative h-full w-full border-2 rounded-2xl shadow-xl">
       <div className="w-full h-full mt-5 px-5">
-        <div className="mb-5 text-center">
+        <div className="mb-5 flex gap-5 justify-center text-center">
           <button
             className="btn px-5 hover:bg-emerald-500 hover:text-white"
             onClick={() => {
@@ -120,13 +163,27 @@ const TransferTable = () => {
           >
             Create A New Transfer Path
           </button>
+          {
+            selected.length > 0
+            &&
+            <button className="btn px-5 hover:bg-red-500 hover:text-white"
+              onClick={() => {
+                deleteSelectedPaths();
+                dispatcher(resetSelection());
+              }}
+            >
+              Delete selected Paths
+            </button>
+          }
         </div>
         <div className="w-full border-2 border-gray-700 rounded-xl ">
           <table className="w-full">
             <thead className="border-b-2 border-gray-700">
               <tr>
                 <th>
-                  <input type="checkbox" />
+                  <input type="checkbox" 
+                    onChange={(e)=>selectOrDeselectAllPaths(e.target.checked)}
+                  />
                 </th>
                 <th>Departure</th>
                 <th>Arrival</th>
@@ -141,7 +198,10 @@ const TransferTable = () => {
                 paths.map((path) => (
                   <tr key={path.id} className="text-center">
                     <th className="">
-                      <input type="checkbox" />
+                      <input type="checkbox" 
+                        onChange={(e)=>selectOrDeselect(path.id,e.target.checked)}
+                        checked={selected.includes(path.id)?true:false}
+                      />
                     </th>
                     <td className="">{path.departure.name}</td>
                     <td className="">{path.arrival.name}</td>

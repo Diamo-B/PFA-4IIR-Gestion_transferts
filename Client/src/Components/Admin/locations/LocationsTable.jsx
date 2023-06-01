@@ -30,7 +30,7 @@ const LocationsTable = () => {
     let { selected } = useSelector((state) => state.mapPanel.window);
     let {windowType, triggerWindow, triggerType, Refetch} = useSelector(state => state.mapPanel.window);
     
-    const { selectOrDeselect, selectOrDeselectAll } = useLocationHelpers();
+    const { selectOrDeselect, selectOrDeselectAllLocations } = useLocationHelpers();
 
     const {confirmOp} = useSelector(state => state.confirmationPanel)
 
@@ -118,7 +118,7 @@ const LocationsTable = () => {
                             <tr className="text-center">
                                 <th>
                                     <input type="checkbox" 
-                                        onChange={(e)=>selectOrDeselectAll(e.target.checked)}
+                                        onChange={(e)=>selectOrDeselectAllLocations(e.target.checked)}
                                     />
                                 </th>
                                 <th>Name</th>
