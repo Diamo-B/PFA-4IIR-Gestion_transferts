@@ -128,7 +128,6 @@ const TransferForm = ({ windowType }) => {
       data.Arrival = data.Arrival ?? pathToUpdate.arrivalId;
       data.Distance = data.Distance ?? pathToUpdate.distance;
       data.Price = data.Price ?? pathToUpdate.price;
-
       console.log(recordId,data);
       fetch('/api/path/update',{
         method:"put",
@@ -142,9 +141,48 @@ const TransferForm = ({ windowType }) => {
         })
       }).then(async(res)=>{
         let response = await res.json();
-        console.log(response);
+        console.log("res",response);
+        disptach(triggerRefetch());
+        if(response.err)
+        {
+          SetToast({
+            type: "Error",
+            message:response.err,
+            reload: false,
+          })
+        }
+        if(response.code == 'P2002') //TODO: Fix this Not Being Shown on existing path error
+        {
+          disptach(
+            SetToast({
+              type: "Error",
+              message:"There's already an existing path with the given combination of departure/arrival",
+              reload: false,
+            })
+          )
+        }
+        else
+        {
+          disptach(
+            SetToast({
+              type: "Success",
+              message:
+                "A path was updated successfully !!",
+              reload: false,
+            })
+          );
+        }
+        disptach(closeWindow());
       }).catch(err=>{
-        console.log(err);
+        console.log("err",err);
+        disptach(
+          SetToast({
+            type: "Error",
+            message:
+              "An Unknown Error Occured When Modifying The Path!!",
+            reload: false,
+          })
+        );
       })
     }
   };
@@ -216,7 +254,7 @@ const TransferForm = ({ windowType }) => {
                   ? setUpdatedSelectOptions((prev) => {
                       return {
                         departure: selectedOption?.value,
-                        arrival: prev.arrival,
+                        arrival: prev?.arrival,
                       };
                     })
                   : setUpdatedSelectOptions((prev) => {

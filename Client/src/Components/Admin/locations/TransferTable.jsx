@@ -236,7 +236,7 @@ const TransferTable = () => {
         <div className="absolute inset-0 flex justify-center items-center rounded-2xl shadow-xl bg-gray-600 bg-opacity-70 ">
           <div className="w-full absolute z-10">
             <TableCard title={windowType=="create" ? "Create A New Transfer Path" : "Update a Transfer Path"}>
-              <TransferForm windowType={windowType}/>
+              <TransferForm windowType={windowType} />
             </TableCard>
           </div>
         </div>
