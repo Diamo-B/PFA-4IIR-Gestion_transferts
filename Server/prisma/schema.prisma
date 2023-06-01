@@ -36,7 +36,7 @@ model Agent {
   isSuperAdmin Boolean                   @default(false)
 }
 
-//Doing: Authorizations
+//DONE: Authorizations
 
 model Category {
   id         String                    @id @default(uuid())
@@ -59,27 +59,20 @@ model Permission {
   agents AgentCategoryPermission[]
 }
 
-//Doing : Places & Paths
-
+//DONE : Places & Paths
 model Place {
   id            String         @id @default(uuid())
   name          String         @unique
   longitude     Float?
   latitude      Float?
-  image         Image[]
+  images         Image[]
   createdAt     DateTime       @default(now())
   isDepartureOf transferPath[] @relation("PlaceDeparture")
   isArrivalOf   transferPath[] @relation("PlaceArrival")
 }
 
-model Image {
-  id      String @id @default(uuid())
-  path    String
-  placeId String
-  place   Place  @relation(fields: [placeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-}
-
 model transferPath {
+
   id          String   @id @default(uuid())
   distance    Float?
   price       Float?
@@ -91,4 +84,46 @@ model transferPath {
   arrivalId   String
 
   @@unique([departureId, arrivalId])
+}
+
+//DOING: Vehicules && models
+
+model Model{
+  id    String @id @default(uuid())
+  label String
+}
+
+model Vehicule{
+  id      String @id @default(uuid())
+  model   String?
+  brand   String
+  places  Int
+  lux     Boolean
+  images         Image[]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//? Whole app images
+model Image {
+  id      String @id @default(uuid())
+  path    String
+  placeId String?
+  place   Place?  @relation(fields: [placeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  vehiculeId String?
+  vehicule Vehicule? @relation(fields: [vehiculeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }

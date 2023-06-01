@@ -69,7 +69,7 @@ let updateAgentPermissions = async (req,res) => {
                 throw err
             }
         }
-        return res.status(200).json("Modification were applied successfully!")
+        return res.status(200).json({msg: "Modification were applied successfully!"})
     } catch (err) {
         return res.status(500).json(err)
     }
