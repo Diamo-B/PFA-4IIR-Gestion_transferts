@@ -1,5 +1,5 @@
 import Models from "../Components/Admin/vehicules/Models/Models";
-import Table from "../Components/Admin/vehicules/table";
+import Table from "../Components/Admin/vehicules/Table";
 
 const Vehicules = () => {
     return ( 

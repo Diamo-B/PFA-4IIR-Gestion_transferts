@@ -6,6 +6,7 @@ import { authorizationsSlice } from './Authorizations'
 import locationsReducers from "./locations"
 import { confirmationPanel } from "./confirmationPanel";
 import { ToastSlice } from './toast'
+import vehiculesReducer from './Vehicules'
 
 export default configureStore({
     reducer: {
@@ -14,6 +15,7 @@ export default configureStore({
         userPanel: usersPanelSlice.reducer,
         authorizationPanel: authorizationsSlice.reducer,
         mapPanel: locationsReducers,
+        transportation: vehiculesReducer,
         confirmationPanel: confirmationPanel.reducer,
         toast: ToastSlice.reducer
     },
