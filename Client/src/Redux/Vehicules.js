@@ -3,17 +3,25 @@ import { combineReducers, createSlice } from "@reduxjs/toolkit";
 const modelsSlice = createSlice({
     name: "models",
     initialState:{
-        editMode: false
+        models: [],
+        createMode: false,
+        refetch: false
     },
     reducers:{
-        enableEditMode : (state) => {
-            state.editMode = true;
+        setModels : (state,action) => {
+            state.models = action.payload
         },
-        disableEditMode : (state) => {
-            state.editMode = false
+        enableCreateMode : (state) => {
+            state.createMode = true;
         },
-        toggleEditMode : (state) => {
-            state.editMode = !state.editMode
+        disableCreateMode : (state) => {
+            state.createMode = false
+        },
+        activateRefetch : (state) => {
+            state.refetch = true
+        },
+        disableRefetch : (state) => {
+            state.refetch = false
         }
     }
 })
@@ -33,9 +41,11 @@ const vehiculesReducer = combineReducers({
 });
   
 export const {
-    enableEditMode,
-    disableEditMode,
-    toggleEditMode,
+    setModels,
+    enableCreateMode,
+    disableCreateMode,
+    activateRefetch,
+    disableRefetch,
 } = modelsSlice.actions;
 
 export const {

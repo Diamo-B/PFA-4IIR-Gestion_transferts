@@ -90,7 +90,7 @@ model transferPath {
 
 model Model{
   id    String @id @default(uuid())
-  label String
+  label String @unique
 }
 
 model Vehicule{
