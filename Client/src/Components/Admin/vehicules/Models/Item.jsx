@@ -61,6 +61,35 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
     let ModifyModel = (data) => {
         //TODO: update the model in the db
         console.log(data);
+        fetch("/api/models/update",{
+            method:"put",
+            headers:{
+                "Content-Type" : "application/json",
+                Authorization : `Bearer ${localStorage.getItem("jwt")}`
+            },
+            body:JSON.stringify({
+                id: ID,
+                newName: data.value
+            })
+        }).then(async(res)=>{
+            let response = await res.json();
+            dispatch(activateRefetch())
+            dispatch(SetToast({
+                type: "Success",
+                message: "the model was updated successfully!",
+                reload: false
+            }))
+        }).catch(async(err)=>{
+            let error= await err.json();
+            if(error.err)
+            {
+                dispatch(SetToast({
+                    type: "Error",
+                    message: error.err,
+                    reload: false
+                }))   
+            }
+        })
         setEditMode(false);
     }
 
@@ -108,7 +137,7 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
             dispatch(disableCreateMode())
     }
     
-    const {register, handleSubmit} = useForm({});
+    const {register, handleSubmit, formState:{errors}} = useForm({});
     
     let onSubmit = (data) => {
         isCreate ? saveNewModel(data) : ModifyModel(data);
@@ -136,30 +165,34 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
                     </div>
                 </div>
                 :
-                <form className="flex relative w-full" 
-                    onSubmit={handleSubmit(onSubmit)}
-                >
-                    <input 
-                        className="w-full text-base font-bold border-2 border-gray-700 py-2 rounded-full text-center"
-                        type="text"
-                        defaultValue={isCreate ? "" :Text}
-                        placeholder={isCreate && "New Model ..."}
-                        autoFocus={true}
-                        {...register('value')}
-                    />
-                    <button className="group border-2 border-gray-700 rounded-full absolute right-0 h-full items-center px-5 flex hover:bg-emerald-400"
-                        type="submit"
+                <div className="flex flex-col justify-center items-center">
+                    <form className="flex relative w-full"
+                        onSubmit={handleSubmit(onSubmit)}
                     >
-                        <UilMessage className="group-hover:text-white" />
-                    </button>
-
-                    <button className="group border-2 border-gray-700 rounded-full absolute left-0 h-full items-center px-5 flex hover:bg-red-400"
-                        type="button"
-                        onClick={blurInput}
-                    >
-                        <UilMultiply className="group-hover:text-white" />
-                    </button>
-                </form>  
+                        <input
+                            className="w-full text-base font-bold border-2 border-gray-700 py-2 rounded-full text-center"
+                            type="text"
+                            defaultValue={isCreate ? "" :Text}
+                            placeholder={isCreate && "New Model ..."}
+                            autoFocus={true}
+                            {...register('value',{required: "The model's name is required"})}
+                        />
+                        <button className="group border-2 border-gray-700 rounded-full absolute right-0 h-full items-center px-5 flex hover:bg-emerald-400"
+                            type="submit"
+                        >
+                            <UilMessage className="group-hover:text-white" />
+                        </button>
+                        <button className="group border-2 border-gray-700 rounded-full absolute left-0 h-full items-center px-5 flex hover:bg-red-400"
+                            type="button"
+                            onClick={blurInput}
+                        >
+                            <UilMultiply className="group-hover:text-white" />
+                        </button>
+                    </form>
+                    <small className="text-red-500 font-bold">
+                        {errors.value?.message}
+                    </small>
+                </div>
             }
             
         </>
