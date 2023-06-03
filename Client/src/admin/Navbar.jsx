@@ -45,10 +45,10 @@ const Navbar = ({currentUser}) => {
           Locations
         </h1>
       </Link>
-      <Link to={"/admin/vehicule"} className="flex justify-center items-center gap-2 group hover:cursor-pointer">
-        <UilCarSideview className="text-white w-8 h-8" /> {/* vehicules */}
+      <Link to={"/admin/transportation"} className="flex justify-center items-center gap-2 group hover:cursor-pointer">
+        <UilCarSideview className="text-white w-8 h-8" /> {/* transportation */}
         <h1 className="hidden text-white font-bold group-hover:block capitalize">
-          vehicules
+          Transportation
         </h1>
       </Link>
       <Link to={"/admin/period"} className="flex justify-center items-center gap-2 group hover:cursor-pointer">

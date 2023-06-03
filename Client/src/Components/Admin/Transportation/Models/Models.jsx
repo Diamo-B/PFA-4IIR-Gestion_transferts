@@ -1,45 +1,11 @@
 import { UilPlus } from "@iconscout/react-unicons";
-import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { SetToast } from "../../../../Redux/toast";
-import { enableCreateMode, disableCreateMode, setModels, disableRefetch } from "../../../../Redux/Vehicules";
+import { enableCreateMode, disableCreateMode, setModels, disableRefetch } from "../../../../Redux/Transportation";
 import Item from "./Item";
 
 const Models = () => {
   let dispatch = useDispatch();
-  let  {createMode,refetch, models}  = useSelector(state => state.transportation.models)
-  
-  //TODO: fetch the models
-  useEffect(()=>{
-    fetch("/api/models/getAll",{
-      method: "get",
-      headers:{
-        "Content-Type" : "application/json",
-        Authorization: `Bearer ${localStorage.getItem('jwt')}`
-      }
-    }).then(async(res) => {
-      let response = await res.json();
-      if(response.err)
-        dispatch(SetToast({
-          type: "Error",
-          message: response.err,
-          refetch: false
-        }))
-      else
-      {
-        dispatch(setModels(response));
-      }
-    }).catch(async (err) => {
-      console.error(err);
-      dispatch(SetToast({
-        type: "Error",
-        message: "An unknown error occured while fetching the models!!",
-        refetch: false
-      }))
-    })
-
-    dispatch(disableRefetch())
-  },[refetch])
+  let  {createMode, models}  = useSelector(state => state.transportation.models)
 
   return (
     <div className="bg-indigo-50 rounded-2xl shadow-lg py-5 px-2 text-gray-700 flex flex-col gap-5 overflow-y-auto">

@@ -13,7 +13,7 @@ import NotFound from './NotFound';
 import AdminHome from "./admin/AdminHome";
 import Authorizations from "./admin/Authorizations";
 import Locations from "./admin/Locations";
-import Vehicules from "./admin/Vehicules";
+import Transportation from "./admin/Transportation";
 import Periods from "./admin/Periods"
 import Extras from "./admin/Extras";
 import Billing from "./admin/Billing";
@@ -45,7 +45,7 @@ function App() {
               <Route index element={<AdminLayout> <AdminHome/> </AdminLayout>} />            
               <Route path="/admin/reservation" element={<AdminLayout> <Reservations/> </AdminLayout>} />
               <Route path="/admin/location" element={<AdminLayout> <Locations/> </AdminLayout>}/>
-              <Route path="/admin/vehicule" element={<AdminLayout> <Vehicules/> </AdminLayout>}/>
+              <Route path="/admin/transportation" element={<AdminLayout> <Transportation/> </AdminLayout>}/>
               <Route path="/admin/period" element={<AdminLayout> <Periods/> </AdminLayout>} />
               <Route path="/admin/extra" element={<AdminLayout> <Extras/> </AdminLayout>} />
               <Route path="/admin/billing" element={<AdminLayout> <Billing/> </AdminLayout>} />

@@ -28,10 +28,35 @@ const modelsSlice = createSlice({
 const vehiculesSlice = createSlice({
     name: "vehicules",
     initialState:{
-
+        options: [],
+        vehicules: [],
+        selectedModel: null,
+        isLoading: false
     },
     reducers:{
-        
+        setOptions : (state,action) => {
+            let opts = []
+            action.payload.map((model)=>{
+                opts.push({value: model.id,label: model.label});
+            })
+            state.options = opts;
+        },
+        setVehicules : (state, action) => {
+            let vehicules = []
+            action.payload.map(vehicule=>{
+                vehicules.push(vehicule)
+            });
+            state.vehicules = vehicules;
+        },
+        setSelectedModel : (state, action) => {
+            state.selectedModel = action.payload
+        },
+        activateLoading : (state) => {
+            state.isLoading = true
+        },
+        disableLoading : (state) => {
+            state.isLoading = false
+        }
     }
 })
 
@@ -49,7 +74,11 @@ export const {
 } = modelsSlice.actions;
 
 export const {
-
+    setOptions,
+    setSelectedModel,
+    activateLoading,
+    disableLoading,
+    setVehicules,
 } = vehiculesSlice.actions;
 
 export default vehiculesReducer;
