@@ -8,7 +8,7 @@ import { activateLoading, disableLoading, disableRefetch, setModels } from "../R
 
 const Transportation = () => {
   let { toast } = useSelector((state) => state.toast);
-  let { refetch } = useSelector((state) => state.transportation.models);
+  let { refetch } = useSelector((state) => state.transportation.window);
   let  {isLoading}  = useSelector(state => state.transportation.vehicules)
   let dispatch = useDispatch();
 

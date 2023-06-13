@@ -25,7 +25,7 @@ let getByModel = async (req,res) => {
         })
         if(vehicules.length === 0)
         {
-            return res.status(400).json({err: "No vehicules associated with the model "+model.label+" were found !!"})
+            return res.status(400).json({err: "No vehicles associated with the model "+model.label+" were found !!"})
         }
         return res.status(200).json(vehicules);
     } catch (err) {

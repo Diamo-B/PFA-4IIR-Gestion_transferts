@@ -1,13 +1,13 @@
 let prisma = require("../../prisma/prismaInstance");
 
 let create = async (req,res) => {
-    let {modelId, brand, brandModel, nbr_places, luxe} = req.body;
+    let {modelID, brand, brandModel, nbr_places, luxe} = req.body;
     
     let model; 
     try {
         model = await prisma.model.findFirst({
             where:{
-                id:modelId
+                id:modelID
             }
         })
         if(model === null)
@@ -20,7 +20,7 @@ let create = async (req,res) => {
 
 
     try {
-        let newVehicule = await prisma.vehicule.create({
+        let newVehicle = await prisma.vehicule.create({
             data:{
                 brand: brand,
                 sub_Brand: brandModel,
@@ -33,7 +33,7 @@ let create = async (req,res) => {
                 }
             }
         })
-        return res.status(200).json(newVehicule)
+        return res.status(200).json(newVehicle)
     } catch (err) {
         return res.status(500).json(err)
     }

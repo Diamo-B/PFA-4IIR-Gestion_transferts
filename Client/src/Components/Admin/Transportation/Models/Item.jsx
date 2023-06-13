@@ -11,7 +11,6 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
 
     let saveNewModel = (data) => {
         //TODO: create a model in the db
-        console.log(data);
         fetch("/api/models/create",{
             method: "post",
             headers:{

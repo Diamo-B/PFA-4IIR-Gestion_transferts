@@ -1,1 +1,0 @@
-//TODO: agents only mode in users table shows the current user too (remove it !!!!)

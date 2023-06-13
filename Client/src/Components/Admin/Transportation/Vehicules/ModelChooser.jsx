@@ -47,7 +47,7 @@ const ModelChooser = () => {
             isClearable={true}
             options={options}
             onChange={(opt) => {
-                if (opt?.value) dispatch(setSelectedModel(opt.label));
+                if (opt?.value) dispatch(setSelectedModel(opt));
                 else dispatch(setSelectedModel(null));
             }}
             />
