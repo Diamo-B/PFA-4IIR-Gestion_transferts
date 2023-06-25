@@ -23,6 +23,7 @@ const vehiclesSlice = createSlice({
     initialState:{
         options: [],
         vehicles: [],
+        selectedVehicles: [],
         selectedModel: null,
         isLoading: false,
         createMode: false,
@@ -45,6 +46,13 @@ const vehiclesSlice = createSlice({
                 Vehicles.push(Vehicle)
             });
             state.vehicles = Vehicles;
+        },
+        setSelectedVehicles : (state, action) => {
+            let Vehicles = []
+            action.payload.map(Vehicle=>{
+                Vehicles.push(Vehicle)
+            });
+            state.selectedVehicles = Vehicles;
         },
         resetVehicles : (state) => {
             state.vehicles = [];
@@ -112,6 +120,7 @@ export const {
     activateLoading,
     disableLoading,
     setVehicles,
+    setSelectedVehicles,
     resetVehicles,
     enableVehicleCreateMode,
     disableVehicleCreateMode,

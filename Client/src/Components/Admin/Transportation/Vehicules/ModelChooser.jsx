@@ -23,7 +23,7 @@ const ModelChooser = () => {
 
 
     return ( 
-        <div className="flex items-center justify-center py-2">
+        <div className="flex items-center justify-center py-2 z-50">
             <Select
             placeholder="Choose a Model"
             className="text-center font-bold w-1/4 text-gray-700"

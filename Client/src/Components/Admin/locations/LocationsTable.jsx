@@ -112,41 +112,43 @@ const LocationsTable = () => {
                         </button>
                     }
                 </div>
-                <div className="w-full border-2 border-gray-700 rounded-xl max-h-[25rem] overflow-y-auto">
-                    <table className="w-full max-h-full">
-                        <thead className="border-b-2 border-gray-700">
-                            <tr className="text-center">
-                                <th>
+                <div className="w-full border-2 border-gray-700 rounded-md max-h-[25rem] overflow-y-auto">
+                    <table className="w-full max-h-full text-sm text-center text-gray-700">
+                        <thead className="text-xs text-gray-500 uppercase bg-gray-50">
+                            <tr>
+                                <th scope="col" className="w-4 pl-6">
                                     <input type="checkbox" 
+                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
                                         onChange={(e)=>selectOrDeselectAllLocations(e.target.checked)}
                                     />
                                 </th>
-                                <th>Name</th>
-                                <th>Latitude</th>
-                                <th>Longitude</th>
-                                <th>Actions</th>
+                                <th scope="col" className="p-5">Name</th>
+                                <th scope="col" className="p-5">Latitude</th>
+                                <th scope="col" className="p-5">Longitude</th>
+                                <th scope="col" className="p-5">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {locations.length > 0 ?
                                 locations.map((location) => (
                                     <tr
-                                        className="text-center hover:bg-slate-200"
+                                        className="bg-white hover:bg-gray-100"
                                         key={location.id}
                                     >
-                                        <th>
-                                            <input type="checkbox" 
+                                        <td className="w-4 pl-6">
+                                            <input type="checkbox"
+                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
                                                 onChange={(e)=>selectOrDeselect(location.id,e.target.checked)}
                                                 checked={selected.includes(location.id)?true:false}
                                             />
-                                        </th>
-                                        <td>{location.name}</td>
-                                        <td>{location.latitude ?? "------"}</td>
-                                        <td>
-                                            {location.longitude ?? "------"}
                                         </td>
-                                        <td className="flex justify-center gap-10 items-center">
-                                            <button className="font-bold hover:text-amber-500 hover:cursor-pointer"
+                                        <th className="p-5">{location.name}</th>
+                                        <td className={`p-5 ${location.latitude ?? 'text-bold text-xl'}`}>{location.latitude ?? "--------------"}</td>
+                                        <td className={`p-5 ${location.latitude ?? 'text-bold text-xl'}`}>
+                                            {location.longitude ?? "--------------" }
+                                        </td>
+                                        <td>
+                                            <button className="font-bold hover:text-amber-500 hover:cursor-pointer mr-2"
                                                 onClick={()=>{
                                                     dispatcher(setWindowType("update"));
                                                     dispatcher(resetSelection());
@@ -156,7 +158,7 @@ const LocationsTable = () => {
                                             >
                                                 Update
                                             </button>
-                                            <button className="font-bold hover:text-red-500 hover:cursor-pointer"
+                                            <button className="font-bold hover:text-red-500 hover:cursor-pointer ml-2"
                                                 onClick={()=>{
                                                     dispatcher(openPanel({
                                                         operation_type: "Delete Location",

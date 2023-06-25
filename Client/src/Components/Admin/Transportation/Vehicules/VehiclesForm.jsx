@@ -1,9 +1,27 @@
 import { useDispatch } from "react-redux";
-import {disableVehicleCreateMode} from "../../../../Redux/Transportation.js";
+import { useEffect } from "react";
 
-const VehiclesForm = ({register}) => {
-    
+const VehiclesForm = ({register,errors,setValue,SetToast,disableVehicleCreateMode}) => {
+
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        const errorMessages = Object.values(errors)
+          .map((error) => error.message)
+          .filter(Boolean)
+          .join('\n');
+      
+        if (errorMessages) {
+          dispatch(
+            SetToast({
+              type: "Error",
+              message: errorMessages,
+              reload: false,
+            })
+          );
+        }
+    }, [errors]);
+  
     return (
         <tr className="bg-white hover:bg-gray-50 font-medium text-gray-900 uppercase">
             <th className="w-4 p-4">
@@ -33,7 +51,8 @@ const VehiclesForm = ({register}) => {
             <td className="px-6 py-4">
                 <label className="relative top-1 inline-flex items-center cursor-pointer">
                     <input type="checkbox" className="sr-only peer"
-                           {...register("Luxe")}
+                        defaultValue={setValue('LuxuryCreate', false, { shouldDirty: true })}
+                        onChange={(e) => setValue('LuxuryCreate', e.target.checked, { shouldDirty: true })}
                     />
                     <div
                         className={`w-10 h-5 bg-gray-400 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:right-5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500`}></div>
@@ -50,7 +69,9 @@ const VehiclesForm = ({register}) => {
                     >
                         Close
                     </button>
-                    <input type="submit" value="Submit" className="font-bold hover:text-emerald-500"/>
+                    <button type="submit" className="font-bold hover:text-emerald-500 cursor-pointer">
+                        Create
+                    </button>
                 </div>
             </td>
         </tr>

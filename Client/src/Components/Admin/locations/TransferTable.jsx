@@ -6,8 +6,6 @@ import {
   setWindowType,
   openWindow,
   setPaths,
-  addSelection,
-  removeSelection,
   resetSelection,
   setPathToUpdate,
 } from "../../../Redux/locations";
@@ -176,38 +174,40 @@ const TransferTable = () => {
             </button>
           }
         </div>
-        <div className="w-full border-2 border-gray-700 rounded-xl ">
-          <table className="w-full">
-            <thead className="border-b-2 border-gray-700">
+        <div className="w-full border-2 border-gray-700 rounded-md max-h-[25rem] overflow-y-auto">
+          <table className="w-full max-h-full text-sm text-center text-gray-700 font-bold">
+            <thead className="text-xs text-gray-500 uppercase bg-gray-50">
               <tr>
-                <th>
+                <th scope="col" className="w-4 pl-6">
                   <input type="checkbox" 
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
                     onChange={(e)=>selectOrDeselectAllPaths(e.target.checked)}
                   />
                 </th>
-                <th>Departure</th>
-                <th>Arrival</th>
-                <th>Distance</th>
-                <th>Price</th>
-                <th>Status</th>
+                <th scope="col" className="p-5">Departure</th>
+                <th scope="col" className="p-5">Arrival</th>
+                <th scope="col" className="p-5">Distance</th>
+                <th scope="col" className="p-5">Price</th>
+                <th scope="col" className="p-5">Status</th>
                 <th className="max-w-1/4">Actions</th>
               </tr>
             </thead>
             <tbody>
               {paths.length > 0 ? (
                 paths.map((path) => (
-                  <tr key={path.id} className="text-center">
-                    <th className="">
+                  <tr key={path.id} className="bg-white hover:bg-gray-100">
+                    <td className="w-4 pl-6">
                       <input type="checkbox" 
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
                         onChange={(e)=>selectOrDeselect(path.id,e.target.checked)}
                         checked={selected.includes(path.id)?true:false}
                       />
-                    </th>
-                    <td className="">{path.departure.name}</td>
-                    <td className="">{path.arrival.name}</td>
-                    <td className="">{path.distance} KM</td>
-                    <td className="">{path.price} DH</td>
-                    <td className="">
+                    </td>
+                    <td className="p-5">{path.departure.name}</td>
+                    <td className="p-5">{path.arrival.name}</td>
+                    <td className="p-5">{path.distance} KM</td>
+                    <td className="p-5">{path.price} DH</td>
+                    <td className="p-5">
                       <div className="flex justify-center items-center">
                         <div
                           className={`h-2.5 w-2.5 rounded-full ${
@@ -217,7 +217,7 @@ const TransferTable = () => {
                         {path.active ? "Active" : "Inactive"}
                       </div>
                     </td>
-                    <td className="flex justify-center gap-3">
+                    <td className="p-5 flex justify-center gap-3 items-center">
                       <button
                         className={`font-bold ${
                           path.active

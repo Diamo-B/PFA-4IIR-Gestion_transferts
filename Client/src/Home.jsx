@@ -1,4 +1,3 @@
-import "./index.css";
 import ChoixTraget from "./Components/Client/Departure_Arrival/ChoixTraget";
 import Toast from "./Components/Toast/Toast";
 import Logout from "./Components/Client/other/Logout";
