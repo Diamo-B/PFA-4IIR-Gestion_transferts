@@ -1,12 +1,14 @@
 const prisma = require("../../prisma/prismaInstance");
 
 const update = async (req, res) => {
-    let { id, subBrand, brand, places, lux } = req.body;
+    let { id, subBrand, brand, places, lux, Status } = req.body;
     const updatedData = {};
     subBrand && (updatedData.sub_Brand = subBrand );
     brand && (updatedData.brand = brand );
     places && (updatedData.places = places );
-    lux != undefined && (updatedData.lux = lux );    
+    lux != undefined && (updatedData.lux = lux );  
+    Status != undefined && (updatedData.Status = Status );
+    console.log(updatedData.Status);
     try {
         let updatedVehicule = await prisma.vehicule.update({
             where: {

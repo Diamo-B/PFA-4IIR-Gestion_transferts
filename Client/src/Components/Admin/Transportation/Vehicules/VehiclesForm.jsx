@@ -1,7 +1,10 @@
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import {SetToast} from "../../../../Redux/toast";
+import {disableVehicleCreateMode} from "../../../../Redux/Transportation";
 
-const VehiclesForm = ({register,errors,setValue,SetToast,disableVehicleCreateMode}) => {
+
+const VehiclesForm = ({register,errors,setValue}) => {
 
     const dispatch = useDispatch();
 
@@ -35,17 +38,17 @@ const VehiclesForm = ({register,errors,setValue,SetToast,disableVehicleCreateMod
             </th>
             <td scope="row">
                 <input type="text" autoFocus className="py-1 text-center"
-                       {...register("Model")}
+                       {...register("ModelCreate")}
                 />
             </td>
             <td>
                 <input type="text" className="py-1 text-center"
-                        {...register("Brand")}
+                        {...register("BrandCreate")}
                 />
             </td>
             <td>
                 <input type="number" min={0} className="py-1 text-center"
-                       {...register("Places")}
+                       {...register("PlacesCreate")}
                 />
             </td>
             <td className="px-6 py-4">

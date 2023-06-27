@@ -2,7 +2,6 @@ const prisma = require("../../prisma/prismaInstance");
 
 let update = async (req, res) => {
     let { id, name, longitude, latitude } = req.body;
-    console.log(id, name, longitude, latitude);
     if (!id)
         return res
             .status(400)

@@ -1,9 +1,9 @@
 import * as yup from "yup";
 
 const createSchema = yup.object().shape({
-    Model: yup.string().required(),
-    Brand: yup.string().required(),
-    Places: yup
+    ModelCreate: yup.string().required(),
+    BrandCreate: yup.string().required(),
+    PlacesCreate: yup
         .number()
         .required("Places is required")
         .positive("Places must be a positive number")
@@ -27,7 +27,6 @@ const updateSchema = yup.object().shape({
         .notRequired(),
     Luxury: yup
     .boolean()
-    .transform((value)=>(value.length === 0 ? false : true))
     .notRequired()
 });
 

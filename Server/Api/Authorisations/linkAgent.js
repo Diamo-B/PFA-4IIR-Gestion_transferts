@@ -55,7 +55,6 @@ let linkAgent = async (req,res) => {
         })
 
         let wantedAuthorisation = thisAgentAuthorisations.filter(field=>field.category.name.toLowerCase() == categoryName.toLowerCase());
-        console.log(wantedAuthorisation);
         let permissionIDS = permissions.map(perm=>perm.id);
 
         let link = await prisma.agentCategoryPermission.update({

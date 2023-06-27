@@ -1,8 +1,15 @@
-import {useForm} from "react-hook-form";
+import {useEffect, useRef, useState} from "react";
+import {useSelector, useDispatch} from "react-redux";
+
+import {useForm, Controller} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 
-import {useEffect, useRef} from "react";
-import {useSelector, useDispatch} from "react-redux";
+import ModelChooser from "./ModelChooser";
+import TopBar from "./TopBar";
+import VehiclesForm from "./VehiclesForm";
+import ConfirmOp from "../../../ConfirmOperation/ConfirmOp";
+import CustomCheckBox from './vehiclesComponents/CustomCheckBox.jsx'
+
 import {SetToast} from "../../../../Redux/toast";
 import {
     activateLoading,
@@ -11,21 +18,51 @@ import {
     resetVehicles,
     activateRefetch,
     disableRefetch,
-    disableVehicleCreateMode, enableVehicleModifyMode, disableVehicleModifyMode, setSelectedModel, setSelectedVehicles,
+    disableVehicleCreateMode, 
+    enableVehicleModifyMode, 
+    disableVehicleModifyMode
 } from "../../../../Redux/Transportation";
 
-import {createSchema, updateSchema} from "./vehiclesComponents/yupSchemas";
-import ModelChooser from "./ModelChooser";
-import TopBar from "./TopBar";
-import VehiclesForm from "./VehiclesForm.jsx";
+import {
+    openPanel
+} from "../../../../Redux/confirmationPanel";
+
+import {
+    createSchema, 
+    updateSchema
+} from "./vehiclesComponents/yupSchemas";
+
+import { 
+    addOrRemoveAll,
+    addOrRemoveSelection,
+    deleteVehicle
+} from "./vehiclesComponents/helperFunctions";
 
 const Vehicules = () => {
     let dispatch = useDispatch();
-    let {vehicles, selectedModel, selectedVehicles, isLoading, createMode, updateMode} = useSelector(
-        (state) => state.transportation.vehicules
-    );
-    const generalCheckbox = useRef();
+    
+    let {
+        vehicles,
+        selectedModel, 
+        selectedVehicles, 
+        isLoading, 
+        createMode, 
+        updateMode
+    } = useSelector((state) => state.transportation.vehicules);
     let {refetch} = useSelector(state => state.transportation.window);
+    let {confirmOp} = useSelector(state => state.confirmationPanel); 
+    
+    const generalCheckbox = useRef();
+    
+    const {
+        register, 
+        handleSubmit, 
+        reset, 
+        setValue, 
+        control,
+        formState: {errors}
+    } = useForm({resolver: yupResolver(createMode === true ? createSchema : updateSchema)});
+
     useEffect(() => {
         dispatch(activateLoading())
         dispatch(resetVehicles());
@@ -54,85 +91,6 @@ const Vehicules = () => {
         dispatch(disableRefetch());
     }, [selectedModel, refetch])
 
-    let deleteVehicle = (id) => {
-        fetch('/api/vehicule/remove', {
-            method: "delete",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`
-            },
-            body: JSON.stringify({
-                id: id
-            })
-        }).then(async (res) => {
-            let response = await res.json();
-            dispatch(activateRefetch());
-            dispatch(SetToast({
-                type: "Success",
-                message: `The vehicle ${response.brand + " " + response.sub_Brand} was deleted successfully!!`,
-                reload: false
-            }));
-        }).catch(async (err) => {
-            let error = await err.json();
-            if (error.err)
-                dispatch(SetToast({
-                    type: "Error",
-                    message: error.err,
-                    reload: false
-                }))
-            console.error(err);
-        })
-    }
-
-    let deleteSelectedVehicles = () => {
-        fetch('/api/vehicule/removeMany', {
-            method: "delete",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`
-            },
-            body: JSON.stringify({
-                Ids: selectedVehicles
-            })
-        }).then(async (res) => {
-            let response = await res.json();
-            dispatch(activateRefetch());
-            dispatch(SetToast({
-                type: "Success",
-                message: `The selected vehicles were deleted successfully!!`,
-                reload: false
-            }));
-        }).catch(async (error) => {
-            let err = await error.json();
-            if (err.error)
-                dispatch(SetToast({
-                    type: "Error",
-                    message: err.error,
-                    reload: false
-                }))
-            console.error(err);
-        })
-        generalCheckbox.current.checked = false;
-    }
-
-    let addOrRemoveSelection = (e, id) =>{
-        if(e.target.checked)
-            dispatch(setSelectedVehicles([ id, ...selectedVehicles]))
-        else
-            dispatch(setSelectedVehicles(selectedVehicles.filter((item) => item !== id)));
-    }
-
-    let addOrRemoveAll = (e) =>{
-        if(e.target.checked)
-            dispatch(setSelectedVehicles(vehicles.map((item) => item.id)));
-        else
-            dispatch(setSelectedVehicles([]));
-    }
-
-
-    const {register, handleSubmit, reset, setValue, formState: {errors}} = useForm({
-        resolver: yupResolver(createMode === true ? createSchema : updateSchema)
-    });
     //shows form errors
     useEffect(() => {
         const errorMessages = Object.values(errors)
@@ -149,7 +107,9 @@ const Vehicules = () => {
             })
           );
         }
-      }, [errors]);
+    }, [errors]);
+
+
 
     let createVehicle = (data) => {
         //TODO: Save Data into Database
@@ -161,9 +121,9 @@ const Vehicules = () => {
             },
             body: JSON.stringify({
                 modelID: selectedModel.value,
-                brand: data.Brand,
-                brandModel: data.Model,
-                nbr_places: data.Places,
+                brand: data.BrandCreate,
+                brandModel: data.ModelCreate,
+                nbr_places: data.PlacesCreate,
                 luxe: data.LuxuryCreate
             })
         }).then(async (res) => {
@@ -190,7 +150,6 @@ const Vehicules = () => {
                 reload: false
             }))
         })
-        reset();
         dispatch(disableVehicleCreateMode());
     }
 
@@ -232,8 +191,80 @@ const Vehicules = () => {
                 reload: false
             }))
         })
-        reset();
         dispatch(disableVehicleModifyMode());
+    }
+
+    let [deleteLots, setDeleteLots] = useState(false);
+    let deleteSelectedVehicles = () => {
+        fetch('/api/vehicule/removeMany', {
+          method: "delete",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`
+          },
+          body: JSON.stringify({
+            Ids: selectedVehicles
+          })
+        }).then(async (res) => {
+          if (res.ok) {
+            dispatch(activateRefetch());
+            dispatch(SetToast({
+              type: "Success",
+              message: `The selected vehicles were deleted successfully!!`,
+              reload: false
+            }));
+          } else {
+            throw new Error("Failed to delete selected vehicles");
+          }
+        }).catch(async (error) => {
+          console.log(error);
+          let err = await error.json();
+          if (err.error) {
+            dispatch(SetToast({
+              type: "Error",
+              message: err.error,
+              reload: false
+            }));
+          }
+          console.error(err);
+        });
+    };
+
+    let changeStatus = (id,Status)=>{
+        fetch("/api/vehicule/update", {
+            method: "put",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                id: id,
+                Status: !Status
+            })
+        }).then(async (res) => {
+            let response = await res.json();
+            if (response.err)
+                dispatch(SetToast({
+                    type: "Error",
+                    message: response.err,
+                    reload: false
+                }))
+            else {
+                dispatch(SetToast({
+                    type: "Success",
+                    message: `The vehicle ${response.updatedVehicule.brand + " " + response.updatedVehicule.sub_Brand} was ${response.updatedVehicule.Status?"activated":"disabled"} successfully!!`,
+                    reload: false
+                }))
+                dispatch(activateRefetch());
+            }
+        }).catch(async (err) => {
+            console.error(err);
+            dispatch(SetToast({
+                type: "Error",
+                message: "An unknown error occurred while updating the vehicle!!",
+                reload: false
+            }))
+        })
     }
 
     if (isLoading) {
@@ -242,23 +273,23 @@ const Vehicules = () => {
 
     return (
         <div
-            className="max-h-full overflow-auto col-span-3 bg-indigo-50 rounded-2xl drop-shadow-lg p-5 flex flex-col gap-5">
+            className="max-h-full overflow-auto col-span-3 bg-indigo-50 rounded-2xl drop-shadow-lg p-5 flex flex-col gap-5 font-normal">
             <ModelChooser/>
 
-            <TopBar dispatch={dispatch} selectedModel={selectedModel} selectedVehicles={selectedVehicles} deleteSelectedVehicles={deleteSelectedVehicles}/>
+            <TopBar resetFields={reset} generalCheckbox={generalCheckbox} setDeleteLots={setDeleteLots}/>
 
             <form className="max-h-full  overflow-y-auto rounded-xl"
                 onSubmit={updateMode.Mode == true ? handleSubmit(UpdateVehicle) : handleSubmit(createVehicle)}
             >
-                <table className="w-full text-gray-500 relative text-center">
-                    <thead className=" text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-40">
+                <table className="w-full relative text-center">
+                    <thead className=" text-xs text-gray-600 uppercase bg-gray-50 sticky top-0 z-30">
                     <tr>
                         <th scope="col" className="p-4">
                             <div className="flex items-center">
                                 <input
                                     type="checkbox"
                                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
-                                    onChange={(e) => addOrRemoveAll(e)}
+                                    onChange={(e) => addOrRemoveAll(e,dispatch,vehicles)}
                                     ref={generalCheckbox}
                                 />
                             </div>
@@ -272,6 +303,12 @@ const Vehicules = () => {
                         <th scope="col" className="px-6 py-3">
                             N° Places
                         </th>
+                        {
+                            !updateMode.Mode && !createMode &&
+                            <th className="px-6 py-3">
+                                Status
+                            </th>
+                        }
                         <th scope="col" className="px-6 py-3">
                             luxe
                         </th>
@@ -284,7 +321,7 @@ const Vehicules = () => {
                     {
                         vehicles?.length > 0 ?
                             vehicles.map((vehicle) => (
-                                <tr className={`text-gray-900 uppercase ${updateMode.Mode && updateMode.fieldId === vehicle.id ? "bg-slate-100" : "bg-white hover:bg-gray-50"}`}
+                                <tr className={`text-gray-900 capitalize font-medium ${updateMode.Mode && updateMode.fieldId === vehicle.id ? "bg-slate-100" : "bg-white hover:bg-gray-50"}`}
                                     key={vehicle.id}
                                 >
                                     <th className="w-4 p-4">
@@ -294,13 +331,13 @@ const Vehicules = () => {
                                                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
                                                 checked={selectedVehicles.includes(vehicle.id)}
                                                 onChange={(e) => {
-                                                  addOrRemoveSelection(e, vehicle.id);  
+                                                  addOrRemoveSelection(e, vehicle.id, dispatch,selectedVehicles);  
                                                 }}
                                             />
                                         </div>
                                     </th>                                    
                                     
-                                    <th scope="row" className={`px-6 py-4`}>
+                                    <td scope="row" className={`px-6 py-4`}>
                                     {updateMode.Mode && updateMode.fieldId === vehicle.id ? (
                                         <input
                                         className="text-center w-full py-1 rounded-lg bg-transparent"
@@ -312,7 +349,7 @@ const Vehicules = () => {
                                     ) : (
                                         vehicle.sub_Brand
                                     )}
-                                    </th>
+                                    </td>
                                     <td className={`px-6 py-4`}>
                                     {updateMode.Mode && updateMode.fieldId === vehicle.id ? (
                                         <input
@@ -339,13 +376,28 @@ const Vehicules = () => {
                                         vehicle.places
                                     )}
                                     </td>
-                                    
+                                    {
+                                        !updateMode.Mode && !createMode &&
+                                        <td className={`px-6 py-4`}>
+                                            <div className="flex items-center gap-2 justify-center">
+                                                <div className={`h-2.5 w-2.5 rounded-full ${vehicle.Status ? "bg-emerald-500" : "bg-red-500"}`}></div>
+                                                <p>{vehicle.Status?"Active":"Inactive"}</p>
+                                            </div>
+                                        </td>
+                                    }
                                     <td className={`px-6 py-4`}>
                                         <label className="relative top-1 inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" className="sr-only peer"
+                                            <Controller
+                                            name="Luxury"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <CustomCheckBox
                                                 disabled={updateMode.Mode && updateMode.fieldId === vehicle.id ? false : true}
-                                                defaultChecked={vehicle.lux}
-                                                {...register("Luxury")}
+                                                defaultValue={vehicle.lux}
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                />
+                                            )}
                                             />
                                             <div
                                                 className="w-10 h-5 bg-gray-400 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:right-5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
@@ -353,6 +405,14 @@ const Vehicules = () => {
                                     </td>
                                     <td className={`px-6 py-4`}>
                                         <div className="flex justify-center gap-3">
+                                            {
+                                                !updateMode.Mode && !createMode &&
+                                                <button className={`font-bold hover:text-emerald-500`} type="button"
+                                                    onClick={()=>changeStatus(vehicle.id,vehicle.Status)}
+                                                >
+                                                    {vehicle.Status? "Disable" : "Enable"}
+                                                </button>
+                                            }
                                             <button
                                                 className={`font-bold ${updateMode.Mode && updateMode.fieldId === vehicle.id ? "hover:text-red-500" : "hover:text-amber-500"}`}
                                                 type="button"
@@ -369,7 +429,15 @@ const Vehicules = () => {
                                                 className={`font-bold ${updateMode.Mode && updateMode.fieldId === vehicle.id ? "hover:text-emerald-500" : "hover:text-red-500"}`}
                                                 type={ updateMode.Mode && updateMode.fieldId === vehicle.id ? "submit":"button"}
                                                 onClick={() => {
-                                                    !updateMode.Mode && deleteVehicle(vehicle.id)
+                                                    !updateMode.Mode && 
+                                                    dispatch(
+                                                        openPanel({
+                                                            Impact:"danger",
+                                                            operation_type:"Delete Vehicle",
+                                                            executeParams:vehicle.id
+                                                        })
+                                                    )
+                                                    console.log(vehicle)
                                                 }} 
                                             >
                                                 {updateMode.Mode && updateMode.fieldId === vehicle.id ? "Submit" :"Delete"}
@@ -424,14 +492,18 @@ const Vehicules = () => {
                     }
                     {
                         (createMode === true && selectedModel !== null) &&
-                        <VehiclesForm register={register} errors={errors} setValue={setValue} setToast={SetToast} disableVehicleCreateMode={disableVehicleCreateMode}/>
+                        <VehiclesForm register={register} errors={errors} setValue={setValue}/>
                     }
                     </tbody>
                 </table>
             </form>
+            {
+                confirmOp.value
+                &&
+                <ConfirmOp Impact={confirmOp.Impact} operation_type={confirmOp.operation_type} execute={!deleteLots ? deleteVehicle: deleteSelectedVehicles}/>
+            }
         </div>
     )
-        ;
 };
 
 export default Vehicules;

@@ -130,7 +130,7 @@ export const {
 
 export const  {
     activateRefetch,
-    disableRefetch,
+    disableRefetch
 } = windowSLice.actions;
 
 export default vehiculesReducer;

@@ -2,7 +2,6 @@ const prisma = require("../../prisma/prismaInstance");
 
 let update = async (req, res) => {
     let { id, newData } = req.body;
-    console.log(id, newData);
     
     let query = newData.active !== undefined ? newData : {
         departure: {

@@ -1,14 +1,21 @@
 import Search from "../../users/Search";
 import { UilPlus, UilMinus} from '@iconscout/react-unicons';
-import {disableVehicleModifyMode, enableVehicleCreateMode} from  "../../../../Redux/Transportation.js";
+import {disableVehicleModifyMode, enableVehicleCreateMode, activateRefetch} from  "../../../../Redux/Transportation.js";
 import {SetToast} from "../../../../Redux/toast.js";
-const TopBar = ({dispatch, selectedModel,selectedVehicles,deleteSelectedVehicles}) => {
+import {useSelector, useDispatch} from "react-redux";
+import { openPanel } from "../../../../Redux/confirmationPanel";
 
+const TopBar = ({resetFields,generalCheckbox,setDeleteLots}) => {
+    let dispatch = useDispatch();
+    let {selectedModel, selectedVehicles} = useSelector(
+        (state) => state.transportation.vehicules
+    );
     let enableCreateMode = () => {
         if(selectedModel)
         {
             dispatch(disableVehicleModifyMode())
             dispatch(enableVehicleCreateMode())
+            resetFields();
         }
         else
             dispatch(SetToast({
@@ -28,7 +35,15 @@ const TopBar = ({dispatch, selectedModel,selectedVehicles,deleteSelectedVehicles
                 </button>
                 {
                     selectedVehicles.length > 0 &&
-                    <button className="border-2 border-gray-700 text-gray-700 text-lg font-bold px-5 rounded-full hover:text-white hover:bg-red-500 group"       onClick={deleteSelectedVehicles}>
+                    <button className="border-2 border-gray-700 text-gray-700 text-lg font-bold px-5 rounded-full hover:text-white hover:bg-red-500 group" onClick={()=>{
+                        setDeleteLots(true);
+                        dispatch(openPanel({
+                            Impact: "danger",
+                            executeParams: selectedVehicles,
+                            operation_type: "Delete Selected Vehicles"                            
+                        }))                        
+                        generalCheckbox.current.checked = false;
+                    }}>
                         <UilMinus className="text-gray-700 group-hover:text-white "/>
                     </button>
                 }

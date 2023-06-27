@@ -14,6 +14,8 @@ import { useSelector, useDispatch } from "react-redux";
 import TransferForm from "./TransferForm";
 import { useEffect } from "react";
 import { SetToast } from "../../../Redux/toast";
+import { closePanel, openPanel } from "../../../Redux/confirmationPanel";
+import ConfirmOp from "../../ConfirmOperation/ConfirmOp";
 
 const TransferTable = () => {
   let dispatcher = useDispatch();
@@ -23,6 +25,12 @@ const TransferTable = () => {
   let { paths } = useSelector((state) => state.mapPanel.paths);
 
   const { selectOrDeselectAllPaths, selectOrDeselect } = useLocationHelpers();
+
+  const {confirmOp} = useSelector(state => state.confirmationPanel)
+
+  useEffect(() => {
+    dispatcher(closePanel());
+  }, []);
 
   useEffect(() => {
     fetch("/api/path/getAll", {
@@ -241,7 +249,11 @@ const TransferTable = () => {
                       <button
                         className="font-bold hover:text-red-500"
                         onClick={() => {
-                          DeleteSinglePath(path.id);
+                          dispatcher(openPanel({
+                            operation_type: "Delete Path",
+                            Impact: "danger",
+                            executeParams: path.id,
+                          }))
                         }}
                       >
                         Delete
@@ -299,6 +311,10 @@ const TransferTable = () => {
           </div>
         </div>
       )}
+      {
+        confirmOp.value == true &&
+        <ConfirmOp operation_type={confirmOp.operation_type} Impact={confirmOp.Impact} execute={DeleteSinglePath}/>
+      }
     </div>
   );
 };
