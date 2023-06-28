@@ -319,7 +319,7 @@ const Vehicules = () => {
                     </thead>
                     <tbody className="text-sm">
                     {
-                        vehicles?.length > 0 ?
+                        vehicles?.length > 0 &&
                             vehicles.map((vehicle) => (
                                 <tr className={`text-gray-900 capitalize font-medium ${updateMode.Mode && updateMode.fieldId === vehicle.id ? "bg-slate-100" : "bg-white hover:bg-gray-50"}`}
                                     key={vehicle.id}
@@ -446,49 +446,6 @@ const Vehicules = () => {
                                     </td>
                                 </tr>
                             ))
-                            :
-                            //empty row
-                            (createMode === false && updateMode === false) &&
-                            <tr className="bg-white hover:bg-gray-50 font-medium text-gray-900 uppercase">
-                                <th className="w-4 p-4">
-                                    <div className="flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
-                                            disabled={true}
-                                        />
-                                    </div>
-                                </th>
-                                <th scope="row" className="px-6 py-4">
-                                    ----
-                                </th>
-                                <td className="px-6 py-4">----</td>
-                                <td className="px-6 py-4">----</td>
-                                <td className="px-6 py-4">
-                                    <label className="relative top-1 inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" className="sr-only peer"
-                                            disabled={true}
-                                        />
-                                        <div
-                                            className="w-10 h-5 bg-gray-400 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:right-5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
-                                    </label>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div className="flex justify-center gap-3">
-                                        <button
-                                            className="font-bold"
-                                        >
-                                            ----
-                                        </button>
-                                        <button
-                                            className="font-bold"
-                                        >
-                                            ----
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-
                     }
                     {
                         (createMode === true && selectedModel !== null) &&

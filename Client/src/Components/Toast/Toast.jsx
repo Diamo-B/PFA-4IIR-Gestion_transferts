@@ -18,13 +18,13 @@ const Toast = ({Type, Message, trigger, reload}) => {
         setClasses("text-indigo-700 bg-indigo-100 dark:bg-indigo-300")
       break;
     }
-
+    
     setTimeout(()=>{
       trigger && dispatcher(trigger());
       if(reload === true) 
         location.reload()
     },2500);
-  })
+  },[])
   return (
     <div
       className={`absolute z-50 right-5 bottom-5 mt-5 flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800`}
@@ -37,7 +37,7 @@ const Toast = ({Type, Message, trigger, reload}) => {
       <div className="ml-3 text-sm font-normal">{Message}</div>
       <button
         type="button"
-        className="ml-2 bg-white text-gray-400 hover:text-gray-900 rounded-sm focus:ring-2 focus:ring-gray-300 hover:bg-gray-100 flex justify-center items-center h-5 w-5 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700 ease-out"
+        className="ml-auto bg-white text-gray-400 hover:text-gray-900 rounded-sm focus:ring-2 focus:ring-gray-300 hover:bg-gray-100 flex justify-center items-center h-5 w-5 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700 ease-out"
         onClick={()=>{
           trigger && dispatcher(trigger());
           if(reload === true) location.reload();

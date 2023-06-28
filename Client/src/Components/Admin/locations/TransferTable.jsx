@@ -214,7 +214,7 @@ const TransferTable = () => {
                     <td className="p-5">{path.departure.name}</td>
                     <td className="p-5">{path.arrival.name}</td>
                     <td className="p-5">{path.distance} KM</td>
-                    <td className="p-5">{path.price} DH</td>
+                    <td className="p-5">{path.price} MAD</td>
                     <td className="p-5">
                       <div className="flex justify-center items-center">
                         <div

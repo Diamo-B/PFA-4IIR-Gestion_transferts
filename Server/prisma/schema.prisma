@@ -106,6 +106,13 @@ model Vehicule{
   images    Image[]
 }
 
+model Period{
+  id        String @id @default(uuid())
+  label     String @unique
+  start     DateTime 
+  end       DateTime
+  price     Float
+}
 
 
 

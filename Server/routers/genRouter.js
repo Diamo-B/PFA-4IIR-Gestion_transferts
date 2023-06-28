@@ -11,6 +11,7 @@ const placesRouter = require('./placesRouter');
 const pathsRouter = require('./pathsRouter');
 const modelsRouter = require("./modelsRouter");
 const vehiculesRouter = require("./vehiculesRouter");
+const periodRouter = require("./periodRouter");
 
 router.use('/client',clientRouter);
 router.use('/agent',agentRouter);
@@ -22,6 +23,7 @@ router.use('/place',placesRouter)
 router.use('/path',pathsRouter);
 router.use('/models',modelsRouter)
 router.use('/vehicule',vehiculesRouter)
+router.use('/period',periodRouter);
 
 const {verifyJWT} = require('../Api/verifyJWT');
 router.post('/verifyJWT',verifyJWT);

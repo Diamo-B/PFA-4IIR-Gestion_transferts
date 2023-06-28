@@ -29,7 +29,7 @@ const Transportation = () => {
             SetToast({
               type: "Error",
               message: response.err,
-              refetch: false,
+              reload: false,
             })
           );
         else {
@@ -42,7 +42,7 @@ const Transportation = () => {
           SetToast({
             type: "Error",
             message: "An unknown error occured while fetching the models!!",
-            refetch: false,
+            reload: false,
           })
         );
       });
