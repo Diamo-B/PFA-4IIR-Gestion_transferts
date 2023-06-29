@@ -1,25 +1,27 @@
 import Toast from "../Components/Toast/Toast";
 import Calendar from "../Components/Admin/Periods/Calendar";
 import Table from "../Components/Admin/Periods/Table";
+import useDatesError from "../Components/Admin/Periods/hooks/gen/useDatesError";
+import useKeyboardEsc from "../Components/Admin/Periods/hooks/gen/useKeyboardEsc";
+import useCreatePeriod from "../Components/Admin/Periods/hooks/gen/useCreatePeriod";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { useForm } from "react-hook-form";
 import * as yup from "yup";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { parse, isAfter, format, parseISO } from "date-fns";
+import useYupSchemas  from "../Components/Admin/Periods/hooks/gen/useYupSchemas";
 
 import { useSelector, useDispatch } from "react-redux";
 import {
   setReadOnly,
   enableEndingDate,
   enableStartingDate,
-  disableStartingDate,
-  disableEndingDate,
-  addPeriod,
 } from "../Redux/periods";
-import { SetToast, disableToast } from "../Redux/toast";
+import { disableToast } from "../Redux/toast";
+import { parse } from "date-fns";
+
 
 const Periods = () => {
   let [datesError, setDatesError] = useState(false);
@@ -31,26 +33,7 @@ const Periods = () => {
 
   let dispatch = useDispatch();
 
-  let schema = yup.object().shape({
-    name: yup.string().required("Period's name is required"),
-    price: yup
-      .number()
-      .required("Price is required")
-      .typeError("Price must be a number")
-      .positive("Price must be greater than 0"),
-    startingDate: yup
-      .date()
-      .required("Starting date is required")
-      .transform((value, originalValue) => {
-        return parse(originalValue, "dd-MM-yyyy", new Date());
-      }),
-    endingDate: yup
-      .date()
-      .required("Ending date is required")
-      .transform((value, originalValue) => {
-        return parse(originalValue, "dd-MM-yyyy", new Date());
-      })
-  });
+  const { createSchema, updateSchema } = useYupSchemas();
 
   const {
     register,
@@ -62,100 +45,21 @@ const Periods = () => {
     reset,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(createSchema)
   });
 
-  let createPeriod = (data) => {
-    console.log(data);
-    fetch("/api/period/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
-      body: JSON.stringify({
-        label: data.name,
-        startDate: data.startingDate,
-        endDate: data.endingDate,
-        price: data.price,
-      }),
-    })
-      .then(async (res) => {
-        let response = await res.json();
-        if(response.message)
-          dispatch(
-            SetToast({
-              message: response.message,
-              type: "Error",
-              reload: false,
-            })
-          );
-        else
-        {
-          dispatch(
-            SetToast({
-              message: `The ${response.label} period was created successfully`,
-              type: "Success",
-              reload: false,
-            })
-          );
-          response.start = format(parseISO(response.start), "dd-MM-yyyy");
-          response.end = format(parseISO(response.end), "dd-MM-yyyy");
-          dispatch(addPeriod(response));
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        dispatch(
-          SetToast({
-            message: "An unknown error has occurred",
-            type: "Error",
-            reload: false,
-          })
-        );
-      });
-      reset();
+  //? create period function from custom hook
+  const { createPeriod } = useCreatePeriod();
+  const submit = (data) => {
+    console.log("entred");
+    createPeriod(data, reset);
   };
 
-  //? esc button <==> remove read only
-  useEffect(() => {
-    const handleKeyPress = (event) => {
-      if (event.key === 'Escape') {
-        dispatch(setReadOnly(false));
-        dispatch(disableStartingDate());
-        dispatch(disableEndingDate()); 
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyPress);
-    };
-  }, []);
+  //? esc button <==> remove readOnly status (stop selecting dates)
+  useKeyboardEsc();
 
   //? dates error handeling
-  useEffect(() => {
-    const start = getValues("startingDate");
-    const end = getValues("endingDate");
-    if(start && end && !isAfter(parse(end,"dd-MM-yyyy", new Date()), parse(start,"dd-MM-yyyy", new Date()))){
-      if(errors.endingDate?.type === "custom") return;
-      setError(
-        "endingDate",
-        { type: "custom", message: "Ending date must be after starting date" },
-        { shouldFocus: false }
-      );
-      setDatesError(true);
-      dispatch(disableStartingDate());
-      dispatch(disableEndingDate());
-    }
-    else
-    {
-      clearErrors("endingDate");
-      setDatesError(false);
-    }
-  }, [startingDate.active, endingDate.active]);
-
+  useDatesError(setDatesError, setError, getValues, clearErrors, errors);
 
   return (
     <>
@@ -163,7 +67,7 @@ const Periods = () => {
         <div className="bg-white w-full rounded-xl relative  overflow-y-auto">
           <form
             className="text-black m-3 py-5 flex flex-col justify-center items-center gap-5 border-4 border-slate-200 rounded-xl relative"
-            onSubmit={handleSubmit(createPeriod)}
+            onSubmit={handleSubmit(submit)}
           >
             {readOnly === true && !datesError && (
               <div className="absolute w-full h-full rounded-lg bg-slate-600/90 z-50 flex justify-center items-center">
@@ -196,7 +100,7 @@ const Periods = () => {
                   readOnly={readOnly}
                   onFocus={() => {
                     if (datesError) {
-                      setDatesError(null);
+                      setDatesError(false);
                     }
                     dispatch(setReadOnly(true));
                     dispatch(enableStartingDate());
@@ -219,7 +123,7 @@ const Periods = () => {
                   readOnly={readOnly}
                   onFocus={() => {
                     if (datesError) {
-                      setDatesError(null);
+                      setDatesError(false);
                     }
                     dispatch(setReadOnly(true));
                     dispatch(enableEndingDate());
@@ -260,7 +164,7 @@ const Periods = () => {
             <button
               className="btn px-5 hover:bg-emerald-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent     disabled:hover:text-black" 
               type="submit"
-              disabled={datesError || errors.name || errors.startingDate || errors.endingDate || errors.price }
+              disabled={datesError || Object.keys(errors).length > 0 }
               onClick={() => dispatch(setReadOnly(null))}
             >
               Add Period

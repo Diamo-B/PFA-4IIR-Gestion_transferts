@@ -13,7 +13,10 @@ export const periods = createSlice({
         },
         //? table
         periods: [],
-        refetch: false,
+        updateMode: {
+            state: false,
+            value: null
+        }
     },
     reducers:{
         setReadOnly: (state, action) => {
@@ -39,6 +42,14 @@ export const periods = createSlice({
         },
         removePeriod: (state, action) => {
             state.periods = state.periods.filter(period => period.id !== action.payload);
+        },
+        enableUpdateMode: (state, action) => {
+            state.updateMode.state = true;
+            state.updateMode.value = action.payload;
+        },
+        disableUpdateMode: (state) => {
+            state.updateMode.state = false;
+            state.updateMode.value = null;
         }
     }
 })
@@ -51,6 +62,8 @@ export const {
     disableEndingDate,
     setPeriods,
     addPeriod,
-    removePeriod
+    removePeriod,
+    enableUpdateMode,
+    disableUpdateMode
 } = periods.actions;
 export default periods.reducer;

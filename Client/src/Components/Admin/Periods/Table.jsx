@@ -1,12 +1,15 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { SetToast } from "../../../Redux/toast";
-import { setPeriods, removePeriod, addPeriod} from "../../../Redux/periods";
+import { setPeriods } from "../../../Redux/periods";
+import EmptyRecord from "./EmptyTableRecord";
+import useDeletePeriod from "./hooks/table/useDeletePeriod";
 
 const Table = () => {
   let dispatch = useDispatch();
   let {periods} = useSelector((state) => state.periods);
-  
+  let {deleteSinglePeriod} = useDeletePeriod();
+
   useEffect(() => {
     fetch("/api/period/getAll", {
       method: "get",
@@ -19,40 +22,6 @@ const Table = () => {
       dispatch(setPeriods(response));
     })
     .catch((err) => {
-        console.error(err);
-        dispatch(
-          SetToast({
-            type: "error",
-            message: "An unknown error has occured!!",
-            reload: false,
-          })
-        );
-    });
-  }, []);
-
-
-  let deleteSinglePeriod = (id) => {
-    fetch("/api/period/delete", {
-      method: "delete",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
-      body: JSON.stringify({ 
-        id: id 
-      })
-    }).then(async (res) => {
-      let response = await res.json();
-      console.log(response);
-      dispatch(
-        SetToast({
-          type: "Success",
-          message: `The ${response.label} period was deleted successfully!!`,
-          reload: false,
-        })
-      );
-      periods.length > 0 && dispatch(removePeriod(response.id));
-    }).catch((err) => {
       console.error(err);
       dispatch(
         SetToast({
@@ -62,7 +31,8 @@ const Table = () => {
         })
       );
     });
-  }
+  }, []);
+
   return (
     <>
       <table className="w-full text-gray-500 relative text-center h-full">
@@ -116,7 +86,11 @@ const Table = () => {
                 <td className="px-6 py-4">{period.price} MAD</td>
                 <td className="px-6 py-4">
                   <div className="flex justify-center gap-3">
-                    <button className="font-bold hover:text-amber-500">
+                    <button className="font-bold hover:text-amber-500"
+                      onClick={() => {
+                        dispatch(enableUpdateMode(period.id));
+                      }}
+                    >
                       Update
                     </button>
                     <button className="font-bold hover:text-red-500"
@@ -129,25 +103,7 @@ const Table = () => {
               </tr>
             ))
             :
-            //? Empty record
-            <tr className="bg-white hover:bg-gray-50 font-medium text-gray-900 uppercase">
-              <th className="w-4 p-4">
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
-                    disabled={true}
-                  />
-                </div>
-              </th>
-              <th scope="row" className="px-6 py-4">
-                ----
-              </th>
-              <td className="px-6 py-4">----</td>
-              <td className="px-6 py-4">----</td>
-              <td className="px-6 py-4">----</td>
-              <td className="px-6 py-4">----</td>
-            </tr>
+            <EmptyRecord />
           }
           
         </tbody>
