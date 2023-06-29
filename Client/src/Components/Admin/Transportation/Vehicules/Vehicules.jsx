@@ -15,12 +15,13 @@ import {
     activateLoading,
     disableLoading,
     setVehicles,
+    addVehicle,
+    updateVehicle,
     resetVehicles,
-    activateRefetch,
-    disableRefetch,
     disableVehicleCreateMode, 
     enableVehicleModifyMode, 
-    disableVehicleModifyMode
+    disableVehicleModifyMode,
+    removeVehicles
 } from "../../../../Redux/Transportation";
 
 import {
@@ -49,7 +50,6 @@ const Vehicules = () => {
         createMode, 
         updateMode
     } = useSelector((state) => state.transportation.vehicules);
-    let {refetch} = useSelector(state => state.transportation.window);
     let {confirmOp} = useSelector(state => state.confirmationPanel); 
     
     const generalCheckbox = useRef();
@@ -88,8 +88,7 @@ const Vehicules = () => {
             })
         }
         dispatch(disableLoading());
-        dispatch(disableRefetch());
-    }, [selectedModel, refetch])
+    }, [selectedModel])
 
     //shows form errors
     useEffect(() => {
@@ -140,7 +139,7 @@ const Vehicules = () => {
                     message: `The new vehicle ${response.brand + " " + response.sub_Brand} was added successfully!!`,
                     reload: false
                 }))
-                dispatch(activateRefetch());
+                dispatch(addVehicle(response));
             }
         }).catch(async (err) => {
             console.error(err);
@@ -181,7 +180,7 @@ const Vehicules = () => {
                     message: `The vehicle ${response.updatedVehicule.brand + " " + response.updatedVehicule.sub_Brand} was updated successfully!!`,
                     reload: false
                 }))
-                dispatch(activateRefetch());
+                dispatch(updateVehicle(response.updatedVehicule));
             }
         }).catch(async (err) => {
             console.error(err);
@@ -207,12 +206,12 @@ const Vehicules = () => {
           })
         }).then(async (res) => {
           if (res.ok) {
-            dispatch(activateRefetch());
             dispatch(SetToast({
               type: "Success",
               message: `The selected vehicles were deleted successfully!!`,
               reload: false
             }));
+            dispatch(removeVehicles(selectedVehicles))
           } else {
             throw new Error("Failed to delete selected vehicles");
           }
@@ -255,7 +254,7 @@ const Vehicules = () => {
                     message: `The vehicle ${response.updatedVehicule.brand + " " + response.updatedVehicule.sub_Brand} was ${response.updatedVehicule.Status?"activated":"disabled"} successfully!!`,
                     reload: false
                 }))
-                dispatch(activateRefetch());
+                dispatch(updateVehicle(response.updatedVehicule));
             }
         }).catch(async (err) => {
             console.error(err);
@@ -319,7 +318,13 @@ const Vehicules = () => {
                     </thead>
                     <tbody className="text-sm">
                     {
-                        vehicles?.length > 0 &&
+                        selectedModel && vehicles.length === 0 ?
+                            <tr className="text-gray-900 capitalize font-medium bg-white hover:bg-gray-50">
+                                <td colSpan="7" className="py-8 text-center">
+                                    <p>No vehicles were found</p>
+                                </td>
+                            </tr>
+                        :
                             vehicles.map((vehicle) => (
                                 <tr className={`text-gray-900 capitalize font-medium ${updateMode.Mode && updateMode.fieldId === vehicle.id ? "bg-slate-100" : "bg-white hover:bg-gray-50"}`}
                                     key={vehicle.id}

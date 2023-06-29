@@ -1,5 +1,4 @@
-import { setSelectedVehicles } from "../../../../../Redux/Transportation";
-import { activateRefetch } from "../../../../../Redux/Transportation";
+import { removeVehicle, setSelectedVehicles } from "../../../../../Redux/Transportation";
 import { SetToast } from "../../../../../Redux/toast";
 import { closePanel } from '../../../../../Redux/confirmationPanel';
 
@@ -15,12 +14,12 @@ let deleteVehicle = (id, dispatch) => {
     })
   }).then(async (res) => {
       let response = await res.json();
-      dispatch(activateRefetch());
       dispatch(SetToast({
         type: "Success",
         message: `The vehicle ${response.brand + " " + response.sub_Brand} was deleted successfully!!`,
         reload: false
       }));
+      dispatch(removeVehicle(id));
   }).catch(async (err) => {
     console.log(err);
     let error = await err.json();

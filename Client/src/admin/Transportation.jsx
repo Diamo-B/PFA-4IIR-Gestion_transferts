@@ -4,11 +4,10 @@ import { useSelector, useDispatch } from "react-redux";
 import Toast from "../Components/Toast/Toast";
 import { disableToast, SetToast } from "../Redux/toast";
 import { useEffect } from "react";
-import { activateLoading, disableLoading, disableRefetch, setModels } from "../Redux/Transportation";
+import { activateLoading, disableLoading, setModels } from "../Redux/Transportation";
 
 const Transportation = () => {
   let { toast } = useSelector((state) => state.toast);
-  let { refetch } = useSelector((state) => state.transportation.window);
   let  {isLoading}  = useSelector(state => state.transportation.vehicules)
   let dispatch = useDispatch();
 
@@ -47,8 +46,7 @@ const Transportation = () => {
         );
       });
     dispatch(disableLoading());
-    dispatch(disableRefetch());
-  }, [refetch]);
+  }, []);
 
   if(isLoading)
   {

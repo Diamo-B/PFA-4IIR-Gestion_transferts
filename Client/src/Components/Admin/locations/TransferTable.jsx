@@ -1,4 +1,3 @@
-import { UilAsterisk } from "@iconscout/react-unicons";
 import TableCard from "../../../Components/Admin/locations/TableCard";
 import {
   disableRefetch,
@@ -262,39 +261,9 @@ const TransferTable = () => {
                   </tr>
                 ))
               ) : (
-                <tr className="text-center">
-                  <th className="">
-                    <input type="checkbox" />
-                  </th>
-                  <td className="">
-                    <UilAsterisk className="inline" />
-                    <UilAsterisk className="inline" />
-                    <UilAsterisk className="inline" />
-                  </td>
-                  <td className="">
-                    <UilAsterisk className="inline" />
-                    <UilAsterisk className="inline" />
-                    <UilAsterisk className="inline" />
-                  </td>
-                  <td className="">
-                    <UilAsterisk className="inline" />
-                    <UilAsterisk className="inline" />
-                    <UilAsterisk className="inline" />
-                  </td>
-                  <td className="">
-                    <UilAsterisk className="inline" />
-                    <UilAsterisk className="inline" />
-                    <UilAsterisk className="inline" />
-                  </td>
-                  <td className="">
-                    <UilAsterisk className="inline" />
-                    <UilAsterisk className="inline" />
-                    <UilAsterisk className="inline" />
-                  </td>
-                  <td className="">
-                    <UilAsterisk className="inline" />
-                    <UilAsterisk className="inline" />
-                    <UilAsterisk className="inline" />
+                <tr className="text-gray-900 capitalize font-medium bg-white hover:bg-gray-50">
+                  <td colSpan="7" className="py-8 text-center">
+                    <p>No Paths were found</p>
                   </td>
                 </tr>
               )}

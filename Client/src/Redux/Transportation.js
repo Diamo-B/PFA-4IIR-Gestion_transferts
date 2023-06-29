@@ -10,6 +10,15 @@ const modelsSlice = createSlice({
         setModels : (state,action) => {
             state.models = action.payload
         },
+        addModel : (state, action) => {
+            state.models.push(action.payload)
+        },
+        updateModel : (state, action) => {
+            state.models = state.models.map((model)=> model.id === action.payload.id ? action.payload : model)
+        },
+        removeModel : (state, action) => {
+            state.models = state.models.filter((model)=> model.id !== action.payload)
+        },
         enableModelCreateMode : (state) => {
             state.createMode = true;
         },
@@ -46,6 +55,18 @@ const vehiclesSlice = createSlice({
                 Vehicles.push(Vehicle)
             });
             state.vehicles = Vehicles;
+        },
+        addVehicle : (state, action) => {
+            state.vehicles.push(action.payload)
+        },
+        updateVehicle : (state, action) => {
+            state.vehicles = state.vehicles.map((Vehicle)=> Vehicle.id === action.payload.id ? action.payload : Vehicle)
+        },
+        removeVehicle : (state, action) => {
+            state.vehicles = state.vehicles.filter((Vehicle)=> Vehicle.id !== action.payload)
+        },
+        removeVehicles : (state, action) => {
+            state.vehicles = state.vehicles.filter((Vehicle)=> !action.payload.includes(Vehicle.id))
         },
         setSelectedVehicles : (state, action) => {
             let Vehicles = []
@@ -87,29 +108,16 @@ const vehiclesSlice = createSlice({
     }
 })
 
-const windowSLice = createSlice({
-    name: "window",
-    initialState:{
-        refetch: false,
-    },
-    reducers:{
-        activateRefetch : (state) => {
-            state.refetch = true
-        },
-        disableRefetch : (state) => {
-            state.refetch = false
-        }
-    }
-})
-
 const vehiculesReducer = combineReducers({
     models: modelsSlice.reducer,
     vehicules: vehiclesSlice.reducer,
-    window: windowSLice.reducer
 });
   
 export const {
     setModels,
+    addModel,
+    updateModel,
+    removeModel,
     enableModelCreateMode,
     disableModelCreateMode,
 } = modelsSlice.actions;
@@ -120,6 +128,10 @@ export const {
     activateLoading,
     disableLoading,
     setVehicles,
+    addVehicle,
+    updateVehicle,
+    removeVehicle,
+    removeVehicles,
     setSelectedVehicles,
     resetVehicles,
     enableVehicleCreateMode,
@@ -127,10 +139,5 @@ export const {
     enableVehicleModifyMode,
     disableVehicleModifyMode,
 } = vehiclesSlice.actions;
-
-export const  {
-    activateRefetch,
-    disableRefetch
-} = windowSLice.actions;
 
 export default vehiculesReducer;

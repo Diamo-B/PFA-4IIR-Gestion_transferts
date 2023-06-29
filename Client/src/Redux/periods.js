@@ -34,12 +34,12 @@ export const periods = createSlice({
         setPeriods: (state, action) => {
             state.periods = action.payload;
         },
-        enableRefetch: (state) => {
-            state.refetch = true;
+        addPeriod: (state, action) => {
+            state.periods.push(action.payload);
         },
-        disableRefetch: (state) => {
-            state.refetch = false;
-        },
+        removePeriod: (state, action) => {
+            state.periods = state.periods.filter(period => period.id !== action.payload);
+        }
     }
 })
 
@@ -50,7 +50,7 @@ export const {
     enableEndingDate,
     disableEndingDate,
     setPeriods,
-    enableRefetch,
-    disableRefetch,
+    addPeriod,
+    removePeriod
 } = periods.actions;
 export default periods.reducer;

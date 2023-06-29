@@ -173,29 +173,9 @@ const LocationsTable = () => {
                                     </tr>
                                 ))
                                 :
-                                <tr className="text-center">
-                                    <th className="">
-                                        <input type="checkbox" />
-                                    </th>
-                                    <td className="">
-                                        <UilAsterisk className="inline"/>
-                                        <UilAsterisk className="inline"/>
-                                        <UilAsterisk className="inline"/>
-                                    </td>
-                                    <td className="">
-                                        <UilAsterisk className="inline"/>
-                                        <UilAsterisk className="inline"/>
-                                        <UilAsterisk className="inline"/>
-                                    </td>
-                                    <td className="">
-                                        <UilAsterisk className="inline"/>
-                                        <UilAsterisk className="inline"/>
-                                        <UilAsterisk className="inline"/>
-                                    </td>
-                                    <td className="">
-                                        <UilAsterisk className="inline"/>
-                                        <UilAsterisk className="inline"/>
-                                        <UilAsterisk className="inline"/>
+                                <tr className="text-gray-900 capitalize font-medium bg-white hover:bg-gray-50">
+                                    <td colSpan="7" className="py-8 text-center">
+                                        <p>No Locations were found</p>
                                     </td>
                                 </tr>
                             }

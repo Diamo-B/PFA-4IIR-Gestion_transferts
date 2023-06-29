@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { SetToast } from "../../../Redux/toast";
-import { setPeriods, disableRefetch, enableRefetch } from "../../../Redux/periods";
+import { setPeriods, removePeriod, addPeriod} from "../../../Redux/periods";
 
 const Table = () => {
   let dispatch = useDispatch();
-  let {periods,refetch} = useSelector((state) => state.periods);
+  let {periods} = useSelector((state) => state.periods);
+  
   useEffect(() => {
     fetch("/api/period/getAll", {
       method: "get",
@@ -27,9 +28,7 @@ const Table = () => {
           })
         );
     });
-
-    dispatch(disableRefetch());
-  }, [refetch]);
+  }, []);
 
 
   let deleteSinglePeriod = (id) => {
@@ -52,7 +51,7 @@ const Table = () => {
           reload: false,
         })
       );
-      dispatch(enableRefetch());
+      periods.length > 0 && dispatch(removePeriod(response.id));
     }).catch((err) => {
       console.error(err);
       dispatch(
@@ -147,12 +146,7 @@ const Table = () => {
               <td className="px-6 py-4">----</td>
               <td className="px-6 py-4">----</td>
               <td className="px-6 py-4">----</td>
-              <td className="px-6 py-4">
-                <div className="flex justify-center gap-3">
-                  <button className="font-bold">----</button>
-                  <button className="font-bold">----</button>
-                </div>
-              </td>
+              <td className="px-6 py-4">----</td>
             </tr>
           }
           

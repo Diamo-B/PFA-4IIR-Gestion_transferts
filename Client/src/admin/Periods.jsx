@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { parse, isAfter } from "date-fns";
+import { parse, isAfter, format, parseISO } from "date-fns";
 
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -17,7 +17,7 @@ import {
   enableStartingDate,
   disableStartingDate,
   disableEndingDate,
-  enableRefetch,
+  addPeriod,
 } from "../Redux/periods";
 import { SetToast, disableToast } from "../Redux/toast";
 
@@ -99,7 +99,9 @@ const Periods = () => {
               reload: false,
             })
           );
-          dispatch(enableRefetch());
+          response.start = format(parseISO(response.start), "dd-MM-yyyy");
+          response.end = format(parseISO(response.end), "dd-MM-yyyy");
+          dispatch(addPeriod(response));
         }
       })
       .catch((err) => {

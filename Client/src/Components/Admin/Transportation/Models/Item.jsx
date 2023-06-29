@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { SetToast } from "../../../../Redux/toast";
 import {useForm} from "react-hook-form";
-import { activateRefetch } from "../../../../Redux/Transportation";
+import { addModel, updateModel, removeModel } from "../../../../Redux/Transportation";
 
 const Item = ({Text,isCreate,disableCreateMode,ID}) => {
     let dispatch = useDispatch();
@@ -22,7 +22,6 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
             })
         }).then(async (res)=>{
             let response = await res.json();
-            dispatch(activateRefetch())
             dispatch(
                 SetToast({
                     type: "Success",
@@ -30,6 +29,7 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
                     reload: false
                 })
             )
+            dispatch(addModel(response));
         }).catch(async err => {
             let error = await err.json();
             if(error.err)
@@ -72,12 +72,12 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
             })
         }).then(async(res)=>{
             let response = await res.json();
-            dispatch(activateRefetch())
             dispatch(SetToast({
                 type: "Success",
                 message: "the model was updated successfully!",
                 reload: false
             }))
+            dispatch(updateModel(response));
         }).catch(async(err)=>{
             let error= await err.json();
             if(error.err)
@@ -105,12 +105,12 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
             })
         }).then(async(res) => {
             let response = await res.json();
-            dispatch(activateRefetch())
             dispatch(SetToast({
                 type:"Success",
                 message: "The model "+response.label+" was deleted successfully!!",
                 reload: false
             }))
+            dispatch(removeModel(response.id));
         }).catch(async (err)=>{
             let error = await err.json();
             if(error.err)
