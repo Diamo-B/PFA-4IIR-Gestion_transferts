@@ -7,7 +7,7 @@ const Table = ({error, users}) => {
         return obj.hasOwnProperty("userId") ? obj.user : obj;
     });
     const currentUser = useSelector(state  => state.authUser.value);
-    const currentUserEmail = currentUser.email;
+    const [currentUserEmail,setCurrentUserEmail] = useState(null);
     const filteredUsers_Email =  filteredUsers.filter(item => item.email !== currentUserEmail)
 
     const fetchingType = useSelector((state) => state.userPanel.fetchingType);
@@ -17,6 +17,7 @@ const Table = ({error, users}) => {
     const [selectedUsersSet, setSelectedUsersSet] = useState(new Set(selectedUsers.map(user=>user.id)));
 
     useEffect(() => {
+        setCurrentUserEmail(currentUser.email);
         setSelectedUsersSet(new Set(selectedUsers.map(user=>user.id)));
     }, [selectedUsers]);
 
@@ -38,6 +39,29 @@ const Table = ({error, users}) => {
                 dispatcher(setSelectedUsers(user));
             })
         }
+    }
+
+    let handleBanUser = (user) => {
+        console.log(user);
+        fetch("/api/user/update", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem(
+                    "jwt"
+                )}`,
+            },
+            body: JSON.stringify({
+                email: user.email,
+                banned: !user.banned,
+            }),
+        }).then(async (res) => {
+            if (!res.ok) {
+                throw new Error("User ban error");
+            }
+            const data = await res.json();
+            location.reload();
+        });
     }
 
     let type;
@@ -115,22 +139,36 @@ const Table = ({error, users}) => {
                             </td>
                             <td className="px-6 py-4">
                                 <div className="flex items-center">
-                                    <div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
-                                    Offline
+                                    <div className={`h-2.5 w-2.5 rounded-full mr-2 ${user.banned?"bg-red-500":"bg-emerald-500"}`}></div>
+                                    {user.banned ? "Banned" : "Authorized"}
                                 </div>
                             </td>
                             <td className="px-6 py-4">
-                                <span
-                                    href="#"
-                                    type="button"
-                                    data-modal-show="editUserModal"
-                                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline hover:cursor-pointer"
-                                    onClick={()=>{
-                                        dispatcher(showUpdate(user))
-                                    }}
-                                >
-                                    Edit user
-                                </span>
+                                <div className='w-full flex gap-5'>
+                                    <span
+                                        href="#"
+                                        type="button"
+                                        data-modal-show="editUserModal"
+                                        className={`font-bold hover:cursor-pointer ${user.banned? "hover:text-emerald-500" : "hover:text-red-500"}`}
+                                        onClick={()=>{
+                                            handleBanUser(user)
+                                        }}
+                                    >
+                                       {user.banned ? "Unban User" : "Ban User"}
+                                    </span>
+
+                                    <span
+                                        href="#"
+                                        type="button"
+                                        data-modal-show="editUserModal"
+                                        className={`font-bold hover:cursor-pointer hover:text-amber-500`}
+                                        onClick={()=>{
+                                            dispatcher(showUpdate(user))
+                                        }}
+                                    >
+                                        Edit User
+                                    </span>
+                                </div>
                             </td>
                         </tr>
                     ))

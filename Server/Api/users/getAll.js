@@ -10,6 +10,7 @@ let getAllUsers = async (req, res) => {
               email: true,
               password: false,
               createdAt: false,
+              banned: true,
               client: true,
               agent: true
             }

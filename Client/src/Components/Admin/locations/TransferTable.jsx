@@ -1,12 +1,13 @@
 import TableCard from "../../../Components/Admin/locations/TableCard";
 import {
-  disableRefetch,
-  triggerRefetch,
   setWindowType,
   openWindow,
   setPaths,
   resetSelection,
   setPathToUpdate,
+  updatePath,
+  deletePath,
+  deletePaths,
 } from "../../../Redux/locations";
 import useLocationHelpers from "./useLocationHelpers";
 import { useSelector, useDispatch } from "react-redux";
@@ -41,13 +42,13 @@ const TransferTable = () => {
     })
       .then(async (res) => {
         let results = await res.json();
-        dispatcher(setPaths(results));
+        if(!results.err)
+          dispatcher(setPaths(results));
       })
       .catch((err) => {
         console.error(err);
       });
-    dispatcher(disableRefetch());
-  }, [Refetch]);
+  }, []);
 
   let changeStatus = (id, newStatus) => {
     fetch("/api/path/update", {
@@ -66,7 +67,7 @@ const TransferTable = () => {
       .then(async (res) => {
         let result = await res.json();
         let message = newStatus === true ? "activated" : "disabled";
-        dispatcher(triggerRefetch());
+        dispatcher(updatePath(result));
         dispatcher(
           SetToast({
             type: "Info",
@@ -93,7 +94,7 @@ const TransferTable = () => {
     })
       .then(async (res) => {
         let result = await res.json();
-        dispatcher(triggerRefetch());
+        dispatcher(deletePath(result.id));
         dispatcher(
           SetToast({
             type: "Success",
@@ -140,7 +141,7 @@ const TransferTable = () => {
           message:response.msg,
           reload: false
         }))
-        dispatcher(triggerRefetch());
+        dispatcher(deletePaths(selected))
       }
       
     }).catch((err)=>{

@@ -19,6 +19,7 @@ model User {
   lastName  String?
   email     String   @unique
   password  String
+  banned    Boolean  @default(false)
   createdAt DateTime @default(now())
   client    Client?
   agent     Agent?

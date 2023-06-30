@@ -23,7 +23,11 @@ let update = async (req, res) => {
         where: {
           id: id
         },
-        data: query
+        data: query,
+        include: {
+          departure: true,
+          arrival: true
+        }
       });
       if (updatedRecord === null) {
         return res.status(400).json({

@@ -253,7 +253,10 @@ const Authorizations = () => {
                             options={options}
                             onChange={(opt) => {
                                 if (opt?.value)
+                                {
+                                    dispatch(setSelectedCat(null));
                                     dispatch(setSelectedCat(opt.value));
+                                }
                                 else dispatch(setSelectedCat(null));
                             }}
                         />

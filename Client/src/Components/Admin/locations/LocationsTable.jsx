@@ -10,7 +10,9 @@ import {
     setLocationToUpdate,
     setWindowType,
     triggerRefetch,
-    disableRefetch
+    disableRefetch,
+    deleteLocation,
+    deleteLocations
 } from "../../../Redux/locations";
 
 import { openPanel, closePanel } from "../../../Redux/confirmationPanel";
@@ -44,14 +46,13 @@ const LocationsTable = () => {
         })
         .then(async (res) => {
             let locations = await res.json();
-            dispatcher(setLocations(locations));
+            if(!locations.err)
+                dispatcher(setLocations(locations));
         })
         .catch((err) => {
             console.error(err);
         });
-        //DONE: trigger the fetch on update or create
-        dispatcher(disableRefetch())
-    }, [Refetch]);
+    }, []);
 
     let DeleteLocations = () => {
         fetch("/api/place/removeMany",{
@@ -63,7 +64,7 @@ const LocationsTable = () => {
             body:JSON.stringify({IDs: selected})
         }).then(async(res)=>{
             let result = await res.json();
-            dispatcher(triggerRefetch());
+            dispatcher(deleteLocations(selected))
             dispatcher(resetSelection());
             dispatcher(SetToast({type: "Success", message: `${result.count > 1? result.count+" places were":"1 place was"} deleted successfully!!`, reload: false}))
         }).catch(err=>{
@@ -81,7 +82,7 @@ const LocationsTable = () => {
             body:JSON.stringify({id: id})
         }).then(async(res)=>{
             let result = await res.json();
-            dispatcher(triggerRefetch());
+            dispatcher(deleteLocation(result.id))
             dispatcher(closePanel());
             dispatcher(SetToast({type: "Success", message: "1 place was deleted successfully!!", reload: false}))
         }).catch(err=>{

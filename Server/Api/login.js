@@ -19,6 +19,8 @@ let login = async (req,res) => {
             throw "user_not_found"
         else
         {
+            if(user.banned)
+                return res.status(403).json({err:"user_banned"})
             if(await bcrypt.compare(password, user.password))
             {
                 let token = jwt.sign(user,process.env.JWT_SECRET,{

@@ -13,7 +13,33 @@ const locationsSlice = createSlice({
         setLocationToUpdate: (state,action) => {
             return {...state, locationToUpdate: action.payload};
         },
+        addLocation: (state, action) => {
+            let array = [...state.locations, action.payload];
+            state.locations = array;
+        },
+        updateLocation: (state, action) => {
+            const updatedLocations = state.locations.map((location) => {
+                if (location.id === action.payload.id) {
+                    return action.payload;
+                }
+                return location;
+            });
+            return { ...state, locations: updatedLocations };
+        },
+        deleteLocation: (state, action) => {
+            const updatedLocations = state.locations.filter(
+                (location) => location.id !== action.payload
+            );
+            return { ...state, locations: updatedLocations };
+        },
+        deleteLocations: (state, action) => {
+            const updatedLocations = state.locations.filter(
+                (location) => !action.payload.includes(location.id)
+            );
+            return { ...state, locations: updatedLocations };
+        }
     }
+
 })
 const pathsSlice = createSlice({
     name: "paths",
@@ -27,6 +53,34 @@ const pathsSlice = createSlice({
         },
         setPathToUpdate: (state,action) => {
             return {...state, pathToUpdate: action.payload}
+        },
+        addPath: (state, action) => {
+            console.log(action.payload);
+            console.log(state.paths);
+            let array = [...state.paths, action.payload];
+            state.paths = array;
+        },
+        updatePath: (state, action) => {
+            const updatedPaths = state.paths.map((path) => {
+                if (path.id === action.payload.id) {
+                    return action.payload;
+                }
+                return path;
+            });
+            return { ...state, paths: updatedPaths };
+        },
+        deletePath: (state, action) => {
+            const updatedpaths = state.paths.filter(
+                (path) => path.id !== action.payload
+            );
+            return { ...state, paths: updatedpaths };
+        },
+        deletePaths: (state, action) => {
+            console.log(action.payload);
+            const updatedPaths = state.paths.filter(
+                (path) => !action.payload.includes(path.id)
+            );
+            return { ...state, paths: updatedPaths };
         }
     }
 })
@@ -67,14 +121,6 @@ export const windowSlice = createSlice({
         resetSelection: (state) => {
             return { ...state, selected: [] };
         },
-
-        //? Refetch mechanism
-        triggerRefetch: (state) => {
-            return { ...state,Refetch: true}
-        },
-        disableRefetch: (state) => {
-            return { ...state, Refetch: false}
-        },
     },
 });
 
@@ -100,11 +146,19 @@ export const {
 export const {
     setLocations,
     setLocationToUpdate,
+    addLocation,
+    updateLocation,
+    deleteLocation,
+    deleteLocations
 } = locationsSlice.actions;
 
 export const {
     setPaths,
-    setPathToUpdate
+    setPathToUpdate,
+    addPath,
+    updatePath,
+    deletePath,
+    deletePaths
 } = pathsSlice.actions;
 
 export default locationsReducers;

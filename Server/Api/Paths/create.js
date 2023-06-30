@@ -49,6 +49,10 @@ let create = async (req, res) => {
                         id: arrival
                     }
                 }
+            },
+            include:{
+                departure: true,
+                arrival: true
             }
         })
         return res.status(200).json({ newPath });

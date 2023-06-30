@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { closeWindow, triggerRefetch } from "../../../Redux/locations"
+import { addLocation, closeWindow, triggerRefetch, updateLocation } from "../../../Redux/locations"
 import { useDispatch, useSelector } from "react-redux";
 import { SetToast } from "../../../Redux/toast";
 import { useEffect, useState } from "react";
@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 const LocationsForm = ({windowType}) => {
 
     let disptach = useDispatch();
-    let {locationToUpdate} = useSelector(state => state.mapPanel.locations);
+    let {locations, locationToUpdate} = useSelector(state => state.mapPanel.locations);
     //! locationToUpdate Coming from the update btn in the locations table and has the ID of the location to update
     const locationCreationSchema = yup.object().shape({
         name: yup
@@ -78,14 +78,14 @@ const LocationsForm = ({windowType}) => {
                     disptach(SetToast({type: "Error", message: New_location.err, reload: false}))
                 else
                 {
-                    disptach(triggerRefetch());
+                    disptach(addLocation(New_location));
                     disptach(closeWindow());
                     disptach(SetToast({type: "Success", message: "New Location Created Successfully!", reload: false}))
                 }
             }).catch((error)=>{
                 console.error(error);
                 disptach(SetToast({type: "Error", message: "Unknown Error! Contact the admins!!", reload: false}))
-            })
+            }) 
         }
         else if (windowType == "update")
         {
@@ -104,7 +104,7 @@ const LocationsForm = ({windowType}) => {
             })
             .then(async (res) => {
                 let result = await res.json();
-                disptach(triggerRefetch());
+                disptach(updateLocation(result));
                 disptach(closeWindow());
                 disptach(SetToast({type: "Info", message: "Location Updated Successfully!", reload: false}))
             })

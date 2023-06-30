@@ -2,8 +2,10 @@ import { useForm, Controller, set } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
+  addPath,
   closeWindow,
   triggerRefetch,
+  updatePath,
 } from "../../../Redux/locations";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
@@ -13,7 +15,7 @@ import { SetToast } from "../../../Redux/toast";
 const TransferForm = ({ windowType }) => {
   let disptach = useDispatch();
   let { locations } = useSelector((state) => state.mapPanel.locations);
-  let { pathToUpdate } = useSelector((state) => state.mapPanel.paths);
+  let { paths,pathToUpdate } = useSelector((state) => state.mapPanel.paths);
   const transferCreationSchema = yup.object().shape({
     Departure: yup
       .string()
@@ -90,7 +92,7 @@ const TransferForm = ({ windowType }) => {
       })
         .then(async (res) => {
           let result = await res.json();
-          disptach(triggerRefetch());
+          disptach(addPath(result.newPath));
           result.code == "P2002"
             ? disptach(
                 SetToast({
@@ -138,7 +140,7 @@ const TransferForm = ({ windowType }) => {
         })
       }).then(async(res)=>{
         let response = await res.json();
-        disptach(triggerRefetch());
+        disptach(updatePath(response))
         if(response.err)
         {
           disptach(
