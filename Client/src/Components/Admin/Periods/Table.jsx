@@ -1,40 +1,72 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { SetToast } from "../../../Redux/toast";
-import { setPeriods } from "../../../Redux/periods";
+import { clearSelectedPeriods, disableUpdateMode, enableUpdateMode, removePeriods, setSelectedPeriods } from "../../../Redux/periods";
 import EmptyRecord from "./EmptyTableRecord";
-import useDeletePeriod from "./hooks/table/useDeletePeriod";
+import usePeriodManipulation from "./hooks/gen/usePeriodManipulation";
+import { SetToast } from "../../../Redux/toast";
+import { openPanel } from "../../../Redux/confirmationPanel";
 
-const Table = () => {
+const Table = ({reset}) => {
   let dispatch = useDispatch();
-  let {periods} = useSelector((state) => state.periods);
-  let {deleteSinglePeriod} = useDeletePeriod();
+  let {periods, selectedPeriods} = useSelector((state) => state.periods);
+  let {getAllPeriods} = usePeriodManipulation();
+  let gencheckbox = useRef(null);
 
   useEffect(() => {
-    fetch("/api/period/getAll", {
-      method: "get",
-      headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
-    }).then(async (res) => {
-      let response = await res.json();
-      dispatch(setPeriods(response));
-    })
-    .catch((err) => {
-      console.error(err);
-      dispatch(
-        SetToast({
-          type: "error",
-          message: "An unknown error has occured!!",
-          reload: false,
-        })
-      );
-    });
+    getAllPeriods();
   }, []);
+
+  let toggleAllPeriodsSelection = (e) => {
+    if(e.target.checked == true)
+    {
+      if(periods.length == 0)
+        dispatch(SetToast({
+          type: "Error",
+          message: "No periods to select",
+          reload: false
+        }))
+      else
+      {
+        let periodIds = periods.map((period) => period.id);
+        dispatch(setSelectedPeriods(periodIds));
+      }
+    }
+    else
+      dispatch(clearSelectedPeriods());
+  };
+
+  let toggleSinglePeriodselection = (e, periodId) => {
+    const isChecked = e.target.checked;
+  
+    if (isChecked)
+      dispatch(setSelectedPeriods([...selectedPeriods, periodId]));
+    else 
+    {
+      dispatch(setSelectedPeriods(selectedPeriods.filter(id => id !== periodId)));
+      gencheckbox.current.checked = false;
+    }
+  };
 
   return (
     <>
+      {
+        (periods.length > 1 && selectedPeriods.length > 1) && 
+        <div className="flex justify-center items-center text-black">
+          <button className="btn px-3 hover:bg-red-500 hover:text-white"
+            onClick={() => {
+              dispatch(disableUpdateMode())
+              reset()
+              dispatch(openPanel({
+                operation_type: "Delete Selected Periods",
+                Impact: "danger"
+              }))
+              gencheckbox.current.checked = false;
+            }}
+          >
+            Delete Selected Periods
+          </button>
+        </div>
+      }
       <table className="w-full text-gray-500 relative text-center h-full">
         <thead className=" text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-40 ">
           <tr>
@@ -43,6 +75,9 @@ const Table = () => {
                 <input
                   type="checkbox"
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
+                  disabled={periods.length <= 1}
+                  onClick={toggleAllPeriodsSelection}
+                  ref={gencheckbox}
                 />
               </div>
             </th>
@@ -75,6 +110,8 @@ const Table = () => {
                     <input
                       type="checkbox"
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
+                      checked={selectedPeriods.includes(period.id)}
+                      onChange={(e)=>toggleSinglePeriodselection(e, period.id)}
                     />
                   </div>
                 </th>
@@ -88,13 +125,22 @@ const Table = () => {
                   <div className="flex justify-center gap-3">
                     <button className="font-bold hover:text-amber-500"
                       onClick={() => {
-                        dispatch(enableUpdateMode(period.id));
+                        dispatch(enableUpdateMode(period));
                       }}
                     >
                       Update
                     </button>
                     <button className="font-bold hover:text-red-500"
-                      onClick={() => deleteSinglePeriod(period.id)}
+                      onClick={() =>{
+                        dispatch(disableUpdateMode())
+                        reset()
+                        dispatch(openPanel({
+                          operation_type: "Delete Period",
+                          Impact: "danger",
+                          executeParams: period.id
+                        }))
+                      } 
+                      }
                     >
                       Delete
                     </button>

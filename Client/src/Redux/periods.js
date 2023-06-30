@@ -16,7 +16,8 @@ export const periods = createSlice({
         updateMode: {
             state: false,
             value: null
-        }
+        },
+        selectedPeriods: []
     },
     reducers:{
         setReadOnly: (state, action) => {
@@ -40,8 +41,14 @@ export const periods = createSlice({
         addPeriod: (state, action) => {
             state.periods.push(action.payload);
         },
+        performUpdatePeriod: (state, action) => {
+            state.periods = state.periods.map(period => period.id === action.payload.id ? action.payload : period);
+        },
         removePeriod: (state, action) => {
             state.periods = state.periods.filter(period => period.id !== action.payload);
+        },
+        removePeriods: (state, action) => {
+            state.periods = state.periods.filter(period => !action.payload.includes(period.id));
         },
         enableUpdateMode: (state, action) => {
             state.updateMode.state = true;
@@ -50,7 +57,19 @@ export const periods = createSlice({
         disableUpdateMode: (state) => {
             state.updateMode.state = false;
             state.updateMode.value = null;
-        }
+        },
+        setSelectedPeriods: (state, action) => {
+            state.selectedPeriods = action.payload;
+        },
+        addSelectedPeriod: (state, action) => {
+            state.selectedPeriods.push(action.payload);
+        },
+        removeSelectedPeriod: (state, action) => {
+            state.selectedPeriods = state.selectedPeriods.filter(period => period.id !== action.payload);
+        },
+        clearSelectedPeriods: (state) => {
+            state.selectedPeriods = [];
+        },
     }
 })
 
@@ -62,8 +81,14 @@ export const {
     disableEndingDate,
     setPeriods,
     addPeriod,
+    performUpdatePeriod,
     removePeriod,
+    removePeriods,
     enableUpdateMode,
-    disableUpdateMode
+    disableUpdateMode,
+    setSelectedPeriods,
+    addSelectedPeriod,
+    removeSelectedPeriod,
+    clearSelectedPeriods
 } = periods.actions;
 export default periods.reducer;

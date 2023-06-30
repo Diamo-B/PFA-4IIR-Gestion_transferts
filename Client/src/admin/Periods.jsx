@@ -1,13 +1,13 @@
 import Toast from "../Components/Toast/Toast";
 import Calendar from "../Components/Admin/Periods/Calendar";
 import Table from "../Components/Admin/Periods/Table";
+import ConfirmOp from "../Components/ConfirmOperation/ConfirmOp";
 import useDatesError from "../Components/Admin/Periods/hooks/gen/useDatesError";
 import useKeyboardEsc from "../Components/Admin/Periods/hooks/gen/useKeyboardEsc";
-import useCreatePeriod from "../Components/Admin/Periods/hooks/gen/useCreatePeriod";
+import usePeriodManipulation from "../Components/Admin/Periods/hooks/gen/usePeriodManipulation";
 
 import { useEffect, useState } from "react";
 
-import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -20,16 +20,19 @@ import {
   enableStartingDate,
 } from "../Redux/periods";
 import { disableToast } from "../Redux/toast";
-import { parse } from "date-fns";
+
 
 
 const Periods = () => {
   let [datesError, setDatesError] = useState(false);
 
-  let { readOnly, startingDate, endingDate } = useSelector(
+  let { readOnly, updateMode, startingDate, endingDate } = useSelector(
     (state) => state.periods
   );
+
   let { toast } = useSelector((state) => state.toast);
+
+  let {confirmOp} = useSelector((state) => state.confirmationPanel);
 
   let dispatch = useDispatch();
 
@@ -45,21 +48,37 @@ const Periods = () => {
     reset,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(createSchema)
+    resolver: yupResolver(updateMode.state === false ? createSchema : updateSchema),
+    defaultValues : {
+      name: updateMode.state === true ? updateMode.value.label : "",
+      startingDate: updateMode.state === true ? updateMode.value.start : "",
+      endingDate: updateMode.state === true ? updateMode.value.end : "",
+      price: updateMode.state === true ? updateMode.value.price : "",
+    }
+    
   });
 
   //? create period function from custom hook
-  const { createPeriod } = useCreatePeriod();
+  const { createPeriod, updatePeriod, deleteSinglePeriod, deleteSelectedPeriods } = usePeriodManipulation();
+
   const submit = (data) => {
-    console.log("entred");
-    createPeriod(data, reset);
+    updateMode.state === false ? createPeriod(data, reset) : updatePeriod(data,reset);
   };
 
   //? esc button <==> remove readOnly status (stop selecting dates)
-  useKeyboardEsc();
+  useKeyboardEsc(reset);
 
   //? dates error handeling
   useDatesError(setDatesError, setError, getValues, clearErrors, errors);
+
+  useEffect(() => {
+    if (updateMode.state === true) {
+      setValue("name", updateMode.value.label);
+      setValue("startingDate", updateMode.value.start);
+      setValue("endingDate", updateMode.value.end);
+      setValue("price", updateMode.value.price);
+    }
+  }, [updateMode]);
 
   return (
     <>
@@ -165,13 +184,21 @@ const Periods = () => {
               className="btn px-5 hover:bg-emerald-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent     disabled:hover:text-black" 
               type="submit"
               disabled={datesError || Object.keys(errors).length > 0 }
-              onClick={() => dispatch(setReadOnly(null))}
+              onClick={() => {
+                dispatch(setReadOnly(null))
+              }}
             >
-              Add Period
+              { updateMode.state === true ? "Update Period" : "Add Period" }
             </button>
           </form>
           <div className="rounded-b-xl">
-            <Table />
+            <Table reset={reset}/>
+            <div>
+              {
+                confirmOp.value === true &&
+                <ConfirmOp operation_type={confirmOp.operation_type} Impact={confirmOp.Impact} execute={ confirmOp.executeParams ? deleteSinglePeriod : deleteSelectedPeriods} />
+              } 
+            </div>
           </div>
         </div>
         <div className=" w-1/2 h-full flex items-center">
@@ -194,6 +221,7 @@ const Periods = () => {
           />
         )}
       </div>
+      
     </>
   );
 };

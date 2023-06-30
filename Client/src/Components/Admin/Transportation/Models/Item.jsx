@@ -58,8 +58,6 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
     }
 
     let ModifyModel = (data) => {
-        //TODO: update the model in the db
-        console.log(data);
         fetch("/api/models/update",{
             method:"put",
             headers:{

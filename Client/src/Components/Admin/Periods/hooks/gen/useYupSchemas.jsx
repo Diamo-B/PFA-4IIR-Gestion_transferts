@@ -23,28 +23,27 @@ const useYupSchemas = () => {
       }),
   });
 
-
   let updateSchema = yup.object().shape({
-    name: yup.string().required("Period's name is required"),
+    name: yup.string().nullable(),
     price: yup
       .number()
-      .notRequired()
+      .nullable()
       .typeError("Price must be a number")
       .positive("Price must be greater than 0"),
     startingDate: yup
       .date()
-      .notRequired()
+      .nullable()
       .transform((value, originalValue) => {
         return parse(originalValue, "dd-MM-yyyy", new Date());
       }),
     endingDate: yup
       .date()
-      .notRequired()
+      .nullable()
       .transform((value, originalValue) => {
         return parse(originalValue, "dd-MM-yyyy", new Date());
       }),
   });
-
+  
   return { createSchema, updateSchema };
 }
 export default useYupSchemas;

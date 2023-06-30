@@ -126,7 +126,6 @@ const TransferTable = () => {
       })
     }).then(async (res) => {
       let response = await res.json();
-      console.log(response);
       if(response.err)
       {  dispatcher(SetToast({
           type:"Error",

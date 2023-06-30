@@ -1,10 +1,9 @@
 const prisma = require('../../prisma/prismaInstance');
-const { utcToZonedTime, format } = require('date-fns-tz');
+const { utcToZonedTime } = require('date-fns-tz');
 
 let create = async (req, res) => {
     let {startDate, endDate, label, price} = req.body;
     const timeZone = 'Africa/Casablanca';
-  
     const start = utcToZonedTime(startDate, timeZone);
     const end = utcToZonedTime(endDate, timeZone);
   

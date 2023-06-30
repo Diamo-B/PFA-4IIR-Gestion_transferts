@@ -1,15 +1,25 @@
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { disableEndingDate, disableStartingDate, setReadOnly } from "../../../../../Redux/periods";
+import { useDispatch,useSelector } from "react-redux";
+import { disableEndingDate, disableStartingDate, disableUpdateMode, setReadOnly } from "../../../../../Redux/periods";
 
-const useKeyboardEsc = () => {
+const useKeyboardEsc = (reset) => {
     let dispatch = useDispatch()
+    let {startingDate, endingDate, updateMode} = useSelector((state) => state.periods);
     useEffect(() => {
         const handleKeyPress = (event) => {
           if (event.key === 'Escape') {
-            dispatch(setReadOnly(false));
-            dispatch(disableStartingDate());
-            dispatch(disableEndingDate()); 
+            if(startingDate.active == true || endingDate.active == true)
+            {
+              dispatch(setReadOnly(false));
+              dispatch(disableStartingDate());
+              dispatch(disableEndingDate()); 
+            }
+            else if(updateMode.state == true)
+            {
+              dispatch(setReadOnly(false));
+              dispatch(disableUpdateMode());
+              reset();
+            }
           }
         };
     
@@ -18,7 +28,7 @@ const useKeyboardEsc = () => {
         return () => {
           window.removeEventListener('keydown', handleKeyPress);
         };
-    }, []);
+    }, [startingDate, endingDate, updateMode]);
 }
 
 export default useKeyboardEsc;

@@ -318,7 +318,7 @@ const Vehicules = () => {
                     </thead>
                     <tbody className="text-sm">
                     {
-                        selectedModel && vehicles.length === 0 ?
+                        selectedModel && vehicles.length === 0 && createMode == false?
                             <tr className="text-gray-900 capitalize font-medium bg-white hover:bg-gray-50">
                                 <td colSpan="7" className="py-8 text-center">
                                     <p>No vehicles were found</p>
@@ -442,7 +442,6 @@ const Vehicules = () => {
                                                             executeParams:vehicle.id
                                                         })
                                                     )
-                                                    console.log(vehicle)
                                                 }} 
                                             >
                                                 {updateMode.Mode && updateMode.fieldId === vehicle.id ? "Submit" :"Delete"}
