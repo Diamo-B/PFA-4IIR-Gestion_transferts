@@ -107,6 +107,8 @@ model Vehicule{
   images    Image[]
 }
 
+//DONE: Periods
+
 model Period{
   id        String @id @default(uuid())
   label     String @unique
@@ -116,19 +118,24 @@ model Period{
 }
 
 
+//DOING:
 
+model Extra{
+  id       String @id @default(uuid())
+  label     String @unique
+  params    Json?
+  price     Float
+  typeId    String
+  type      ExtraType @relation(fields: [typeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  images    Image[]
+  createdAt DateTime @default(now())
+}
 
-
-
-
-
-
-
-
-
-
-
-
+model ExtraType{
+  id     String @id @default(uuid())
+  label  String @unique
+  extras Extra[]
+}
 
 //? Whole app images
 model Image {
@@ -138,4 +145,6 @@ model Image {
   place   Place?  @relation(fields: [placeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   vehiculeId String?
   vehicule Vehicule? @relation(fields: [vehiculeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ExtraId String?
+  Extra Extra? @relation(fields: [ExtraId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
