@@ -34,6 +34,7 @@ const CreateForm = () => {
                         <input
                             type="text"
                             className="input w-80 h-10 mt-2 font-bold"
+                            autoFocus={true}
                             {...register("label")}
                         />
                         {

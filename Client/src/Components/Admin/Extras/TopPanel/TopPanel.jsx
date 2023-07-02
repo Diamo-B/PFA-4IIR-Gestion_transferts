@@ -1,11 +1,9 @@
 import TypeButton from "./TypeButton";
-import useExtrasManipulation from "../Hooks/useExtrasManipulation";
 import { useDispatch, useSelector } from "react-redux";
 import { enableCreateMode } from "../../../../Redux/extras";
-
+import { openPanel } from "../../../../Redux/confirmationPanel";
 const TopPanel = () => {
   let { types, selectedType, selectedExtras } = useSelector((state) => state.extras);
-  let { deleteSelectedExtras } = useExtrasManipulation();
   let dispatch = useDispatch();
 
   return (
@@ -31,7 +29,13 @@ const TopPanel = () => {
           {
             selectedExtras.length > 1 &&
             <button className="btn px-5 border-gray-700 text-gray-700 hover:text-white hover:bg-red-500"
-              onClick={deleteSelectedExtras}
+              onClick={()=>{
+                dispatch(openPanel({
+                  operation_type: "Delete selected extras",
+                  Impact: "danger",
+                  executeParams: false
+                }))
+              }}
             >
               Delete All Selected Extras
             </button>

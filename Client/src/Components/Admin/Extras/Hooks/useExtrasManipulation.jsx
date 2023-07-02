@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { SetToast } from "../../../../Redux/toast";
-import { addExtra, deleteExtra, updateExtra, addToSelectedExtras, removeFromSelectedExtras, resetSelectedExtras, setSelectedExtras, deleteExtras  } from "../../../../Redux/extras";
+import { addExtra, deleteExtra, updateExtraRedux, addToSelectedExtras, removeFromSelectedExtras, resetSelectedExtras, setSelectedExtras, deleteExtras, disableUpdateMode  } from "../../../../Redux/extras";
 
 const useExtrasManipulation = () => {
     let dispatch = useDispatch();
@@ -91,7 +91,7 @@ const useExtrasManipulation = () => {
             let response = await res.json();
             if(res.ok && res.status === 200)
             {
-                dispatch(updateExtra(response))
+                dispatch(updateExtraRedux(response))
                 dispatch(SetToast({
                     type: "Info",
                     message: `The Extra {${response.label}} was ${response.active ? "Activated" : "Disabled"} successfully !!`,
@@ -116,6 +116,51 @@ const useExtrasManipulation = () => {
             }))
         })
     };
+
+    const updateExtra = (data, id) => {
+        console.log(data, id);
+        fetch("/api/extra/update",{
+            method:"PUT",
+            headers:{
+                "Content-Type":"application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`
+            },
+            body:JSON.stringify({
+                id,
+                label:data.label,
+                price:data.price,
+                params:data.params
+            })
+        }).then(async res=>{
+            let response = await res.json();
+            if(res.ok && res.status === 200)
+            {
+                dispatch(updateExtraRedux(response))
+                dispatch(SetToast({
+                    type: "Info",
+                    message: `An Extra was updated successfully !!`,
+                    reload: false
+                }))
+            }
+            else
+            {
+                dispatch(SetToast({
+                    type: "Error",
+                    message: response.message,
+                    reload: false
+                })) 
+            }
+        }).catch(err=>{
+            console.log(err)
+            dispatch(SetToast({
+                type: "Error",
+                message: `An Unknown Error Occured !!`,
+                reload: false
+            }))
+        }).finally(()=>{
+            dispatch(disableUpdateMode());
+        })
+    }
 
     const deleteSingleExtra = (id) => {
         fetch("/api/extra/remove",{
@@ -203,7 +248,7 @@ const useExtrasManipulation = () => {
           dispatch(setSelectedExtras(extrasToShow.map((extra) => extra.id)))
       }
     
-    let selectOrDeselectExtra = (e, id) => {
+    let selectOrDeselectExtra = (e, id, generalCheckbox) => {
         if(e.target.checked)
         {
             if(!selectedExtras.includes(id))
@@ -215,7 +260,7 @@ const useExtrasManipulation = () => {
             dispatch(removeFromSelectedExtras(id))
         }
     }
-    return {createExtra, toggleExtraStatus, deleteSingleExtra, deleteSelectedExtras, selectOrDeselectAll, selectOrDeselectExtra}
+    return {createExtra, updateExtra, toggleExtraStatus, deleteSingleExtra, deleteSelectedExtras, selectOrDeselectAll, selectOrDeselectExtra}
     
 }
 

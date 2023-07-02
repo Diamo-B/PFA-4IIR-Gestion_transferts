@@ -19,6 +19,12 @@
   .input{
     @apply border-2 relative border-black rounded-lg w-full h-10 text-center
   }
+  .border-r-1{
+    border-right: 1px solid black;
+  }
+  .border-l-1{
+    border-left: 1px solid black;
+  }
 }
 
 
@@ -45,5 +51,19 @@
   .animate-selection {
     transition: transform 0.5s ease-in-out;
   }
+
+  /* Define a custom class to style the scrollbar */
+.thin-scrollbar::-webkit-scrollbar {
+  @apply w-1 h-1.5
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-500
+}
+
   
 }

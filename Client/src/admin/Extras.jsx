@@ -14,7 +14,7 @@ const Extras = () => {
   let { confirmOp } = useSelector((state) => state.confirmationPanel);
   let { toast } = useSelector((state) => state.toast);
 
-  let {deleteSingleExtra} = useExtrasManipulation();
+  let {deleteSingleExtra, deleteSelectedExtras} = useExtrasManipulation();
   useOnMountEffects(); //? fetches the data and more
 
   return (
@@ -38,7 +38,7 @@ const Extras = () => {
 
       {
         confirmOp.value == true &&
-        <ConfirmOp operation_type={confirmOp.operation_type} Impact={confirmOp.Impact} execute={confirmOp.executeParams && deleteSingleExtra}/>
+        <ConfirmOp operation_type={confirmOp.operation_type} Impact={confirmOp.Impact} execute={confirmOp.executeParams ? deleteSingleExtra : deleteSelectedExtras}/>
       }
     </div>
   );

@@ -12,13 +12,17 @@ export const extras = createSlice({
         specialExtras : [],
         extrasToShow: [],
         selectedExtras: [],
-        paramsPanel: null,
+        paramsPanel: {
+            state: false,
+            id: null
+        },
         //? Window
         createMode: false,
         updateMode: {
             value: false,
-            id: null
-        }
+            extra: null
+        },
+        formErrors: null
     },
     reducers:{
         //? Extra Types
@@ -35,7 +39,7 @@ export const extras = createSlice({
         addExtra: (state, action) => {
             state.extras.push(action.payload);
         },
-        updateExtra: (state, action) => {
+        updateExtraRedux: (state, action) => {
             const index = state.extras.findIndex((extra) => extra.id === action.payload.id);
             state.extras[index] = action.payload;
         },
@@ -64,19 +68,19 @@ export const extras = createSlice({
             state.selectedExtras.push(action.payload);
         },
         removeFromSelectedExtras: (state, action) => {
-            console.log(action.payload);
             let filtered = state.selectedExtras.filter((extra) => extra !== action.payload);
-            console.log(filtered);
             return {...state, selectedExtras: filtered}
         },
         resetSelectedExtras: (state) => {
             state.selectedExtras = [];
         },
         openParamsPanel: (state,action) => {
-            state.paramsPanel = action.payload;
+            state.paramsPanel.state = true;
+            state.paramsPanel.id = action.payload;
         },
         closeParamsPanel: (state) => {
-            state.paramsPanel = null;
+            state.paramsPanel.state = false;
+            state.paramsPanel.id = null;
         },
         //? Window
         enableCreateMode : (state) => {
@@ -87,11 +91,17 @@ export const extras = createSlice({
         },
         enableUpdateMode : (state, action) => {
             state.updateMode.value = true;
-            state.updateMode.id = action.payload;
+            state.updateMode.extra = action.payload;
         },
         disableUpdateMode : (state) => {
             state.updateMode.value = false;
-            state.updateMode.id = null;
+            state.updateMode.extra = null;
+        },
+        triggerFormErrors: (state, action) => {
+            state.formErrors = true;
+        },
+        resetFormErrors: (state) => {
+            state.formErrors = null;
         }
     }
 })
@@ -100,7 +110,7 @@ export const {
     setTypes,
     setExtras,
     addExtra,
-    updateExtra,
+    updateExtraRedux,
     deleteExtra,
     deleteExtras,
     //resetExtras,
@@ -117,6 +127,8 @@ export const {
     enableCreateMode,
     disableCreateMode,
     enableUpdateMode,
-    disableUpdateMode
+    disableUpdateMode,
+    triggerFormErrors,
+    resetFormErrors
 } = extras.actions;
 export default extras.reducer;

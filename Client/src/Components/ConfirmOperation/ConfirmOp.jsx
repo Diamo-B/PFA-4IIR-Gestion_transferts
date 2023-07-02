@@ -28,7 +28,9 @@ const ConfirmOp = ({operation_type, Impact, execute}) => {
                                 :
                                     execute(confirmOp.executeParams, dispatch);
                             else
+                            {
                                 execute();
+                            }
                             dispatch(closePanel());
                         }}
                     >
