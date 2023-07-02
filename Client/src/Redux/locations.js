@@ -55,8 +55,6 @@ const pathsSlice = createSlice({
             return {...state, pathToUpdate: action.payload}
         },
         addPath: (state, action) => {
-            console.log(action.payload);
-            console.log(state.paths);
             let array = [...state.paths, action.payload];
             state.paths = array;
         },
@@ -76,7 +74,6 @@ const pathsSlice = createSlice({
             return { ...state, paths: updatedpaths };
         },
         deletePaths: (state, action) => {
-            console.log(action.payload);
             const updatedPaths = state.paths.filter(
                 (path) => !action.payload.includes(path.id)
             );

@@ -42,7 +42,6 @@ const Table = ({error, users}) => {
     }
 
     let handleBanUser = (user) => {
-        console.log(user);
         fetch("/api/user/update", {
             method: "PUT",
             headers: {

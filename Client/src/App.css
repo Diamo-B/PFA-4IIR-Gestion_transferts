@@ -24,6 +24,7 @@
 
 @layer utilities 
 {
+  /*? animation for client reservation maker time blinking colon*/
   .timeColon {
     animation: blink 2s infinite;
   }
@@ -38,6 +39,11 @@
     100% {
       opacity: 1;
     }
+  }
+
+  /*? animation for admin extras types top panel*/
+  .animate-selection {
+    transition: transform 0.5s ease-in-out;
   }
   
 }

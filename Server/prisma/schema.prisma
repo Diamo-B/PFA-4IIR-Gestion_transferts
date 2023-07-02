@@ -122,13 +122,16 @@ model Period{
 
 model Extra{
   id       String @id @default(uuid())
-  label     String @unique
+  label     String
   params    Json?
   price     Float
+  active    Boolean @default(false)
   typeId    String
   type      ExtraType @relation(fields: [typeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   images    Image[]
   createdAt DateTime @default(now())
+
+  @@unique([label, typeId])
 }
 
 model ExtraType{

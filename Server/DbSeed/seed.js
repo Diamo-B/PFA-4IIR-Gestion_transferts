@@ -2,7 +2,6 @@ const prisma = require("../prisma/prismaInstance");
 const bcrypt = require("bcrypt");
 
 async function seed (){
-
     await prisma.category.createMany({
         data:[
             {name: "Reservations"},
@@ -83,6 +82,14 @@ async function seed (){
         }
     })
     console.log(superAgent);
+
+    let ExtraTypes = await prisma.extraType.createMany({
+        data:[
+            {label: "Automatic"},
+            {label: "Special"}
+        ]
+    })
+
 }
 
 seed();

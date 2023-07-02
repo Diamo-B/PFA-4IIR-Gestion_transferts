@@ -20,7 +20,7 @@ export const confirmationPanel = createSlice({
         closePanel: (state)=>{
             state.confirmOp.operation_type= null 
             state.confirmOp.Impact= null
-            state.confirmOp.execute = null
+            state.confirmOp.executeParams = null
             state.confirmOp.value = false
         },
     }

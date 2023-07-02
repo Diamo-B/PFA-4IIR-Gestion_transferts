@@ -8,7 +8,6 @@ const update = async (req, res) => {
     places && (updatedData.places = places );
     lux != undefined && (updatedData.lux = lux );  
     Status != undefined && (updatedData.Status = Status );
-    console.log(updatedData.Status);
     try {
         let updatedVehicule = await prisma.vehicule.update({
             where: {

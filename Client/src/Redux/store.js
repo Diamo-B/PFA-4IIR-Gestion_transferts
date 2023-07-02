@@ -8,6 +8,7 @@ import { confirmationPanel } from "./confirmationPanel";
 import { ToastSlice } from './toast'
 import vehiculesReducer from './Transportation'
 import {periods} from './periods'
+import {extras} from './extras'
 
 export default configureStore({
     reducer: {
@@ -19,6 +20,7 @@ export default configureStore({
         transportation: vehiculesReducer,
         confirmationPanel: confirmationPanel.reducer,
         periods: periods.reducer,
+        extras: extras.reducer,
         toast: ToastSlice.reducer
     },
 })

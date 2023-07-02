@@ -8,7 +8,6 @@ let hashPassword = async (pass) =>{
 
 let updateUser = async (req,res) => {
   const { email, newEmail, firstName, lastName, password, banned } = req.body;
-  console.log(email, newEmail, firstName, lastName, password, banned);
   const updatedData = {};
 
   if (newEmail!==null &&  newEmail!==undefined) updatedData.email = newEmail;
@@ -17,7 +16,6 @@ let updateUser = async (req,res) => {
   if (password!==null &&  password!==undefined) updatedData.password = await hashPassword(password);
   if (banned!==null && banned!==undefined) updatedData.banned = banned;
   
-  console.log(updatedData);
   try {
     let updatedUser = await prisma.user.update({
       where: {

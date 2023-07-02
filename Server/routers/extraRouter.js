@@ -15,6 +15,7 @@ const createExtraType = require("../Api/Extras/ExtraTypes/createExtraType");
 const updateExtraType = require("../Api/Extras/ExtraTypes/updateExtraType");
 const removeExtraType = require("../Api/Extras/ExtraTypes/removeExtraType");
 const removeExtraTypeBatch = require("../Api/Extras/ExtraTypes/removeExtraTypeBatch");
+const getTypeByLabel = require("../Api/Extras/ExtraTypes/getTypeByLabel");
 
 //auth middleware
 router.use(requireAuthAgent);
@@ -28,6 +29,7 @@ router.delete("/removeMany",removeExtraBatch);
 
 //extra types
 typesRouter.get("/getAll",getAllTypes);
+typesRouter.get("/getByLabel/:label",getTypeByLabel);
 typesRouter.post("/create",createExtraType);
 typesRouter.put("/update",updateExtraType);
 typesRouter.delete("/remove",removeExtraType);
