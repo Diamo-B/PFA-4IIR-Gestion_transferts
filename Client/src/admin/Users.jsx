@@ -2,10 +2,11 @@ import Card from "../Components/Admin/users/Card";
 import CreateUpdateAgent from "../Components/Admin/users/CreateUpdatePanel";
 import Toast from "../Components/Toast/Toast";
 import { useSelector, useDispatch } from "react-redux";
-import { setUsersData, setUsersFetchingErrors, resetFetchingErrors, setToastType } from "../Redux/UsersPanel";
+import { setUsersData, setUsersFetchingErrors, resetFetchingErrors, setToastType } from "../Redux/Admin/UsersPanel";
 import { useEffect } from "react";
 import { useFetchFilter } from "../Components/Admin/users/hooks/useFetchFilter";
 import TableFrame from "../Components/Admin/users/tableFrame";
+import LoadingPanel from "../Components/LoadingPanel/LoadingPanel";
 
 const Users = () => {
     let users = useSelector(state => state.userPanel.usersData);
@@ -28,8 +29,10 @@ const Users = () => {
             }
         }
     }, [data, isError, error]);
+
     return (
         <>
+            { isLoading && <LoadingPanel />}
             <div className="flex flex-col items-center w-full gap-3 ">
                 <Card />
                 <div className=" flex flex-col items-center w-full">

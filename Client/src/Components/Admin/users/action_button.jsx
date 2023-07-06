@@ -1,33 +1,12 @@
 import { UilAngleDown } from "@iconscout/react-unicons";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { show, setFetchingType, setUsersFetchingErrors, setToastType } from "../../../Redux/UsersPanel";
+import { show, setFetchingType, setUsersFetchingErrors, setToastType, deleteManyUsers } from "../../../Redux/Admin/UsersPanel";
 
 const ActionBtn = () => {
     let [toggle, setToggle] = useState(false);
     const selectedUsers = useSelector((state) => state.userPanel.selectedUsers);
     const dispatcher = useDispatch();
-
-    let remove = () => {
-        let usersMails = selectedUsers.map(user => user.email);
-        fetch("/api/user/removeBatch",{
-            method: "delete",
-            headers:{
-                "Content-Type" : "application/json",
-                Authorization: `Bearer ${localStorage.getItem('jwt')}`
-            },
-            body:JSON.stringify({
-                emails: usersMails
-            })
-        }).then(async res => {
-            let data = await res.json();
-            dispatcher(setToastType("Info"));
-            dispatcher(setUsersFetchingErrors(data+" Users "+data>1?"were":"was"+"deleted successfully"));
-            location.reload();
-        }).catch(err=>{
-            console.error(err);
-        })
-    }
     
     return (
         <div>
@@ -61,12 +40,6 @@ const ActionBtn = () => {
                     >
                         New Agent 
                     </button>
-                    {
-                        selectedUsers.length > 0 && 
-                        <button className="py-2 px-4 font-bold rounded-b-lg bg-red-600 text-white hover:bg-red-500" onClick={remove}>
-                            Delete Users
-                        </button>
-                    }
                 </div>
             )}
         </div>

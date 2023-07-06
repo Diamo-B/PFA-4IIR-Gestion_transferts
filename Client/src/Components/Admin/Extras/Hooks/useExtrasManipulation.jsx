@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { SetToast } from "../../../../Redux/toast";
-import { addExtra, deleteExtra, updateExtraRedux, addToSelectedExtras, removeFromSelectedExtras, resetSelectedExtras, setSelectedExtras, deleteExtras, disableUpdateMode  } from "../../../../Redux/extras";
+import { setToast } from "../../../../Redux/Gen/toast";
+import { addExtra, deleteExtra, updateExtraRedux, addToSelectedExtras, removeFromSelectedExtras, resetSelectedExtras, setSelectedExtras, deleteExtras, disableUpdateMode  } from "../../../../Redux/Admin/extras";
 
 const useExtrasManipulation = () => {
     let dispatch = useDispatch();
@@ -34,7 +34,7 @@ const useExtrasManipulation = () => {
                     if(res.ok)
                     {
                         dispatch(addExtra(response))
-                        dispatch(SetToast({
+                        dispatch(setToast({
                             type: "Success",
                             message: `The Extra {${response.label}} was created successfully !!`,
                             reload: false
@@ -42,7 +42,7 @@ const useExtrasManipulation = () => {
                     }
                     else if(response.message)
                     {
-                        dispatch(SetToast({
+                        dispatch(setToast({
                             type: "Error",
                             message: response.message,
                             reload: false
@@ -51,7 +51,7 @@ const useExtrasManipulation = () => {
                 })
                 .catch(err=>{
                     console.log(err);
-                    dispatch(SetToast({
+                    dispatch(setToast({
                         type: "Error",
                         message: "An Unknown Error Occured !!",
                         reload: false
@@ -60,7 +60,7 @@ const useExtrasManipulation = () => {
             }
             else
             {
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Error",
                     message: response.message,
                     reload: false
@@ -68,7 +68,7 @@ const useExtrasManipulation = () => {
             }
         })
         .catch(err=>{
-            dispatch(SetToast({
+            dispatch(setToast({
                 type: "Error",
                 message: `An Unknown Error Occured !!`,
                 reload: false
@@ -92,7 +92,7 @@ const useExtrasManipulation = () => {
             if(res.ok && res.status === 200)
             {
                 dispatch(updateExtraRedux(response))
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Info",
                     message: `The Extra {${response.label}} was ${response.active ? "Activated" : "Disabled"} successfully !!`,
                     reload: false
@@ -100,7 +100,7 @@ const useExtrasManipulation = () => {
             }
             else
             {
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Error",
                     message: response.message,
                     reload: false
@@ -109,7 +109,7 @@ const useExtrasManipulation = () => {
         })
         .catch(err=>{
             console.log(err)
-            dispatch(SetToast({
+            dispatch(setToast({
                 type: "Error",
                 message: `An Unknown Error Occured !!`,
                 reload: false
@@ -136,7 +136,7 @@ const useExtrasManipulation = () => {
             if(res.ok && res.status === 200)
             {
                 dispatch(updateExtraRedux(response))
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Info",
                     message: `An Extra was updated successfully !!`,
                     reload: false
@@ -144,7 +144,7 @@ const useExtrasManipulation = () => {
             }
             else
             {
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Error",
                     message: response.message,
                     reload: false
@@ -152,7 +152,7 @@ const useExtrasManipulation = () => {
             }
         }).catch(err=>{
             console.log(err)
-            dispatch(SetToast({
+            dispatch(setToast({
                 type: "Error",
                 message: `An Unknown Error Occured !!`,
                 reload: false
@@ -177,7 +177,7 @@ const useExtrasManipulation = () => {
             if(res.ok && res.status === 200)
             {
                 dispatch(deleteExtra(response.id))
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Info",
                     message: `The Extra {${response.label}} was deleted successfully !!`,
                     reload: false
@@ -185,7 +185,7 @@ const useExtrasManipulation = () => {
             }
             else
             {
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Error",
                     message: response.message,
                     reload: false
@@ -194,7 +194,7 @@ const useExtrasManipulation = () => {
         })
         .catch(err=>{
             console.log(err)
-            dispatch(SetToast({
+            dispatch(setToast({
                 type: "Error",
                 message: `An Unknown Error Occured !!`,
                 reload: false
@@ -216,7 +216,7 @@ const useExtrasManipulation = () => {
             if(res.ok && res.status === 200)
             {
                 dispatch(deleteExtras(selectedExtras))
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Success",
                     message: `The Selected Extras were deleted successfully !!`,
                     reload: false    
@@ -225,7 +225,7 @@ const useExtrasManipulation = () => {
             else if(res.status === 400)
             {
                 let response = await res.json();
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Error",
                     message: response.message,
                     reload: false
@@ -233,7 +233,7 @@ const useExtrasManipulation = () => {
             }
         }).catch(err=>{
             console.log(err)
-            dispatch(SetToast({
+            dispatch(setToast({
                 type: "Error",
                 message: `An Unknown Error Occured !!`,
                 reload: false

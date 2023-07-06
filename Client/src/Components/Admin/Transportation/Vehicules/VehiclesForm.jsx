@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import {SetToast} from "../../../../Redux/toast";
-import {disableVehicleCreateMode} from "../../../../Redux/Transportation";
+import {setToast} from "../../../../Redux/Gen/toast";
+import {disableVehicleCreateMode} from "../../../../Redux/Admin/Transportation";
 
 
 const VehiclesForm = ({register,errors,setValue}) => {
@@ -16,7 +16,7 @@ const VehiclesForm = ({register,errors,setValue}) => {
       
         if (errorMessages) {
           dispatch(
-            SetToast({
+            setToast({
               type: "Error",
               message: errorMessages,
               reload: false,

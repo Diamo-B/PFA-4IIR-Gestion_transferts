@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useSelector } from "react-redux";
-import { resetSelectedExtras } from "../../../../Redux/extras";
+import { resetSelectedExtras } from "../../../../Redux/Admin/extras";
 import { useDispatch } from "react-redux";
 
 const useOnMountTableEffects = (generalCheckbox) => {

@@ -21,7 +21,18 @@ let updateUser = async (req,res) => {
       where: {
         email: email
       },
-      data:updatedData
+      data:updatedData,
+      select:{
+        createdAt: false,
+        password: false,
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        banned: true,
+        agent:true,
+        client:true
+      }
     })
     return res.status(200).json(updatedUser)
   } catch (err) {

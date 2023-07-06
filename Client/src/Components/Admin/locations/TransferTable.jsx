@@ -8,13 +8,13 @@ import {
   updatePath,
   deletePath,
   deletePaths,
-} from "../../../Redux/locations";
+} from "../../../Redux/Admin/locations";
 import useLocationHelpers from "./useLocationHelpers";
 import { useSelector, useDispatch } from "react-redux";
 import TransferForm from "./TransferForm";
 import { useEffect } from "react";
-import { SetToast } from "../../../Redux/toast";
-import { closePanel, openPanel } from "../../../Redux/confirmationPanel";
+import { setToast } from "../../../Redux/Gen/toast";
+import { closePanel, openPanel } from "../../../Redux/Gen/confirmationPanel";
 import ConfirmOp from "../../ConfirmOperation/ConfirmOp";
 
 const TransferTable = () => {
@@ -69,7 +69,7 @@ const TransferTable = () => {
         let message = newStatus === true ? "activated" : "disabled";
         dispatcher(updatePath(result));
         dispatcher(
-          SetToast({
+          setToast({
             type: "Info",
             message: `Path was ${message} successfully!!`,
             reload: false,
@@ -96,7 +96,7 @@ const TransferTable = () => {
         let result = await res.json();
         dispatcher(deletePath(result.id));
         dispatcher(
-          SetToast({
+          setToast({
             type: "Success",
             message: `The path linking between ${result.departure.name} and ${result.arrival.name} was deleted successfully!`,
             reload: false,
@@ -106,7 +106,7 @@ const TransferTable = () => {
       .catch((err) => {
         console.error(err);
         dispatcher(
-          SetToast({
+          setToast({
             type: "Error",
             message: `An Unknown error occured. If it persists, contact a SuperAdmin`,
             reload: false,
@@ -128,7 +128,7 @@ const TransferTable = () => {
     }).then(async (res) => {
       let response = await res.json();
       if(response.err)
-      {  dispatcher(SetToast({
+      {  dispatcher(setToast({
           type:"Error",
           message:response.err,
           reload: false
@@ -136,7 +136,7 @@ const TransferTable = () => {
       }
       else
       {
-        dispatcher(SetToast({
+        dispatcher(setToast({
           type: "Success",
           message:response.msg,
           reload: false
@@ -146,7 +146,7 @@ const TransferTable = () => {
       
     }).catch((err)=>{
       console.error(err);
-      dispatcher(SetToast({
+      dispatcher(setToast({
         type: "Error",
         message:"An unknown error occured",
         reload: false
@@ -228,7 +228,7 @@ const TransferTable = () => {
                       <button
                         className={`font-bold ${
                           path.active
-                            ? "hover:text-slate-400"
+                            ? "hover:text-purple-700"
                             : "hover:text-emerald-500"
                         }`}
                         onClick={() => changeStatus(path.id, !path.active)}

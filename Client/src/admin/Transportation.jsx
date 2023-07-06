@@ -2,18 +2,20 @@ import Models from "../Components/Admin/Transportation/Models/Models";
 import Vehicules from "../Components/Admin/Transportation/Vehicules/Vehicules";
 import { useSelector, useDispatch } from "react-redux";
 import Toast from "../Components/Toast/Toast";
-import { disableToast, SetToast } from "../Redux/toast";
+import { disableToast, setToast } from "../Redux/Gen/toast";
 import { useEffect } from "react";
-import { activateLoading, disableLoading, setModels } from "../Redux/Transportation";
+import { setModels } from "../Redux/Admin/Transportation";
+import { isLoading,doneLoading } from "../Redux/Gen/Loading";
+import LoadingPanel from "../Components/LoadingPanel/LoadingPanel";
 
 const Transportation = () => {
   let { toast } = useSelector((state) => state.toast);
-  let  {isLoading}  = useSelector(state => state.transportation.vehicules)
+  let {loading, unmount} = useSelector(state => state.loading);
   let dispatch = useDispatch();
 
   //TODO: fetch the models
   useEffect(() => {
-    dispatch(activateLoading());
+    dispatch(isLoading());
     fetch("/api/models/getAll", {
       method: "get",
       headers: {
@@ -25,7 +27,7 @@ const Transportation = () => {
         let response = await res.json();
         if (response.err)
           dispatch(
-            SetToast({
+            setToast({
               type: "Error",
               message: response.err,
               reload: false,
@@ -38,36 +40,36 @@ const Transportation = () => {
       .catch(async (err) => {
         console.error(err);
         dispatch(
-          SetToast({
+          setToast({
             type: "Error",
             message: "An unknown error occured while fetching the models!!",
             reload: false,
           })
         );
-      });
-    dispatch(disableLoading());
+      }).finally(() =>
+        dispatch(doneLoading())
+      );
   }, []);
 
-  if(isLoading)
-  {
-    return(
-      <div className="text-gray-700 font-bold">Loading ...</div>
-    );
-  }
-
   return (
+    <>
     <div className="h-full w-full grid grid-cols-4 gap-5 p-5">
+      {
+        (loading || !unmount) &&
+          <LoadingPanel />
+      }
       <Models />
       <Vehicules />
       {toast.active == true && (
-        <Toast
-          Type={toast.type}
-          Message={toast.message}
-          trigger={disableToast}
-          reload={toast.reload}
-        />
+          <Toast
+            Type={toast.type}
+            Message={toast.message}
+            trigger={disableToast}
+            reload={toast.reload}
+          />
       )}
     </div>
+    </>
   );
 };
 

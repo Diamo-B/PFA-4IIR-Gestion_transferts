@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import useFetchData from "./useFetchData";
-import { setAutomaticExtras, setExtrasToShow, setSpecialExtras } from "../../../../Redux/extras";
+import { setAutomaticExtras, setExtrasToShow, setSpecialExtras } from "../../../../Redux/Admin/extras";
 import { useSelector, useDispatch } from "react-redux";
 
 const useOnMountEffects = () => {

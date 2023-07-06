@@ -22,7 +22,7 @@ let createUser = async (req, res) => {
         lastName,
         email,
         password,
-      },
+      }
     });
     return newUser;
   } catch (err) {
@@ -49,7 +49,7 @@ let createClient = async (req, res) => {
         },
       },
       include:{
-        user:true
+        user:true,
       }
     });
     
@@ -74,7 +74,19 @@ let createAgent = async (req, res, isSuperAgent) => {
         }
       },
       include:{
-        user:true
+        user:{
+          select:{
+            createdAt: false,
+            password: false,
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            banned: true,
+            agent:true,
+            client:true
+          }
+        }
       }
     });
     //DONE: Create an AgentCategoryPermission for each Category for this agent

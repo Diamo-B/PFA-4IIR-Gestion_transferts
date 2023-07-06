@@ -1,6 +1,6 @@
 import {UilSearch} from "@iconscout/react-unicons";
 import { useState } from "react";
-import {setFetchingType} from '../../../Redux/UsersPanel';
+import {setFetchingType} from '../../../Redux/Admin/UsersPanel';
 import {useDispatch} from 'react-redux'
 
 
@@ -21,8 +21,8 @@ const Search = () => {
 
     };
     return (
-        <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+        <div className="relative ">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 ">
                 <UilSearch className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             </div>
             <input

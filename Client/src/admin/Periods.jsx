@@ -18,8 +18,8 @@ import {
   setReadOnly,
   enableEndingDate,
   enableStartingDate,
-} from "../Redux/periods";
-import { disableToast } from "../Redux/toast";
+} from "../Redux/Admin/periods";
+import { disableToast } from "../Redux/Gen/toast";
 
 
 
@@ -181,7 +181,7 @@ const Periods = () => {
               )}
             </div>
             <button
-              className="btn px-5 hover:bg-emerald-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent     disabled:hover:text-black" 
+              className={`btn px-5 ${!updateMode.state ? "hover:bg-emerald-500" : "hover:bg-amber-400"} hover:text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-black`} 
               type="submit"
               disabled={datesError || Object.keys(errors).length > 0 }
               onClick={() => {

@@ -5,7 +5,7 @@ import {
   disableLoading,
   setOptions,
   setSelectedModel,
-} from "../../../../Redux/Transportation";
+} from "../../../../Redux/Admin/Transportation";
 import { useDispatch, useSelector } from "react-redux";
 
 const ModelChooser = () => {

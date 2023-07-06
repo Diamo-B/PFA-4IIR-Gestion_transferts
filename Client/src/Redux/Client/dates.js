@@ -1,16 +1,10 @@
 import { createSlice, combineReducers } from "@reduxjs/toolkit";
 import {
-  format,
-  parse,
   addHours,
   subHours,
   addMinutes,
   subMinutes,
-  isAfter,
-  isEqual,
-  add,
 } from "date-fns";
-import { utcToZonedTime } from "date-fns-tz";
 
 const currentDate = new Date();
 const UnixDate = currentDate.getTime();
@@ -26,9 +20,6 @@ export const itinerarySlice = createSlice({
     arrivalDate: {
       value: UnixDate,
       isModified: false,
-    },
-    improperDates: {
-      value: false
     }
   },
   reducers: {
@@ -69,33 +60,8 @@ export const itinerarySlice = createSlice({
     },
     subArrivalMinute: (state) => {
       state.arrivalDate.value = subMinutes(state.arrivalDate.value,1).getTime();
-    },
-    resetImproperDate: (state) => {
-      return {
-        ...state,
-        improperDates: {
-          ...state.improperDates,
-          value: false
-        }
-      };
-    },
-    compareDepartureWithArrival: (state) => {
-      if(state.departureDate.isModified && state.arrivalDate.isModified)
-      {
-        const departureDateTimeObj = new Date(state.departureDate.value);
-        const arrivalDateTimeObj = new Date(state.arrivalDate.value);
-
-        let result = isAfter(departureDateTimeObj,arrivalDateTimeObj) || isEqual(departureDateTimeObj,arrivalDateTimeObj);
-
-        return {
-          ...state,
-          improperDates: {
-            ...state.improperDates,
-            value: result
-          }
-        };
-      }
-    },
+    }
+    
   },
 });
 
@@ -106,7 +72,6 @@ const datesReducer = combineReducers({
 
 export const {
   resetImproperDate,
-  compareDepartureWithArrival,
   setDepartureModifiedTrue,
   setArrivalModifiedTrue,
   setDepartureDate,

@@ -6,11 +6,11 @@ import {
   closeWindow,
   triggerRefetch,
   updatePath,
-} from "../../../Redux/locations";
+} from "../../../Redux/Admin/locations";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { useEffect, useState } from "react";
-import { SetToast } from "../../../Redux/toast";
+import { setToast } from "../../../Redux/Gen/toast";
 
 const TransferForm = ({ windowType }) => {
   let disptach = useDispatch();
@@ -95,7 +95,7 @@ const TransferForm = ({ windowType }) => {
           disptach(addPath(result.newPath));
           result.code == "P2002"
             ? disptach(
-                SetToast({
+                setToast({
                   type: "Error",
                   message:
                     "Another Path with the same departure/arrival combination already exists!!",
@@ -103,7 +103,7 @@ const TransferForm = ({ windowType }) => {
                 })
               )
             : disptach(
-                SetToast({
+                setToast({
                   type: "Success",
                   message: "A new Path was created successfully!!",
                   reload: false,
@@ -114,7 +114,7 @@ const TransferForm = ({ windowType }) => {
         .catch((err) => {
           console.error(err);
           disptach(
-            SetToast({
+            setToast({
               type: "Error",
               message: err,
               reload: false,
@@ -144,7 +144,7 @@ const TransferForm = ({ windowType }) => {
         if(response.err)
         {
           disptach(
-            SetToast({
+            setToast({
             type: "Error",
             message:response.err,
             reload: false,
@@ -154,7 +154,7 @@ const TransferForm = ({ windowType }) => {
         if(response.code == 'P2002') //TODO: Fix this Not Being Shown on existing path error
         {
           disptach(
-            SetToast({
+            setToast({
               type: "Error",
               message:"There's already an existing path with the given combination of departure/arrival",
               reload: false,
@@ -164,7 +164,7 @@ const TransferForm = ({ windowType }) => {
         else
         {
           disptach(
-            SetToast({
+            setToast({
               type: "Info",
               message:
                 "A path was updated successfully !!",
@@ -176,7 +176,7 @@ const TransferForm = ({ windowType }) => {
       }).catch(err=>{
         console.error(err);
         disptach(
-          SetToast({
+          setToast({
             type: "Error",
             message:
               "An Unknown Error Occured When Modifying The Path!!",

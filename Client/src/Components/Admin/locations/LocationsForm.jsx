@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { addLocation, closeWindow, triggerRefetch, updateLocation } from "../../../Redux/locations"
+import { addLocation, closeWindow, triggerRefetch, updateLocation } from "../../../Redux/Admin/locations"
 import { useDispatch, useSelector } from "react-redux";
-import { SetToast } from "../../../Redux/toast";
+import { setToast } from "../../../Redux/Gen/toast";
 import { useEffect, useState } from "react";
 
 const LocationsForm = ({windowType}) => {
@@ -75,16 +75,16 @@ const LocationsForm = ({windowType}) => {
             }).then(async(res)=>{
                 let New_location = await res.json();
                 if(New_location.err)
-                    disptach(SetToast({type: "Error", message: New_location.err, reload: false}))
+                    disptach(setToast({type: "Error", message: New_location.err, reload: false}))
                 else
                 {
                     disptach(addLocation(New_location));
                     disptach(closeWindow());
-                    disptach(SetToast({type: "Success", message: "New Location Created Successfully!", reload: false}))
+                    disptach(setToast({type: "Success", message: "New Location Created Successfully!", reload: false}))
                 }
             }).catch((error)=>{
                 console.error(error);
-                disptach(SetToast({type: "Error", message: "Unknown Error! Contact the admins!!", reload: false}))
+                disptach(setToast({type: "Error", message: "Unknown Error! Contact the admins!!", reload: false}))
             }) 
         }
         else if (windowType == "update")
@@ -106,11 +106,11 @@ const LocationsForm = ({windowType}) => {
                 let result = await res.json();
                 disptach(updateLocation(result));
                 disptach(closeWindow());
-                disptach(SetToast({type: "Info", message: "Location Updated Successfully!", reload: false}))
+                disptach(setToast({type: "Info", message: "Location Updated Successfully!", reload: false}))
             })
             .catch(err=>{
                 console.error(err);
-                disptach(SetToast({type: "Error", message: "Unknown Error! Contact the admins!!", reload: false}))
+                disptach(setToast({type: "Error", message: "Unknown Error! Contact the admins!!", reload: false}))
             })
         }
     };
@@ -130,7 +130,7 @@ const LocationsForm = ({windowType}) => {
                 setLocationObj(result);
             }).catch(err=>{
                 console.error(err);
-                disptach(SetToast({type: "Error", message: "Unknown Error! Contact the admins!!", reload: false}))
+                disptach(setToast({type: "Error", message: "Unknown Error! Contact the admins!!", reload: false}))
             })
         }
     },[])

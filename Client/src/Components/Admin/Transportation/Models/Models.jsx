@@ -1,6 +1,6 @@
 import { UilPlus } from "@iconscout/react-unicons";
 import { useSelector, useDispatch } from "react-redux";
-import { enableModelCreateMode, disableModelCreateMode } from "../../../../Redux/Transportation";
+import { enableModelCreateMode, disableModelCreateMode } from "../../../../Redux/Admin/Transportation";
 import Item from "./Item";
 
 const Models = () => {

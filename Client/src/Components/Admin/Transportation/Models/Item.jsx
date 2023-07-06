@@ -1,9 +1,9 @@
 import { UilTrashAlt, UilEdit, UilMessage, UilMultiply } from "@iconscout/react-unicons";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { SetToast } from "../../../../Redux/toast";
+import { setToast } from "../../../../Redux/Gen/toast";
 import {useForm} from "react-hook-form";
-import { addModel, updateModel, removeModel } from "../../../../Redux/Transportation";
+import { addModel, updateModel, removeModel } from "../../../../Redux/Admin/Transportation";
 
 const Item = ({Text,isCreate,disableCreateMode,ID}) => {
     let dispatch = useDispatch();
@@ -23,7 +23,7 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
         }).then(async (res)=>{
             let response = await res.json();
             dispatch(
-                SetToast({
+                setToast({
                     type: "Success",
                     message: "The model "+response.label+" was created successfully!",
                     reload: false
@@ -35,7 +35,7 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
             if(error.err)
             {
                 dispatch(
-                    SetToast({
+                    setToast({
                         type: "Error",
                         message: error.err,
                         reload: false
@@ -46,7 +46,7 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
             {
                 console.error(error);
                 dispatch(
-                    SetToast({
+                    setToast({
                         type: "Error",
                         message: "An Unknown error has occured while ",
                         reload: false
@@ -70,7 +70,7 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
             })
         }).then(async(res)=>{
             let response = await res.json();
-            dispatch(SetToast({
+            dispatch(setToast({
                 type: "Success",
                 message: "the model was updated successfully!",
                 reload: false
@@ -80,7 +80,7 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
             let error= await err.json();
             if(error.err)
             {
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Error",
                     message: error.err,
                     reload: false
@@ -103,7 +103,7 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
             })
         }).then(async(res) => {
             let response = await res.json();
-            dispatch(SetToast({
+            dispatch(setToast({
                 type:"Success",
                 message: "The model "+response.label+" was deleted successfully!!",
                 reload: false
@@ -112,13 +112,13 @@ const Item = ({Text,isCreate,disableCreateMode,ID}) => {
         }).catch(async (err)=>{
             let error = await err.json();
             if(error.err)
-                dispatch(SetToast({
+                dispatch(setToast({
                     type:"Error",
                     message: error.err,
                     reload: false
                 }))
             else
-                dispatch(SetToast({
+                dispatch(setToast({
                     type:"Error",
                     message: "An Unknown error has occured during the deletion",
                     reload: false

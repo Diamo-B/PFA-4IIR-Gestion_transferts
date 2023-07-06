@@ -1,6 +1,6 @@
-import { removeVehicle, setSelectedVehicles } from "../../../../../Redux/Transportation";
-import { SetToast } from "../../../../../Redux/toast";
-import { closePanel } from '../../../../../Redux/confirmationPanel';
+import { removeVehicle, setSelectedVehicles } from "../../../../../Redux/Admin/Transportation";
+import { setToast } from "../../../../../Redux/Gen/toast";
+import { closePanel } from '../../../../../Redux/Gen/confirmationPanel';
 
 let deleteVehicle = (id, dispatch) => {
   fetch('/api/vehicule/remove', {
@@ -14,7 +14,7 @@ let deleteVehicle = (id, dispatch) => {
     })
   }).then(async (res) => {
       let response = await res.json();
-      dispatch(SetToast({
+      dispatch(setToast({
         type: "Success",
         message: `The vehicle ${response.brand + " " + response.sub_Brand} was deleted successfully!!`,
         reload: false
@@ -24,7 +24,7 @@ let deleteVehicle = (id, dispatch) => {
     console.log(err);
     let error = await err.json();
     if (error.err) {
-      dispatch(SetToast({
+      dispatch(setToast({
         type: "Error",
         message: error.err,
         reload: false

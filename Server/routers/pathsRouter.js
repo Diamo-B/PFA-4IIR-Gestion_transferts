@@ -6,7 +6,10 @@ const { create } = require("../Api/Paths/create");
 const { remove } = require("../Api/Paths/remove");
 const { update } = require("../Api/Paths/update");
 const { removeMany } = require("../Api/Paths/removeMany");
+const { getActive } = require("../Api/Paths/getActive");
+const { requireGeneralAuth } = require("../middlewares/AuthorizeAll");
 
+router.get("/getAll/active",requireGeneralAuth,getActive);
 router.use(requireAuthAgent);
 router.post("/create",create);
 router.get("/getAll",getAll);

@@ -10,7 +10,7 @@ import VehiclesForm from "./VehiclesForm";
 import ConfirmOp from "../../../ConfirmOperation/ConfirmOp";
 import CustomCheckBox from './vehiclesComponents/CustomCheckBox.jsx'
 
-import {SetToast} from "../../../../Redux/toast";
+import {setToast} from "../../../../Redux/Gen/toast";
 import {
     activateLoading,
     disableLoading,
@@ -22,11 +22,11 @@ import {
     enableVehicleModifyMode, 
     disableVehicleModifyMode,
     removeVehicles
-} from "../../../../Redux/Transportation";
+} from "../../../../Redux/Admin/Transportation";
 
 import {
     openPanel
-} from "../../../../Redux/confirmationPanel";
+} from "../../../../Redux/Gen/confirmationPanel";
 
 import {
     createSchema, 
@@ -76,7 +76,7 @@ const Vehicules = () => {
             }).then(async (res) => {
                 let response = await res.json();
                 if (response.err) {
-                    dispatch(SetToast({
+                    dispatch(setToast({
                         type: "Error",
                         message: response.err,
                         reload: false
@@ -99,7 +99,7 @@ const Vehicules = () => {
       
         if (errorMessages) {
           dispatch(
-            SetToast({
+            setToast({
               type: "Error",
               message: errorMessages,
               reload: false,
@@ -128,13 +128,13 @@ const Vehicules = () => {
         }).then(async (res) => {
             let response = await res.json();
             if (response.err)
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Error",
                     message: response.err,
                     reload: false
                 }))
             else {
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Success",
                     message: `The new vehicle ${response.brand + " " + response.sub_Brand} was added successfully!!`,
                     reload: false
@@ -143,7 +143,7 @@ const Vehicules = () => {
             }
         }).catch(async (err) => {
             console.error(err);
-            dispatch(SetToast({
+            dispatch(setToast({
                 type: "Error",
                 message: "An unknown error occurred while adding the vehicle!!",
                 reload: false
@@ -169,13 +169,13 @@ const Vehicules = () => {
         }).then(async (res) => {
             let response = await res.json();
             if (response.err)
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Error",
                     message: response.err,
                     reload: false
                 }))
             else {
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Success",
                     message: `The vehicle ${response.updatedVehicule.brand + " " + response.updatedVehicule.sub_Brand} was updated successfully!!`,
                     reload: false
@@ -184,7 +184,7 @@ const Vehicules = () => {
             }
         }).catch(async (err) => {
             console.error(err);
-            dispatch(SetToast({
+            dispatch(setToast({
                 type: "Error",
                 message: "An unknown error occurred while updating the vehicle!!",
                 reload: false
@@ -206,7 +206,7 @@ const Vehicules = () => {
           })
         }).then(async (res) => {
           if (res.ok) {
-            dispatch(SetToast({
+            dispatch(setToast({
               type: "Success",
               message: `The selected vehicles were deleted successfully!!`,
               reload: false
@@ -219,7 +219,7 @@ const Vehicules = () => {
           console.log(error);
           let err = await error.json();
           if (err.error) {
-            dispatch(SetToast({
+            dispatch(setToast({
               type: "Error",
               message: err.error,
               reload: false
@@ -243,13 +243,13 @@ const Vehicules = () => {
         }).then(async (res) => {
             let response = await res.json();
             if (response.err)
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Error",
                     message: response.err,
                     reload: false
                 }))
             else {
-                dispatch(SetToast({
+                dispatch(setToast({
                     type: "Success",
                     message: `The vehicle ${response.updatedVehicule.brand + " " + response.updatedVehicule.sub_Brand} was ${response.updatedVehicule.Status?"activated":"disabled"} successfully!!`,
                     reload: false
@@ -258,7 +258,7 @@ const Vehicules = () => {
             }
         }).catch(async (err) => {
             console.error(err);
-            dispatch(SetToast({
+            dispatch(setToast({
                 type: "Error",
                 message: "An unknown error occurred while updating the vehicle!!",
                 reload: false
@@ -317,6 +317,15 @@ const Vehicules = () => {
                     </tr>
                     </thead>
                     <tbody className="text-sm">
+                    {
+                        !selectedModel
+                            &&
+                            <tr className="text-gray-900 capitalize font-medium bg-white hover:bg-gray-50">
+                                <td colSpan="7" className="py-8 text-center">
+                                    <p className="font-bold">Please select a model</p>
+                                </td>
+                            </tr>
+                    }
                     {
                         selectedModel && vehicles.length === 0 && createMode == false?
                             <tr className="text-gray-900 capitalize font-medium bg-white hover:bg-gray-50">
@@ -412,7 +421,7 @@ const Vehicules = () => {
                                         <div className="flex justify-center gap-3">
                                             {
                                                 !updateMode.Mode && !createMode &&
-                                                <button className={`font-bold hover:text-emerald-500`} type="button"
+                                                <button className={`font-bold ${vehicle.Status? "hover:text-purple-600" : "hover:text-emerald-500"}`} type="button"
                                                     onClick={()=>changeStatus(vehicle.id,vehicle.Status)}
                                                 >
                                                     {vehicle.Status? "Disable" : "Enable"}

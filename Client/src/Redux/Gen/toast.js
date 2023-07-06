@@ -11,7 +11,7 @@ export const ToastSlice = createSlice({
         }
     },
     reducers: {
-        SetToast: (state, action) => {
+        setToast: (state, action) => {
             let toast= {
                 type: action.payload.type,
                 message: action.payload.message,
@@ -33,7 +33,7 @@ export const ToastSlice = createSlice({
 });
 
 export const {
-    SetToast,
+    setToast,
     disableToast,
 } = ToastSlice.actions;
 

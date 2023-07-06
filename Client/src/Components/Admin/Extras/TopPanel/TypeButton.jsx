@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { closeParamsPanel, setSelectedType } from "../../../../Redux/extras";
+import { closeParamsPanel, setSelectedType } from "../../../../Redux/Admin/extras";
 import { UilStepBackwardAlt } from '@iconscout/react-unicons'
 
 const TypeButton = ({label}) => {

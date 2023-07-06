@@ -27,7 +27,7 @@ const Toast = ({Type, Message, trigger, reload}) => {
   },[])
   return (
     <div
-      className={`absolute z-50 right-5 bottom-5 mt-5 flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800`}
+      className={` absolute right-5 bottom-5 z-50 flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800`}
     >
       <div className={`flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg ${classes}`}>
         {Type == "Success" && <UilCheck/>}

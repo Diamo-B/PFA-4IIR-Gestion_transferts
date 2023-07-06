@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch,useSelector } from "react-redux";
-import { disableEndingDate, disableStartingDate, disableUpdateMode, setReadOnly } from "../../../../../Redux/periods";
+import { disableEndingDate, disableStartingDate, disableUpdateMode, setReadOnly } from "../../../../../Redux/Admin/periods";
 
 const useKeyboardEsc = (reset) => {
     let dispatch = useDispatch()

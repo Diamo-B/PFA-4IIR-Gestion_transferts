@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
-import { hide, hideUpdate } from "../../../Redux/UsersPanel";
+import { addUser, hide, hideUpdate, updateUser } from "../../../Redux/Admin/UsersPanel";
 import { useRef, useState } from "react";
 
 const CreateUpdateAgent = ({ opType }) => {
@@ -12,6 +12,8 @@ const CreateUpdateAgent = ({ opType }) => {
     let [emailNotValid, setEmailNotValid] = useState(false);
     let [isLoading, setIsLoading] = useState(false);
     let superAdminToggle = useRef();
+
+
     const createSchema = yup.object().shape({
         FirstName: yup
             .string()
@@ -119,7 +121,8 @@ const CreateUpdateAgent = ({ opType }) => {
                             throw new Error("User Creation error");
                         }
                         const data = await res.json();
-                        location.reload();
+                        dispatcher(addUser(data.newAgent.user));
+                        dispatcher(hide());
                     });
                 }
             }
@@ -146,7 +149,8 @@ const CreateUpdateAgent = ({ opType }) => {
         })
             .then(async (res) => {
                 let responseData = await res.json();
-                location.reload();
+                dispatcher(updateUser(responseData));
+                dispatcher(hideUpdate());
             })
             .catch((err) => {
                 console.error(err);

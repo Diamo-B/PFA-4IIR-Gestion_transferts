@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import Clock from "./Components/Clock";
-import Calendar from './Components/Calendar'
+import Clock from "./Clock";
+import Calendar from './Calendar'
 import {useDispatch} from "react-redux";
-import {setDepartureModifiedTrue, setArrivalModifiedTrue} from "../../../../Redux/dates";
+import {setDepartureModifiedTrue, setArrivalModifiedTrue} from "../../../../Redux/Client/dates";
 
-const Frame = ({activate, inputType}) => {
+const Frame = ({activate, inputType, setValue, depDate, arrDate}) => {
     
     useEffect(()=>{
         let ID = document.getElementById('topLevel');
@@ -28,9 +28,15 @@ const Frame = ({activate, inputType}) => {
 
     let validateTime = () => {
         if(inputType == "Departure")
+        {
             dispatcher(setDepartureModifiedTrue())
+            setValue("DepartureDateTime",depDate)
+        }
         else
+        {
             dispatcher(setArrivalModifiedTrue())
+            setValue("ReturnDateTime",arrDate)
+        }
         close();
     }
 

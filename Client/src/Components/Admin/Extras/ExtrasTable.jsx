@@ -9,8 +9,8 @@ import useOnMountTableEffects from "./Hooks/useOnMountTableEffects";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useRef } from "react";
 
-import { openPanel } from "../../../Redux/confirmationPanel";
-import { closeParamsPanel, disableUpdateMode, enableUpdateMode, openParamsPanel, triggerFormErrors } from "../../../Redux/extras";
+import { openPanel } from "../../../Redux/Gen/confirmationPanel";
+import { closeParamsPanel, disableUpdateMode, enableUpdateMode, openParamsPanel, triggerFormErrors } from "../../../Redux/Admin/extras";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";

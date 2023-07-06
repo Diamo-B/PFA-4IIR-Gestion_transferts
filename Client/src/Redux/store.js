@@ -1,14 +1,16 @@
 import {configureStore} from '@reduxjs/toolkit'
-import {userAuthSlice} from './auth'
-import { usersPanelSlice } from './UsersPanel'
-import datesReducer from './dates'
-import { authorizationsSlice } from './Authorizations'
-import locationsReducers from "./locations"
-import { confirmationPanel } from "./confirmationPanel";
-import { ToastSlice } from './toast'
-import vehiculesReducer from './Transportation'
-import {periods} from './periods'
-import {extras} from './extras'
+import {userAuthSlice} from './Gen/auth'
+import { usersPanelSlice } from './Admin/UsersPanel'
+import datesReducer from './Client/dates'
+import { authorizationsSlice } from './Admin/Authorizations'
+import locationsReducers from "./Admin/locations"
+import { confirmationPanel } from "./Gen/confirmationPanel";
+import { ToastSlice } from './Gen/toast'
+import vehiculesReducer from './Admin/Transportation'
+import {periods} from './Admin/periods'
+import {extras} from './Admin/extras'
+import { loading } from './Gen/Loading'
+import {activePaths} from './Client/activePaths'
 
 export default configureStore({
     reducer: {
@@ -21,6 +23,8 @@ export default configureStore({
         confirmationPanel: confirmationPanel.reducer,
         periods: periods.reducer,
         extras: extras.reducer,
-        toast: ToastSlice.reducer
+        toast: ToastSlice.reducer,
+        activePaths: activePaths.reducer,
+        loading: loading.reducer,
     },
 })

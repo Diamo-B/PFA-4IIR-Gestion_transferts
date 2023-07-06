@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     disableStartingDate,
     disableEndingDate
-  } from "../../../../../Redux/periods";
+  } from "../../../../../Redux/Admin/periods";
 
 const useDatesError = (setDatesError, setError, getValues, clearErrors, errors) => {
     let dispatch = useDispatch();

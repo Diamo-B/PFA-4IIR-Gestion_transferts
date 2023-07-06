@@ -1,7 +1,7 @@
 import TypeButton from "./TypeButton";
 import { useDispatch, useSelector } from "react-redux";
-import { enableCreateMode } from "../../../../Redux/extras";
-import { openPanel } from "../../../../Redux/confirmationPanel";
+import { enableCreateMode } from "../../../../Redux/Admin/extras";
+import { openPanel } from "../../../../Redux/Gen/confirmationPanel";
 const TopPanel = () => {
   let { types, selectedType, selectedExtras } = useSelector((state) => state.extras);
   let dispatch = useDispatch();

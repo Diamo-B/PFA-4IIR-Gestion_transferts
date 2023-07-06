@@ -6,7 +6,7 @@ import ConfirmOp from "../Components/ConfirmOperation/ConfirmOp";
 import useOnMountEffects  from "../Components/Admin/Extras/Hooks/useOnMountEffects";
 import useExtrasManipulation from "../Components/Admin/Extras/Hooks/useExtrasManipulation";
 import { useSelector } from "react-redux";
-import { disableToast } from "../Redux/toast";
+import { disableToast } from "../Redux/Gen/toast";
 
 
 const Extras = () => {

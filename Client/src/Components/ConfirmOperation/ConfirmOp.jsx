@@ -1,6 +1,6 @@
 import { UilExclamationTriangle } from '@iconscout/react-unicons'
 import { useDispatch, useSelector } from 'react-redux';
-import { closePanel } from '../../Redux/confirmationPanel';
+import { closePanel } from '../../Redux/Gen/confirmationPanel';
 const ConfirmOp = ({operation_type, Impact, execute}) => {
     let dispatch = useDispatch();
     let {confirmOp} = useSelector(state => state.confirmationPanel);

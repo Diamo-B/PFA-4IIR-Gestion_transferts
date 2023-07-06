@@ -1,8 +1,8 @@
 import {useSelector, useDispatch} from 'react-redux';
-import {showUpdate ,setSelectedUsers, removeUserFromSelection, resetSelectedUsers} from '../../../Redux/UsersPanel'
+import {showUpdate ,setSelectedUsers, removeUserFromSelection, resetSelectedUsers, updateUser, setToastType, setUsersFetchingErrors} from '../../../Redux/Admin/UsersPanel'
 import { useEffect, useState } from 'react';
 
-const Table = ({error, users}) => {
+const Table = ({error, users, generalCheckbox}) => {
     const filteredUsers = users.map((obj) => {
         return obj.hasOwnProperty("userId") ? obj.user : obj;
     });
@@ -13,6 +13,7 @@ const Table = ({error, users}) => {
     const fetchingType = useSelector((state) => state.userPanel.fetchingType);
     const selectedUsers = useSelector((state) => state.userPanel.selectedUsers);
     const dispatcher = useDispatch();
+    
 
     const [selectedUsersSet, setSelectedUsersSet] = useState(new Set(selectedUsers.map(user=>user.id)));
 
@@ -59,8 +60,29 @@ const Table = ({error, users}) => {
                 throw new Error("User ban error");
             }
             const data = await res.json();
-            location.reload();
+            dispatcher(updateUser(data));
         });
+    }
+
+    let deleteSingleUser = (email) => {
+        fetch("/api/user/remove",{
+            method: "delete",
+            headers:{
+                "Content-Type" : "application/json",
+                Authorization: `Bearer ${localStorage.getItem('jwt')}`
+            },
+            body:JSON.stringify({
+                email: email
+            })
+        }).then(async res => {
+            let data = await res.json();
+            dispatcher(setToastType("Info"));
+            dispatcher(setUsersFetchingErrors(`${data.count} ${data.count>1?"Users were":"User was"} deleted successfully`));
+            dispatcher(deleteManyUsers(usersMails))
+        }).catch(err=>{
+            console.error(err);
+            dispatcher(setUsersFetchingErrors(err));
+        })
     }
 
     let type;
@@ -84,6 +106,7 @@ const Table = ({error, users}) => {
                                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
                                 disabled={(filteredUsers_Email.length === 0 || error) ? true : false}
                                 onChange={selectAllUsers}
+                                ref={generalCheckbox}
                             />
                         </div>
                     </th>
@@ -166,6 +189,18 @@ const Table = ({error, users}) => {
                                         }}
                                     >
                                         Edit User
+                                    </span>
+
+                                    <span
+                                        href="#"
+                                        type="button"
+                                        data-modal-show="editUserModal"
+                                        className={`font-bold hover:cursor-pointer hover:text-red-500`}
+                                        onClick={()=>{
+                                            deleteSingleUser(user.email)
+                                        }}
+                                    >
+                                        Delete User
                                     </span>
                                 </div>
                             </td>

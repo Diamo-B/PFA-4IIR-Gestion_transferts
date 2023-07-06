@@ -4,18 +4,19 @@ import { UilArrowLeft, UilArrowRight } from "@iconscout/react-unicons";
 
 import { parse, format, startOfToday, isEqual, isSameMonth } from "date-fns";
 
-import CalculateNewDays from "../../../Components/Client/Departure_Arrival/inputs/Components/Helpers/CalculateNewDays";
-import nextMonth from "../../../Components/Client/Departure_Arrival/inputs/Components/Helpers/nextMonth";
-import previousMonth from "../../../Components/Client/Departure_Arrival/inputs/Components/Helpers/previousMonth";
+import useCalendarHelpers from "../../Client/Departure_Arrival/Components/Hooks/useCalendarHelpers";
+
 import { useSelector, useDispatch } from "react-redux";
 import {
   disableEndingDate,
   disableStartingDate,
   setReadOnly,
-} from "../../../Redux/periods";
+} from "../../../Redux/Admin/periods";
 
 
 const Calendar = ({setValue}) => {
+  let { CalculateNewDays, nextMonth, previousMonth } = useCalendarHelpers();
+  
   let Today = startOfToday();
   let [selectedDay, setSelectedDay] = useState(null);
   let [currentMonth, setCurrentMonth] = useState(format(Today, "MMM yyyy"));

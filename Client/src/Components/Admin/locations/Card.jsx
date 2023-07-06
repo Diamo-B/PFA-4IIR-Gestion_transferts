@@ -1,6 +1,6 @@
 import { UilMapMarker, UilLocationArrow } from '@iconscout/react-unicons'
 import {useDispatch, useSelector} from 'react-redux';
-import { closeWindow, resetSelection, setType } from '../../../Redux/locations';
+import { closeWindow, resetSelection, setType } from '../../../Redux/Admin/locations';
 const Card = () => {
     let dispatcher = useDispatch();
     let {triggerType} = useSelector(state => state.mapPanel.window);

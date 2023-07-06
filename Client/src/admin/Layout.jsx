@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Navbar from "./Navbar";
 import { useSelector, useDispatch } from "react-redux";
-import {setUser} from '../Redux/auth';
+import {setUser} from '../Redux/Gen/auth';
 
 const AdminLayout = ({children}) => {
   

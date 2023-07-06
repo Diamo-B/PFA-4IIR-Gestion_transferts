@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { addSelection, removeSelection, resetSelection } from '../../../Redux/locations';
+import { addSelection, removeSelection, resetSelection } from '../../../Redux/Admin/locations';
 
 const useLocationHelpers = () => {
   let dispatcher = useDispatch();

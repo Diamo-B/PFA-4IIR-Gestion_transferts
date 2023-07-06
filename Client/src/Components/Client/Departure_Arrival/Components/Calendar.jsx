@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
+import useCalendarHelpers from "./Hooks/useCalendarHelpers";
 
 import { UilArrowLeft, UilArrowRight } from "@iconscout/react-unicons";
 
 import { parse, format, startOfToday, isEqual, isSameMonth} from "date-fns";
 
-import CalculateNewDays from './Helpers/CalculateNewDays';
-import nextMonth from './Helpers/nextMonth';
-import previousMonth from './Helpers/previousMonth';
-
 import { useSelector, useDispatch } from "react-redux";
-import {setArrivalDate, setDepartureDate} from '../../../../../Redux/dates';
+import {setArrivalDate, setDepartureDate} from '../../../../Redux/Client/dates';
 
 const Calendar = ({inputType}) => {
+
+    let {CalculateNewDays,nextMonth,previousMonth} = useCalendarHelpers();
 
     useEffect(()=>{
         let ID = document.getElementById('topLevel');
@@ -69,11 +68,21 @@ const Calendar = ({inputType}) => {
                                     onClick={()=>{
                                         inputType == "Departure"? dispatcher(setDepartureDate(day.getTime())) : dispatcher(setArrivalDate(day.getTime()))
                                     }}
-                                    className={`
-                                        ${isEqual(Today,day) && !isEqual(selectedDay,Today)? 'text-pink-600 bg-indigo-400':''}
-                                        hover:bg-indigo-400 hover:disabled:bg-transparent h-8 w-8 rounded-full font-medium
-                                        ${isEqual(selectedDay,day)?'bg-indigo-400 text-white':''}
-                                        ${isSameMonth(day,firstDayCurrentMonth)?'':'text-gray-400'}
+                                    className={`hover:bg-indigo-400 hover:disabled:bg-transparent h-8 w-8 rounded-full font-medium
+                                        ${
+                                            isEqual(Today,day) && !isEqual(selectedDay,Today)?
+                                            'text-pink-600':''
+                                        }
+    
+                                        ${
+                                            isEqual(selectedDay,day)?
+                                            'bg-indigo-400 text-white':''
+                                        }
+
+                                        ${
+                                            isSameMonth(day,firstDayCurrentMonth)?
+                                            '':'text-gray-400'
+                                        }
                                     `}
                                     disabled={!isSameMonth(day,firstDayCurrentMonth)}
                                 >

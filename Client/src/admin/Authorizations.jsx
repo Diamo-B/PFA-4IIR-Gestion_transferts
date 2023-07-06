@@ -1,22 +1,21 @@
 import { useSelector, useDispatch } from "react-redux";
+import useAuthorizationsManipulations from "../Components/Admin/Authorizations/useAuthorizationsManipulations";
 
 import Select from "react-select";
 
 import {
     triggerModifyMode,
     setIsLoading,
-    setAgents,
-    setOptions,
     setSelectedCat,
     setAgentsXCatsXPerms,
     addPermissionToAgent,
     removePermissionFromAgent,
     setSelectedPermissions,
     disableModifyMode,
-} from "../Redux/Authorizations";
+} from "../Redux/Admin/Authorizations";
 
 import { useEffect } from "react";
-import { SetToast, disableToast } from "../Redux/toast";
+import { setToast, disableToast } from "../Redux/Gen/toast";
 import Toast from "../Components/Toast/Toast";
 
 const Authorizations = () => {
@@ -33,46 +32,14 @@ const Authorizations = () => {
     } = useSelector((state) => state.authorizationPanel);
 
     const { toast } = useSelector(state => state.toast);
+    const {getAllCategories, getAllAgents, getCategoryPermissions} = useAuthorizationsManipulations();
 
     useEffect(() => {
-        //DONE: Getting all categories
-        fetch("/api/category/getAll", {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-            },
-        })
-            .then(async (res) => {
-                let categories = await res.json();
-                let ops = [];
-                categories.map((cat) => {
-                    ops.push({
-                        value: cat.name,
-                        label: cat.name,
-                    });
-                });
-                dispatch(setOptions(ops));
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        //DONE: Getting all categories and save them into the state
+        getAllCategories()
 
-        //DONE: Getting all agents except the superAgents
-        fetch("/api/agent/getAll/Normal", {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-            },
-        })
-            .then(async (res) => {
-                let agents = await res.json();
-                dispatch(setAgents(agents));
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        //DONE: Getting all agents except the superAgents and save them into the state
+        getAllAgents()
 
         dispatch(setIsLoading(false));
     }, []);
@@ -81,28 +48,7 @@ const Authorizations = () => {
         //DONE: Getting all permissions for each registred agent for the selected category
         if (selectedCat !== null) {
             dispatch(setIsLoading(true));
-            fetch(`/api/authorisation/getByCategoryName/${selectedCat}`, {
-                method: "get",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-                },
-            })
-                .then(async (res) => {
-                    let response = await res.json();
-                    dispatch(setAgentsXCatsXPerms(response));
-                    dispatch(setSelectedPermissions(
-                        response.map((item) => {
-                            return {
-                              agentId: item.agentId,
-                              permissions: item.permissions?.map((perm) => perm?.value)
-                            };
-                        })
-                    ));
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
+            getCategoryPermissions(selectedCat)
             dispatch(setIsLoading(false));
         }
         else
@@ -115,13 +61,11 @@ const Authorizations = () => {
         if (!selectedCat) {
             return false;
         }
-        return AgentsXCatsXPerms.some(
-            (item) =>
-                item.agentId === agentId &&
-                item.permissions.some(
-                    (obj) =>
-                        obj.value.toLowerCase() === permission.toLowerCase()
-                )
+        return AgentsXCatsXPerms.some((item) =>
+            item.agentId === agentId &&
+            item.permissions.some((obj) =>
+                obj.value.toLowerCase() === permission.toLowerCase()
+            )
         );
     };
 
@@ -198,7 +142,7 @@ const Authorizations = () => {
         }).then(async(res)=>{
             let result = await res.json();
             dispatch(
-                SetToast({
+                setToast({
                   type: "Success",
                   message: result.msg,
                   reload: false,
@@ -207,7 +151,7 @@ const Authorizations = () => {
         }).catch(async (err)=>{
             let error = await err.json();
             dispatch(
-                SetToast({
+                setToast({
                     type: "Error",
                     message:error.err,
                     reload: false,
@@ -252,12 +196,9 @@ const Authorizations = () => {
                             isClearable={true}
                             options={options}
                             onChange={(opt) => {
-                                if (opt?.value)
-                                {
-                                    dispatch(setSelectedCat(null));
-                                    dispatch(setSelectedCat(opt.value));
-                                }
-                                else dispatch(setSelectedCat(null));
+                                dispatch(setSelectedCat(null));
+                                opt?.value && dispatch(setSelectedCat(opt.value));
+                                
                             }}
                         />
                     </div>

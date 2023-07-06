@@ -13,16 +13,16 @@ import {
     disableRefetch,
     deleteLocation,
     deleteLocations
-} from "../../../Redux/locations";
+} from "../../../Redux/Admin/locations";
 
-import { openPanel, closePanel } from "../../../Redux/confirmationPanel";
+import { openPanel, closePanel } from "../../../Redux/Gen/confirmationPanel";
 import ConfirmOp from "../../ConfirmOperation/ConfirmOp";
 
 
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import useLocationHelpers  from "./useLocationHelpers";
-import { SetToast } from '../../../Redux/toast';
+import { setToast } from '../../../Redux/Gen/toast';
 
 const LocationsTable = () => {
     let dispatcher = useDispatch();
@@ -66,7 +66,7 @@ const LocationsTable = () => {
             let result = await res.json();
             dispatcher(deleteLocations(selected))
             dispatcher(resetSelection());
-            dispatcher(SetToast({type: "Success", message: `${result.count > 1? result.count+" places were":"1 place was"} deleted successfully!!`, reload: false}))
+            dispatcher(setToast({type: "Success", message: `${result.count > 1? result.count+" places were":"1 place was"} deleted successfully!!`, reload: false}))
         }).catch(err=>{
             console.error(err);
         })
@@ -84,7 +84,7 @@ const LocationsTable = () => {
             let result = await res.json();
             dispatcher(deleteLocation(result.id))
             dispatcher(closePanel());
-            dispatcher(SetToast({type: "Success", message: "1 place was deleted successfully!!", reload: false}))
+            dispatcher(setToast({type: "Success", message: "1 place was deleted successfully!!", reload: false}))
         }).catch(err=>{
             console.error(err);
         })

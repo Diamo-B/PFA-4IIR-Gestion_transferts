@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { resetFormErrors } from "../../../Redux/extras";
+import { resetFormErrors } from "../../../Redux/Admin/extras";
 
 const ErrorsPanel = ({ errors }) => {   
     useEffect(() => {

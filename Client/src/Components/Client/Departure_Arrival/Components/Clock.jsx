@@ -10,7 +10,7 @@ import {
   subArrivalHour,
   addArrivalMinute,
   subArrivalMinute,
-} from "../../../../../Redux/dates";
+} from "../../../../Redux/Client/dates";
 import { useState } from "react";
 
 const Clock = ({inputType}) => {

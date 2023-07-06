@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { clearSelectedPeriods, disableUpdateMode, enableUpdateMode, removePeriods, setSelectedPeriods } from "../../../Redux/periods";
+import { clearSelectedPeriods, disableUpdateMode, enableUpdateMode, removePeriods, setSelectedPeriods } from "../../../Redux/Admin/periods";
 import EmptyRecord from "./EmptyTableRecord";
 import usePeriodManipulation from "./hooks/gen/usePeriodManipulation";
-import { SetToast } from "../../../Redux/toast";
-import { openPanel } from "../../../Redux/confirmationPanel";
+import { setToast } from "../../../Redux/Gen/toast";
+import { openPanel } from "../../../Redux/Gen/confirmationPanel";
 
 const Table = ({reset}) => {
   let dispatch = useDispatch();
@@ -20,7 +20,7 @@ const Table = ({reset}) => {
     if(e.target.checked == true)
     {
       if(periods.length == 0)
-        dispatch(SetToast({
+        dispatch(setToast({
           type: "Error",
           message: "No periods to select",
           reload: false

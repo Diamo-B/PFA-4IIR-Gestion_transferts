@@ -3,7 +3,7 @@ import Card from '../Components/Admin/locations/Card';
 import LocationsTable from "../Components/Admin/locations/LocationsTable";
 import TransferTable from "../Components/Admin/locations/TransferTable";
 import Toast from "../Components/Toast/Toast"
-import {disableToast} from "../Redux/toast"
+import {disableToast} from "../Redux/Gen/toast"
 
 const Locations = () => {
     const {triggerType} = useSelector(state => state.mapPanel.window)

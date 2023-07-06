@@ -32,6 +32,18 @@ export const usersPanelSlice = createSlice({
         setUsersData: (state, action) => {
             state.usersData = action.payload;
         },
+        addUser : (state, action) => {
+            state.usersData.push(action.payload);
+        },
+        updateUser : (state, action) => {
+            state.usersData = state.usersData.map(user => user.id === action.payload.id ? action.payload : user);
+        },
+        deleteUser : (state, action) => {
+            state.usersData = state.usersData.filter(user => user.id !== action.payload.id);
+        },
+        deleteManyUsers : (state, action) => {
+            state.usersData = state.usersData.filter(user => !action.payload.includes(user.email));
+        },
         setFetchingType: (state, action) => {
             state.fetchingType = action.payload;
         },
@@ -62,6 +74,10 @@ export const {
     showUpdate,
     hideUpdate,
     setUsersData,
+    addUser,
+    updateUser,
+    deleteUser,
+    deleteManyUsers,
     setFetchingType,
     setUsersFetchingErrors,
     resetFetchingErrors,

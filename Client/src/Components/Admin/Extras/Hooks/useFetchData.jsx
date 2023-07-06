@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { setExtras, setTypes } from "../../../../Redux/extras";
-import { SetToast } from "../../../../Redux/toast";
+import { setExtras, setTypes } from "../../../../Redux/Admin/extras";
+import { setToast } from "../../../../Redux/Gen/toast";
 
 const useFetchData = () => {
     const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const useFetchData = () => {
             dispatch(setTypes(resTypes));
         }).catch(async(err)=>{
             console.error(err);
-            dispatch(SetToast({
+            dispatch(setToast({
                 type:"Error",
                 message:"An unknown error occured while fetching the data",
                 reload: false
@@ -37,7 +37,7 @@ const useFetchData = () => {
             dispatch(setExtras(resExtras));
         }).catch(async(err)=>{
             console.error(err);
-            dispatch(SetToast({
+            dispatch(setToast({
                 type:"Error",
                 message:"An unknown error occured while fetching the data",
                 reload: false

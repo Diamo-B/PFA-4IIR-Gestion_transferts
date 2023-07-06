@@ -1,9 +1,9 @@
 import Search from "../../users/Search";
 import { UilPlus, UilMinus} from '@iconscout/react-unicons';
-import {disableVehicleModifyMode, enableVehicleCreateMode} from  "../../../../Redux/Transportation.js";
-import {SetToast} from "../../../../Redux/toast.js";
+import {disableVehicleModifyMode, enableVehicleCreateMode} from  "../../../../Redux/Admin/Transportation.js";
+import {setToast} from "../../../../Redux/Gen/toast.js";
 import {useSelector, useDispatch} from "react-redux";
-import { openPanel } from "../../../../Redux/confirmationPanel";
+import { openPanel } from "../../../../Redux/Gen/confirmationPanel";
 
 const TopBar = ({resetFields,generalCheckbox,setDeleteLots}) => {
     let dispatch = useDispatch();
@@ -18,7 +18,7 @@ const TopBar = ({resetFields,generalCheckbox,setDeleteLots}) => {
             resetFields();
         }
         else
-            dispatch(SetToast({
+            dispatch(setToast({
                 type: "Info",
                 message: "Please select a model before creating a new vehicle",
                 reload: false

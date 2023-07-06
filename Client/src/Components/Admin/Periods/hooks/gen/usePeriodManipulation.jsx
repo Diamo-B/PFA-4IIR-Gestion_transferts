@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { SetToast } from "../../../../../Redux/toast";
+import { setToast } from "../../../../../Redux/Gen/toast";
 import { format, parseISO } from "date-fns";
 import {
   addPeriod,
@@ -9,7 +9,7 @@ import {
   removePeriod,
   removePeriods,
   setPeriods,
-} from "../../../../../Redux/periods";
+} from "../../../../../Redux/Admin/periods";
 
 const usePeriodManipulation = () => {
   let dispatch = useDispatch();
@@ -29,7 +29,7 @@ const usePeriodManipulation = () => {
     .catch((err) => {
       console.error(err);
       dispatch(
-        SetToast({
+        setToast({
           type: "error",
           message: "An unknown error has occured!!",
           reload: false,
@@ -56,7 +56,7 @@ const usePeriodManipulation = () => {
         let response = await res.json();
         if (response.message)
           dispatch(
-            SetToast({
+            setToast({
               message: response.message,
               type: "Error",
               reload: false,
@@ -64,7 +64,7 @@ const usePeriodManipulation = () => {
           );
         else {
           dispatch(
-            SetToast({
+            setToast({
               message: `The ${response.label} period was created successfully`,
               type: "Success",
               reload: false,
@@ -78,7 +78,7 @@ const usePeriodManipulation = () => {
       .catch((err) => {
         console.log(err);
         dispatch(
-          SetToast({
+          setToast({
             message: "An unknown error has occurred",
             type: "Error",
             reload: false,
@@ -109,7 +109,7 @@ const usePeriodManipulation = () => {
         let response = await res.json();
         if (response.message) {
           dispatch(
-            SetToast({
+            setToast({
               message: response.message,
               type: "Error",
               reload: false,
@@ -120,7 +120,7 @@ const usePeriodManipulation = () => {
           response.end = format(parseISO(response.end), "dd-MM-yyyy");
           dispatch(performUpdatePeriod(response));
           dispatch(
-            SetToast({
+            setToast({
               message: `The period was updated successfully`,
               type: "Info",
               reload: false,
@@ -131,7 +131,7 @@ const usePeriodManipulation = () => {
       .catch((err) => {
         console.log(err);
         dispatch(
-          SetToast({
+          setToast({
             message: "An unknown error has occurred",
             type: "Error",
             reload: false,
@@ -158,7 +158,7 @@ const usePeriodManipulation = () => {
       .then(async (res) => {
         let response = await res.json();
         dispatch(
-          SetToast({
+          setToast({
             type: "Success",
             message: `The ${response.label} period was deleted successfully!!`,
             reload: false,
@@ -169,7 +169,7 @@ const usePeriodManipulation = () => {
       .catch((err) => {
         console.error(err);
         dispatch(
-          SetToast({
+          setToast({
             type: "error",
             message: "An unknown error has occured!!",
             reload: false,
@@ -189,7 +189,7 @@ const usePeriodManipulation = () => {
     }).then(async (res) => {
       let response = await res.json();
       dispatch(removePeriods(selectedPeriods))
-      dispatch(SetToast({
+      dispatch(setToast({
         type: "Success",
         message: response.message,
         reload: false
