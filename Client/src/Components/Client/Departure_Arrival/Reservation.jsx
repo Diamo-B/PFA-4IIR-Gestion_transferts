@@ -35,8 +35,8 @@ const Reservation = () => {
   const [showFrame, setShowFrame] = useState(false);
   const [inputType, setInputType] = useState("");
 
-  const departureDate = useSelector((state) => state.travelDates.itinerary.departureDate);
-  const arrivalDate = useSelector((state) => state.travelDates.itinerary.arrivalDate);
+  const {departureDate} = useSelector((state) => state.travelDates.itinerary);
+  const {arrivalDate} = useSelector((state) => state.travelDates.itinerary);
 
   //? explain: turning the date from a unixSerializable to date objects
   const depDateValue = useMemo(() => new Date(departureDate.value),[departureDate.value]);
@@ -58,7 +58,7 @@ const Reservation = () => {
   let { schema, MakeReservation } = useFormFunctions();
   
   let {
-    register, handleSubmit, formState: { errors }, control, setValue, resetField
+    register, handleSubmit, formState: { errors }, control, setValue, resetField, clearErrors, reset
   } = useForm({
      resolver: yupResolver(schema)
   });
@@ -66,6 +66,8 @@ const Reservation = () => {
   let onSubmit = (data) => {
     MakeReservation(data);
   }
+
+
  //****************************************************
   return (
     <div className=" w-5/6 h-36 bg-white rounded-xl dark:bg-slate-500">
@@ -186,7 +188,7 @@ const Reservation = () => {
       }
       {
         Object.entries(errors).length > 0 &&
-        <FormErrors errors={errors}/>
+        <FormErrors errors={errors} depDate={depDate} arrDate={arrDate} clearErrors={clearErrors} />
       }
     </div>
   );
