@@ -1,47 +1,53 @@
-import { UilAngleDown } from "@iconscout/react-unicons";
-import { useState } from "react";
+import { UilMinus, UilPlus, UilFilter } from "@iconscout/react-unicons";
+import { setFetchingType, show } from "../../../Redux/Admin/UsersPanel";
 import { useDispatch, useSelector } from "react-redux";
-import { show, setFetchingType, setUsersFetchingErrors, setToastType, deleteManyUsers } from "../../../Redux/Admin/UsersPanel";
+import useUsersManip from "./hooks/useUsersManip";
+import { useState } from "react";
 
-const ActionBtn = () => {
-    let [toggle, setToggle] = useState(false);
-    const selectedUsers = useSelector((state) => state.userPanel.selectedUsers);
+const ActionBtn = ({generalCheckbox}) => {
     const dispatcher = useDispatch();
-    
+    const { selectedUsers } = useSelector((state) => state.userPanel);
+    let {remove} = useUsersManip();
+    let [toggle, setToggle] = useState(false);
     return (
-        <div>
-            <button
-                className="inline-flex mb-3 items-center text-gray-500 bg-white border border-gray-300 font-medium rounded-lg text-sm px-3 py-1.5"
-                type="button"
-                onClick={() => {
-                    setToggle((prev) => !prev);
-                }}
+        <div className="flex gap-5 items-center">
+            <button className="h-fit border-2 border-gray-700 text-gray-700 text-lg font-bold px-5 rounded-full hover:text-white hover:bg-emerald-500 group"
+                onClick={() => dispatcher(show())}
             >
-                Options
-                <UilAngleDown />
+                <UilPlus className="text-gray-700 group-hover:text-white "/>
             </button>
-            {/* Dropdown menu */}
-            {toggle && (
-                <div className="absolute bg-white rounded-lg shadow w-44 flex flex-col"
-                    onMouseLeave={()=>{setToggle(false)}}
+
+            {
+                selectedUsers.length >= 2 && 
+                <button className=" h-fit border-2 border-gray-700 text-gray-700 text-lg font-bold px-5 rounded-full hover:text-white hover:bg-red-500 group"
+                    onClick={()=>remove(generalCheckbox)}
                 >
-                    <button className="py-2 px-4 rounded-t-lg text-black hover:bg-gray-200"
-                        onClick={()=>dispatcher(setFetchingType("clients"))}
-                    >
-                        Clients Only
-                    </button>
-                    <button className="py-2 px-4 text-black hover:bg-gray-200"
-                        onClick={()=>dispatcher(setFetchingType("agents"))}
-                    >
-                        Agents Only
-                    </button>
-                    <button className={`py-2 px-4 font-bold bg-emerald-500 text-white hover:bg-emerald-400 ${selectedUsers.length == 0 && "rounded-b-lg"}`}
-                        onClick={() => dispatcher(show())}
-                    >
-                        New Agent 
-                    </button>
-                </div>
-            )}
+                    <UilMinus className="text-gray-700 group-hover:text-white "/>
+                </button>
+            }
+
+            <div className="flex items-center relative">
+                <button className={`h-fit border-2 border-gray-700 text-gray-700 text-lg font-bold px-5 rounded-full hover:bg-amber-300 ${toggle && "border-r-0 rounded-r-none"}`}
+                    onClick={() => setToggle((prev) => !prev)}
+                >
+                    <UilFilter className="text-gray-700 group-hover:text-black "/>
+                </button>
+
+                {
+                    toggle &&   
+                    <div className="w-50 text-black flex items-center -ml-2">
+                        <button className=" bg-white px-5 py-1 border-2 rounded-l-full border-black hover:bg-amber-300"
+                            onClick={()=>dispatcher(setFetchingType("clients")) && setToggle(false)}
+                        >Clients only</button>
+                        <button className="px-5 py-1 border-y-2 border-black hover:bg-amber-300"
+                            onClick={()=>dispatcher(setFetchingType("agents")) && setToggle(false)}
+                        >Agents only</button>
+                        <button className="px-5 py-1 border-2 rounded-r-full border-black hover:bg-amber-300"
+                            onClick={()=>dispatcher(setFetchingType("super")) && setToggle(false)}
+                        >Super Agents only</button>
+                    </div>
+                }
+            </div>
         </div>
     );
 };

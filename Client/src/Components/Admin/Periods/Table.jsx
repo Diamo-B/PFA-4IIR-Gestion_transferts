@@ -5,6 +5,7 @@ import EmptyRecord from "./EmptyTableRecord";
 import usePeriodManipulation from "./hooks/gen/usePeriodManipulation";
 import { setToast } from "../../../Redux/Gen/toast";
 import { openPanel } from "../../../Redux/Gen/confirmationPanel";
+import { doneLoading, isLoading } from "../../../Redux/Gen/Loading";
 
 const Table = ({reset}) => {
   let dispatch = useDispatch();
@@ -13,7 +14,9 @@ const Table = ({reset}) => {
   let gencheckbox = useRef(null);
 
   useEffect(() => {
+    dispatch(isLoading())
     getAllPeriods();
+    dispatch(doneLoading())
   }, []);
 
   let toggleAllPeriodsSelection = (e) => {
@@ -68,7 +71,7 @@ const Table = ({reset}) => {
         </div>
       }
       <table className="w-full text-gray-500 relative text-center h-full">
-        <thead className=" text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-40 ">
+        <thead className=" text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-30">
           <tr>
             <th scope="col" className="p-4">
               <div className="flex items-center">

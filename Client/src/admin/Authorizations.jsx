@@ -17,13 +17,14 @@ import {
 import { useEffect } from "react";
 import { setToast, disableToast } from "../Redux/Gen/toast";
 import Toast from "../Components/Toast/Toast";
+import { doneLoading, isLoading } from "../Redux/Gen/Loading";
+import LoadingPanel from "../Components/LoadingPanel/LoadingPanel";
 
 const Authorizations = () => {
     const dispatch = useDispatch();
 
     const {
         modifyMode,
-        isLoading,
         Agents,
         options,
         selectedCat,
@@ -32,16 +33,17 @@ const Authorizations = () => {
     } = useSelector((state) => state.authorizationPanel);
 
     const { toast } = useSelector(state => state.toast);
+    const { loading, unmount } = useSelector((state) => state.loading);
     const {getAllCategories, getAllAgents, getCategoryPermissions} = useAuthorizationsManipulations();
 
     useEffect(() => {
+        dispatch(isLoading())
         //DONE: Getting all categories and save them into the state
         getAllCategories()
 
         //DONE: Getting all agents except the superAgents and save them into the state
         getAllAgents()
-
-        dispatch(setIsLoading(false));
+        dispatch(doneLoading())
     }, []);
 
     useEffect(() => {
@@ -160,15 +162,10 @@ const Authorizations = () => {
         })
     };
 
-    if (isLoading)
-        return (
-            <div>
-                <h1>Loading...</h1>
-            </div>
-        );
     return (
         <>
-            {!isLoading && options.length > 0 && (
+            { loading || !unmount && <LoadingPanel />}
+            {!loading && options.length > 0 && (
                 <div className="w-full pt-[10%] flex flex-col justify-center items-center">
                     <div className="w-11/12 py-5 flex justify-center bg-white text-gray-700 text-base rounded-t-lg uppercase ">
                         <Select
@@ -202,7 +199,7 @@ const Authorizations = () => {
                             }}
                         />
                     </div>
-                    {!isLoading && Agents.length > 0 && (
+                    {!loading && Agents.length > 0 && (
                         <>
                             <div className="rounded-b-lg w-11/12 flex justify-center max-h-[25rem] overflow-y-auto">
                                 <table className="w-full bg-white text-gray-700">

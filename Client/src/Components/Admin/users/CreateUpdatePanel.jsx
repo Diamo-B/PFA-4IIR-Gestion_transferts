@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, hide, hideUpdate, updateUser } from "../../../Redux/Admin/UsersPanel";
 import { useRef, useState } from "react";
+import { setToast } from "../../../Redux/Gen/toast";
 
 const CreateUpdateAgent = ({ opType }) => {
     const dispatcher = useDispatch();
@@ -118,11 +119,24 @@ const CreateUpdateAgent = ({ opType }) => {
                         }),
                     }).then(async (res) => {
                         if (!res.ok) {
-                            throw new Error("User Creation error");
+                            throw new Error();
                         }
                         const data = await res.json();
-                        dispatcher(addUser(data.newAgent.user));
+                        console.log(data);
+                        dispatcher(addUser((data.superAgent ? data.superAgent : data.newAgent).user));
+                        dispatcher(setToast({
+                            type: "Success",
+                            message: `The agent ${(data.superAgent ? data.superAgent : data.newAgent).user.firstName} ${(data.superAgent ? data.superAgent : data.newAgent).user.lastName} has been created successfully!!`,
+                            reload: false
+                        }))
                         dispatcher(hide());
+                    }).catch((err) => {
+                        console.error(err);
+                        dispatcher(setToast({
+                            type: "Error",
+                            message: "An error occured while creating the user",
+                            reload: false
+                        }))
                     });
                 }
             }

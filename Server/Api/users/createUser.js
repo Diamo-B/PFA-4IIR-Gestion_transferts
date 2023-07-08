@@ -139,6 +139,21 @@ let createSuperAgent = async (req,res) => {
       },
       data:{
         isSuperAdmin: true
+      },
+      include:{
+        user:{
+          select:{
+            createdAt: false,
+            password: false,
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            banned: true,
+            agent:true,
+            client:true
+          }
+        }
       }
     })
     let token = createToken(superAgent, "superAgent");

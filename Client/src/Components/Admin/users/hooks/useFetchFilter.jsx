@@ -1,45 +1,68 @@
-import { useQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setToast } from "../../../../Redux/Gen/toast";
+import { setFilteredUsersData, setUsersData } from "../../../../Redux/Admin/UsersPanel";
 
 export const useFetchFilter = (type) => {
     let url;
-    switch (type) {
-        case "clients":
-            url = "/api/client/getAll";
-            break;
-        case "agents":
-            url = "/api/agent/getAll";
-            break;
-        case "all":
-            url = "/api/user/getAll";
-            break;
-        default:
-            url = `/api/user/termSearch/${type}`
-    }
-
-
-    const { isError, data, error, isLoading } = useQuery(
-        ["userData", type],
-        async () => {
-            return fetch(url, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-                },
-            }).then(async(res)=>{
-                if(!res.ok)
-                {
-                    throw new Error("Fetching error");
-                }
-                const data = await res.json();
-                if(data && data.length === 0) {
-                    throw new Error("No users were found");
-                }
-                return data;
-            })
+    let dispatch = useDispatch();
+    let {usersData, filteredUsersData} = useSelector(state => state.userPanel);
+   
+    
+    const fetchUsers = () => {
+        // TODO: Show toasts if the shit is empty, make a separate array that stores the feched data once for all
+        if(type == "all")
+        {
+            if(filteredUsersData.length === 0)
+            {
+                fetch("/api/user/getAll", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+                    },
+                }).then(async(res)=>{
+                    if(!res.ok)
+                    {
+                        throw new Error("Fetching error");
+                    }
+                    const data = await res.json();
+                    if(data && data.length === 0) {
+                        throw new Error("No users were found");
+                    }
+                    dispatch(setUsersData(data));
+                }).catch(err=>{
+                    console.error(err);
+                    dispatch(setToast({
+                        type: "Error",
+                        message: err.message,
+                        reload: false
+                    }))
+                });
+            }
+            else
+            {
+                dispatch(setFilteredUsersData(usersData));
+            }
         }
-    );
-
-    return { isError, data, error, isLoading };
+        if(type =="clients")
+        {
+            return dispatch(setFilteredUsersData(usersData.filter(user=>user.client !== null)))
+        }
+        if(type =="agents")
+        {
+            return dispatch(setFilteredUsersData(usersData.filter(user=>user.agent !== null && user.agent.isSuperAdmin === false)))
+        }
+        if(type =="super")
+        {
+            return dispatch(setFilteredUsersData(usersData.filter(user=>user.agent !== null && user.agent.isSuperAdmin === true)));
+        }
+        else
+        {
+            if(type !== "all")
+            {
+                return dispatch(setFilteredUsersData(usersData.filter(user=> user.firstName.includes(type) || user.lastName.includes(type) || user.email.includes(type))));
+            }
+        }
+    }
+    return {fetchUsers}
 };

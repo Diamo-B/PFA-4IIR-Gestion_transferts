@@ -1,7 +1,10 @@
 import { format } from 'date-fns';
 import * as yup from 'yup'; 
+import { doneLoading, isLoading } from '../../../../Redux/Gen/Loading';
+import { useDispatch } from 'react-redux';
 
 const useFormFunctions = () => {
+    const dispatch = useDispatch();
 
     const schema = yup.object().shape({
         Departure: yup.string().required("Departure is required"),
@@ -16,7 +19,9 @@ const useFormFunctions = () => {
         luxury: yup.boolean().required("Luxury is required"),
     });
     const MakeReservation = (data) => {
+        dispatch(isLoading());
         console.log(data);
+        dispatch(doneLoading());
     }
 
     return { schema, MakeReservation };

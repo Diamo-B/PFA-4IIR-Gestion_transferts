@@ -12,7 +12,7 @@ const LoadingPanel = () => {
         // Wait a second then unmount the loading panel
             console.log("Unmounting the loading panel");
             dispatcher(shouldUnmount());
-        }, 500);
+        }, 1000);
 
         return () => {
         clearTimeout(timeoutId);

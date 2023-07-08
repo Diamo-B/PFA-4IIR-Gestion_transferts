@@ -9,9 +9,8 @@ export const usersPanelSlice = createSlice({
             user: null
         },
         usersData: [],
+        filteredUsersData: [],
         fetchingType: "all",
-        usersFetchingErrors: [],
-        toastType: "Error",
         selectedUsers: []
     },
     reducers: {
@@ -39,22 +38,16 @@ export const usersPanelSlice = createSlice({
             state.usersData = state.usersData.map(user => user.id === action.payload.id ? action.payload : user);
         },
         deleteUser : (state, action) => {
-            state.usersData = state.usersData.filter(user => user.id !== action.payload.id);
+            state.usersData = state.usersData.filter(user => user.email !== action.payload);
         },
         deleteManyUsers : (state, action) => {
             state.usersData = state.usersData.filter(user => !action.payload.includes(user.email));
         },
+        setFilteredUsersData: (state, action) => {
+            state.filteredUsersData = action.payload;
+        },
         setFetchingType: (state, action) => {
             state.fetchingType = action.payload;
-        },
-        setUsersFetchingErrors: (state, action) => {
-            state.usersFetchingErrors.push(action.payload);
-        },
-        resetFetchingErrors: (state) => {
-            state.usersFetchingErrors = [];
-        },
-        setToastType: (state, action) => {
-            state.toastType = action.payload;
         },
         setSelectedUsers: (state, action) => {
             state.selectedUsers.push(action.payload)
@@ -78,10 +71,8 @@ export const {
     updateUser,
     deleteUser,
     deleteManyUsers,
+    setFilteredUsersData,
     setFetchingType,
-    setUsersFetchingErrors,
-    resetFetchingErrors,
-    setToastType,
     setSelectedUsers,
     removeUserFromSelection,
     resetSelectedUsers

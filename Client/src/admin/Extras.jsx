@@ -7,40 +7,45 @@ import useOnMountEffects  from "../Components/Admin/Extras/Hooks/useOnMountEffec
 import useExtrasManipulation from "../Components/Admin/Extras/Hooks/useExtrasManipulation";
 import { useSelector } from "react-redux";
 import { disableToast } from "../Redux/Gen/toast";
+import LoadingPanel from "../Components/LoadingPanel/LoadingPanel";
 
 
 const Extras = () => {
 
   let { confirmOp } = useSelector((state) => state.confirmationPanel);
   let { toast } = useSelector((state) => state.toast);
+  let { loading, unmount } = useSelector((state) => state.loading);
 
   let {deleteSingleExtra, deleteSelectedExtras} = useExtrasManipulation();
   useOnMountEffects(); //? fetches the data and more
 
   return (
-    <div className="h-full w-full flex flex-col gap-5 p-5">
-      <div className={`bg-indigo-100 rounded-2xl shadow-lg py-7 px-2 text-gray-700`}>
-        <TopPanel />
+    <>
+      { loading || !unmount && <LoadingPanel />}
+      <div className="h-full w-full flex flex-col gap-5 p-5">
+        <div className={`bg-indigo-100 rounded-2xl shadow-lg py-7 px-2 text-gray-700`}>
+          <TopPanel />
+        </div>
+
+        <div className="bg-indigo-100 rounded-xl p-7 flex-1 h-full overflow-y-auto">
+          <ExtrasTable />
+        </div>
+
+        {toast.active == true && (
+          <Toast
+            Type={toast.type}
+            Message={toast.message}
+            trigger={disableToast}
+            reload={toast.reload}
+          />
+        )}
+
+        {
+          confirmOp.value == true &&
+          <ConfirmOp operation_type={confirmOp.operation_type} Impact={confirmOp.Impact} execute={confirmOp.executeParams ? deleteSingleExtra : deleteSelectedExtras}/>
+        }
       </div>
-
-      <div className="bg-indigo-100 rounded-xl p-7 flex-1 h-full overflow-y-auto">
-        <ExtrasTable />
-      </div>
-
-      {toast.active == true && (
-        <Toast
-          Type={toast.type}
-          Message={toast.message}
-          trigger={disableToast}
-          reload={toast.reload}
-        />
-      )}
-
-      {
-        confirmOp.value == true &&
-        <ConfirmOp operation_type={confirmOp.operation_type} Impact={confirmOp.Impact} execute={confirmOp.executeParams ? deleteSingleExtra : deleteSelectedExtras}/>
-      }
-    </div>
+    </>
   );
 };
 

@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const { faker } = require('@faker-js/faker');
 
 async function seed (){
-    let salt = await bcrypt.genSalt();
+let salt = await bcrypt.genSalt();
     let password = await bcrypt.hash("123456",salt);
     let newUser = await prisma.user.create({
         data: {
@@ -13,18 +13,31 @@ async function seed (){
             password: password,
         },
     });
-    let newClient = await prisma.client.create({
-        data: {
-          user: {
-            connect: {
-              id: newUser.id,
-            },
-          },
+    let newAgent = await prisma.agent.create({
+        data:{
+            user:{
+                connect:{
+                    id: newUser.id
+                }
+            }
         },
         include:{
-          user:true,
+            user:true
         }
     });
+
+    let superAgent = await prisma.agent.update({
+        where:{
+            userId: newAgent.userId
+        },
+        data:{
+            isSuperAdmin: true
+        },
+        include:{
+            user:true
+        }
+    })
+    console.log(superAgent);
 }
 
 for(let i = 0; i < 2; i++){

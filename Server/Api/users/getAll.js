@@ -28,6 +28,9 @@ let getClients = async (req, res) => {
                 user: true,
             },
         });
+        clients.map((client) => {
+            client.type = "client";
+        })
         return res.status(200).json(clients);
     } catch (err) {
         return res.status(500).json(err);
@@ -61,6 +64,9 @@ let getNormalAgentsOnly = async (req,res) => {
         {
             return res.status(400).json({err: "No Agents were found"})
         }
+        agents.map((agent) => {
+            agent.type = "agent";
+        })
         return res.status(200).json(agents);
     } catch (err) {
         return res.status(500).josn(err);
@@ -81,6 +87,9 @@ let getSuperAgentsOnly = async (req,res) => {
         {
             return res.status(400).json({err: "No SuperAgents were found"})
         }
+        agents.map((agent) => {
+            agent.type = "superAgent";
+        })
         return res.status(200).json(agents);
     } catch (err) {
         return res.status(500).josn(err);

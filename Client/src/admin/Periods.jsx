@@ -20,6 +20,7 @@ import {
   enableStartingDate,
 } from "../Redux/Admin/periods";
 import { disableToast } from "../Redux/Gen/toast";
+import LoadingPanel from "../Components/LoadingPanel/LoadingPanel";
 
 
 
@@ -29,6 +30,8 @@ const Periods = () => {
   let { readOnly, updateMode, startingDate, endingDate } = useSelector(
     (state) => state.periods
   );
+
+  let { loading, unmount } = useSelector((state) => state.loading);
 
   let { toast } = useSelector((state) => state.toast);
 
@@ -82,6 +85,7 @@ const Periods = () => {
 
   return (
     <>
+      { loading || !unmount && <LoadingPanel />}
       <div className="w-full h-full flex gap-5 px-10 py-5">
         <div className="bg-white w-full rounded-xl relative  overflow-y-auto">
           <form

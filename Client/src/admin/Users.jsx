@@ -2,41 +2,37 @@ import Card from "../Components/Admin/users/Card";
 import CreateUpdateAgent from "../Components/Admin/users/CreateUpdatePanel";
 import Toast from "../Components/Toast/Toast";
 import { useSelector, useDispatch } from "react-redux";
-import { setUsersData, setUsersFetchingErrors, resetFetchingErrors, setToastType } from "../Redux/Admin/UsersPanel";
 import { useEffect } from "react";
 import { useFetchFilter } from "../Components/Admin/users/hooks/useFetchFilter";
 import TableFrame from "../Components/Admin/users/tableFrame";
-import LoadingPanel from "../Components/LoadingPanel/LoadingPanel";
+import { disableToast } from "../Redux/Gen/toast";
+import { doneLoading, isLoading } from "../Redux/Gen/Loading";
 
 const Users = () => {
     let users = useSelector(state => state.userPanel.usersData);
+    let {filteredUsersData} = useSelector(state => state.userPanel);
     const userCreationPanel = useSelector((state) => state.userPanel.showCreateUserPanel);
     const userUpdatePanel = useSelector((state) => state.userPanel.showUpdateUserPanel.value);
-    const fetchingType = useSelector((state) => state.userPanel.fetchingType);
-    const errors = useSelector((state) => state.userPanel.usersFetchingErrors);
-    const ToastType = useSelector((state)=> state.userPanel.toastType);
-    const dispatcher = useDispatch();
-    const { data, error, isError, isLoading } = useFetchFilter(fetchingType);
-
+    const {fetchingType, usersData} = useSelector((state) => state.userPanel);
+    const {toast} = useSelector((state) => state.toast);
+    let {fetchUsers} = useFetchFilter(fetchingType);
+    let dispatch = useDispatch();
+    
     useEffect(() => {
-        if (!isLoading) {
-            if (data) {
-                dispatcher(setUsersData(data));
-            }
-            if (isError && error) {
-                dispatcher(setUsersFetchingErrors(error.message));
-                dispatcher(setToastType("Error"));
-            }
+        if (fetchingType) {
+            dispatch(isLoading())
+            fetchUsers();
+            dispatch(doneLoading())
         }
-    }, [data, isError, error]);
+    }, [fetchingType, usersData]);
+
 
     return (
         <>
-            { isLoading && <LoadingPanel />}
             <div className="flex flex-col items-center w-full gap-3 ">
-                <Card />
+                <Card/>
                 <div className=" flex flex-col items-center w-full">
-                    {isLoading ? <p>Loading</p> : data || errors ? <TableFrame error={error} users={users}/> : null}
+                    {users && <TableFrame users={filteredUsersData.length === 0 ? users : filteredUsersData}/>}
                 </div>
             </div>
             {(userCreationPanel || userUpdatePanel) && (
@@ -44,16 +40,17 @@ const Users = () => {
                     <CreateUpdateAgent opType={userCreationPanel?"create":"update"}/>
                 </div>
             )}
-            {errors &&
-                errors.map((err, index) => (
-                    <Toast
-                        key={index}
-                        Type={ToastType}
-                        Message={err}
-                        trigger={resetFetchingErrors}
-                    />
-                ))
+
+            {
+            toast.active &&
+            <Toast
+                Type={toast.type}
+                Message={toast.message}
+                reload={toast.reload}
+                trigger={disableToast}
+            />
             }
+
         </>
     );
 };

@@ -19,7 +19,6 @@ import {updateSchema} from "./YupSchemas";
 const ExtrasTable = () => {
   let dispatch = useDispatch();
   let { selectedType, extrasToShow, paramsPanel, selectedExtras, createMode, updateMode, formErrors } = useSelector((state) => state.extras);
-
   let { updateExtra, toggleExtraStatus, selectOrDeselectAll, selectOrDeselectExtra } = useExtrasManipulation();
   let generalCheckbox = useRef(null);
 
@@ -50,9 +49,9 @@ const ExtrasTable = () => {
     <div className="relative w-full flex-1 h-full overflow-y-auto rounded-xl ">
       <form className="rounded-xl" 
         onSubmit={handleSubmit(update)}
-      >
+        >
         <table className="w-full text-gray-500 text-center rounded-xl">
-          <thead className=" text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-40">
+          <thead className=" text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-30">
             <tr>
               <th scope="col" className="p-4">
                 <div className="flex items-center">

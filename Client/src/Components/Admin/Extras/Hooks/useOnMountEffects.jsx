@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import useFetchData from "./useFetchData";
 import { setAutomaticExtras, setExtrasToShow, setSpecialExtras } from "../../../../Redux/Admin/extras";
 import { useSelector, useDispatch } from "react-redux";
+import { doneLoading, isLoading } from "../../../../Redux/Gen/Loading";
 
 const useOnMountEffects = () => {
     let dispatch = useDispatch();
@@ -19,6 +20,7 @@ const useOnMountEffects = () => {
 
 
     useEffect(() => {
+        dispatch(isLoading())
         if(selectedType?.toLowerCase() == "automatic" && automaticExtras.length > 0 )
         {
             dispatch(setExtrasToShow(automaticExtras));
@@ -31,6 +33,7 @@ const useOnMountEffects = () => {
         {
             dispatch(setExtrasToShow([]));
         }
+        dispatch(doneLoading())
     }, [automaticExtras, specialExtras]);
 }
 
