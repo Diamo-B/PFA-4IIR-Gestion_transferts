@@ -19,9 +19,36 @@ const useFormFunctions = () => {
         luxury: yup.boolean().required("Luxury is required"),
     });
     const MakeReservation = (data) => {
-        dispatch(isLoading());
+        /* dispatch(isLoading());
+
+        let arrivalIDs = data.Arrival.split(",");
+        let departureIDs = data.Departure.split(",");
+        
+        data.path = arrivalIDs.filter(id => departureIDs.includes(id)).toString();
+        delete data.Arrival;
+        delete data.Departure;
+
+        fetch("/api/reservation/create",{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("jwt")}`
+            },
+            body: JSON.stringify(data)
+        }).then(async res=>{
+            let response = await res.json();
+            console.log(response);
+            if(res.status == 200)
+            {
+                
+            }
+        }).catch(err=>{
+            console.log(err);
+        }).finally(()=>{
+            dispatch(doneLoading());
+        })
+ */
         console.log(data);
-        dispatch(doneLoading());
     }
 
     return { schema, MakeReservation };

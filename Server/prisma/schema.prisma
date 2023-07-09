@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native"]
 }
 
@@ -28,6 +28,7 @@ model User {
 model Client {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String @id @unique
+  Reservations Reservation[]
 }
 
 model Agent {
@@ -66,14 +67,13 @@ model Place {
   name          String         @unique
   longitude     Float?
   latitude      Float?
-  images         Image[]
+  images        Image[]
   createdAt     DateTime       @default(now())
   isDepartureOf transferPath[] @relation("PlaceDeparture")
   isArrivalOf   transferPath[] @relation("PlaceArrival")
 }
 
 model transferPath {
-
   id          String   @id @default(uuid())
   distance    Float?
   price       Float?
@@ -84,70 +84,111 @@ model transferPath {
   arrival     Place    @relation("PlaceArrival", fields: [arrivalId], references: [id], onDelete: Cascade)
   arrivalId   String
 
+  Reservations Reservation[]
   @@unique([departureId, arrivalId])
 }
 
-//DOING: Vehicules && models
+//Done: Vehicules && models
 
-model Model{
-  id          String @id @default(uuid())
-  label       String @unique
-  vehicules   Vehicule[] 
+model Model {
+  id        String     @id @default(uuid())
+  label     String     @unique
+  vehicules Vehicule[]
 }
 
-model Vehicule{
-  id        String @id @default(uuid())
+model Vehicule {
+  id        String  @id @default(uuid())
   sub_Brand String
   brand     String
   places    Int
-  Status  Boolean @default(false)
+  Status    Boolean @default(false)
   lux       Boolean
   modelId   String
   model     Model   @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   images    Image[]
+
+  Reservations Reservation[]
 }
 
 //DONE: Periods
 
-model Period{
-  id        String @id @default(uuid())
-  label     String @unique
-  start     DateTime 
-  end       DateTime
-  price     Float
+model Period {
+  id    String   @id @default(uuid())
+  label String   @unique
+  start DateTime
+  end   DateTime
+  price Float
+
+  Reservations Reservation[]
 }
 
+//Done: Extras
 
-//DOING:
-
-model Extra{
-  id       String @id @default(uuid())
+model Extra {
+  id        String    @id @default(uuid())
   label     String
   params    Json?
   price     Float
-  active    Boolean @default(false)
+  active    Boolean   @default(false)
   typeId    String
   type      ExtraType @relation(fields: [typeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   images    Image[]
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
+
+  Reservations Reservation[]
   @@unique([label, typeId])
 }
 
-model ExtraType{
-  id     String @id @default(uuid())
-  label  String @unique
+model ExtraType {
+  id     String  @id @default(uuid())
+  label  String  @unique
   extras Extra[]
+}
+
+//Doing: Reservations
+
+enum state {
+  PENDING
+  VALIDATED
+  CONFIRMED
+  PAYED
+  REJECTED
+}
+
+model Reservation {
+  id              String   @id @default(uuid())
+  ReservationDate DateTime //------------------
+  ReturnDate      DateTime? //------------------
+  state           state @default(PENDING)
+  VehiclesCount   Int @default(1)
+  Travelers       Int //---------------------
+  TotalPrice      Float @default(0)
+  Luxury          Boolean //---------------------
+  createdAt       DateTime @default(now())
+
+  transferPathID String //-----------------------
+  transferPath   transferPath @relation(fields: [transferPathID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  extras Extra[]
+
+  Vehicles Vehicule[]
+
+  periodId String?
+  period Period? @relation(fields: [periodId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  clientID String //--------------
+  client   Client   @relation(fields: [clientID], references: [userId], onDelete: Cascade, onUpdate: Cascade) 
 }
 
 //? Whole app images
 model Image {
-  id      String @id @default(uuid())
-  path    String
-  placeId String?
-  place   Place?  @relation(fields: [placeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id         String    @id @default(uuid())
+  path       String
+  placeId    String?
+  place      Place?    @relation(fields: [placeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   vehiculeId String?
-  vehicule Vehicule? @relation(fields: [vehiculeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  ExtraId String?
-  Extra Extra? @relation(fields: [ExtraId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  vehicule   Vehicule? @relation(fields: [vehiculeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ExtraId    String?
+  Extra      Extra?    @relation(fields: [ExtraId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }

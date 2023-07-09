@@ -162,6 +162,7 @@ const ErrorsPanel = ({ errors, depDate, arrDate, clearErrors }) => {
           <div className="w-full border-y-2 border-white"></div>
           <button
             className="btn h-10 w-fit mt-5 px-20 hover:bg-red-500 hover:border-white hover:text-white"
+            type="button"
             onClick={() => {clearErrors()}}
           >
             Close

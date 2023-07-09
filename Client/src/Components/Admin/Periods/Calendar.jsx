@@ -4,7 +4,7 @@ import { UilArrowLeft, UilArrowRight } from "@iconscout/react-unicons";
 
 import { parse, format, startOfToday, isEqual, isSameMonth } from "date-fns";
 
-import useCalendarHelpers from "../../Client/Departure_Arrival/Components/Hooks/useCalendarHelpers";
+import useCalendarHelpers from "../../Client/Reservation/Components/Hooks/useCalendarHelpers";
 
 import { useSelector, useDispatch } from "react-redux";
 import {

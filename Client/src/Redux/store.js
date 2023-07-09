@@ -11,7 +11,7 @@ import {periods} from './Admin/periods'
 import {extras} from './Admin/extras'
 import { loading } from './Gen/Loading'
 import {activePaths} from './Client/activePaths'
-
+import {reservations} from './Client/Reservation'
 export default configureStore({
     reducer: {
         authUser: userAuthSlice.reducer,
@@ -24,6 +24,7 @@ export default configureStore({
         periods: periods.reducer,
         extras: extras.reducer,
         toast: ToastSlice.reducer,
+        reservation: reservations.reducer,
         activePaths: activePaths.reducer,
         loading: loading.reducer,
     },

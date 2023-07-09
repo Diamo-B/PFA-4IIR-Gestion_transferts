@@ -9,8 +9,7 @@ const LoadingPanel = () => {
     useEffect(() => {
         dispatcher(shouldMount())
         const timeoutId = setTimeout(() => {
-        // Wait a second then unmount the loading panel
-            console.log("Unmounting the loading panel");
+            //? Wait a second then unmount the loading panel
             dispatcher(shouldUnmount());
         }, 1000);
 

@@ -65,6 +65,7 @@ const Calendar = ({inputType}) => {
                             newDays.map((day)=>(
                                 <button
                                     key={day.toString()}
+                                    type="button"
                                     onClick={()=>{
                                         inputType == "Departure"? dispatcher(setDepartureDate(day.getTime())) : dispatcher(setArrivalDate(day.getTime()))
                                     }}

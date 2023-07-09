@@ -1,4 +1,4 @@
-import Reservation from "./Components/Client/Departure_Arrival/Reservation";
+import Reservation from "./Components/Client/Reservation/Reservation";
 import Toast from "./Components/Toast/Toast";
 import Logout from "./Components/Client/other/Logout";
 import Night_Day from "./Components/Client/other/Night_Day";
@@ -20,7 +20,7 @@ const Home = () => {
            <Night_Day /> 
         </div>
   
-        <div className="flex-grow flex flex-col justify-center items-center">
+        <div className="flex-grow flex flex-col justify-center items-center ">
           <Reservation />
           {toast.active == true && (
             <Toast

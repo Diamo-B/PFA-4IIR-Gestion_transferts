@@ -56,6 +56,7 @@ const Frame = ({activate, inputType, setValue, depDate, arrDate}) => {
             }
             <div className="flex justify-around items-center w-full mt-3 border-2 rounded-full py-2">
                 <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                    type="button"
                     onClick={()=>{renderTime==false?validateDate():validateTime()}}
                 >
                     {
@@ -68,6 +69,7 @@ const Frame = ({activate, inputType, setValue, depDate, arrDate}) => {
 
                 <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
                     onClick={close}
+                    type="button"
                 >
                     Cancel
                 </button>

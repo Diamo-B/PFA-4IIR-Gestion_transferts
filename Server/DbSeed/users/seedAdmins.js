@@ -1,4 +1,4 @@
-const prisma = require("../prisma/prismaInstance");
+const prisma = require("../../prisma/prismaInstance");
 const bcrypt = require("bcrypt");
 const { faker } = require('@faker-js/faker');
 
