@@ -34,12 +34,24 @@ const vehiclesSlice = createSlice({
         vehicles: [],
         selectedVehicles: [],
         selectedModel: null,
-        isLoading: false,
         createMode: false,
         updateMode: {
             Mode: false,
             fieldId: null
-        }
+        },
+        imagesPanels: {
+            create: {
+                state: false
+            },
+            view: {
+                state: false,
+                vehicle: null
+            },
+            update: {
+                state: false,
+                vehicle: null
+            }
+        },
     },
     reducers:{
         setOptions : (state,action) => {
@@ -81,12 +93,6 @@ const vehiclesSlice = createSlice({
         setSelectedModel : (state, action) => {
             state.selectedModel = action.payload
         },
-        activateLoading : (state) => {
-            state.isLoading = true
-        },
-        disableLoading : (state) => {
-            state.isLoading = false
-        },
         enableVehicleCreateMode : (state) => {
             state.createMode = true;
         },
@@ -104,7 +110,34 @@ const vehiclesSlice = createSlice({
                 Mode: false,
                 fieldId: null
             }
+        },
+        //- create images panel
+        showImagesPanel : (state) => {
+            state.imagesPanels.create.state = true;
+        },
+        hideImagesPanel : (state) => {
+            state.imagesPanels.create.state = false;
+        },
+        //- view images panel
+        showImagesViewingPanel : (state, action) => {
+            state.imagesPanels.view.state = true;
+            state.imagesPanels.view.vehicle = action.payload;
+        },
+        hideImagesViewingPanel : (state) => {
+            state.imagesPanels.view.state = false;
+        },
+        //- update images panel
+        showImagesUpdatingPanel : (state, action) => {
+            state.imagesPanels.update.state = true;
+            state.imagesPanels.update.vehicle = action.payload;
+        },
+        hideImagesUpdatingPanel : (state) => {
+            state.imagesPanels.update.state = false;
+        },
+        removeImageUpdatingPanel : (state, action) => {
+            state.imagesPanels.update.vehicle.images = state.imagesPanels.update.vehicle.images.filter((image)=> image.path !== action.payload)
         }
+
     }
 })
 
@@ -125,8 +158,6 @@ export const {
 export const {
     setOptions,
     setSelectedModel,
-    activateLoading,
-    disableLoading,
     setVehicles,
     addVehicle,
     updateVehicle,
@@ -138,6 +169,13 @@ export const {
     disableVehicleCreateMode,
     enableVehicleModifyMode,
     disableVehicleModifyMode,
+    showImagesPanel,
+    hideImagesPanel,
+    showImagesViewingPanel,
+    hideImagesViewingPanel,
+    showImagesUpdatingPanel,
+    hideImagesUpdatingPanel,
+    removeImageUpdatingPanel
 } = vehiclesSlice.actions;
 
 export default vehiculesReducer;

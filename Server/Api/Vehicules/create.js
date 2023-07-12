@@ -1,7 +1,7 @@
 let prisma = require("../../prisma/prismaInstance");
 
 let create = async (req,res) => {
-    let {modelID, brand, brandModel, nbr_places, luxe} = req.body;
+    let {modelID, brand, brandModel, nbr_places, luxe, images} = req.body;
     
     let model; 
     try {
@@ -18,25 +18,46 @@ let create = async (req,res) => {
         return res.status(500).json(err)
     }
 
-
-    try {
-        let newVehicle = await prisma.vehicule.create({
-            data:{
-                brand: brand,
-                sub_Brand: brandModel,
-                places: parseInt(nbr_places),
-                lux: luxe,
-                model:{
-                    connect:{
-                        id: model.id
+    let imagesIDS = new Array();
+    Promise.all(
+    images.map(async(image)=>{
+        try {
+            let newImage = await prisma.image.create({
+                data:{
+                    path: image
+                }
+            })
+            if(newImage !== null)
+                imagesIDS.push(newImage.id);
+        } catch (err) {
+            return res.status(500).json(err)
+        }
+    })
+    ).then(async()=>{
+        try {
+            let newVehicle = await prisma.vehicule.create({
+                data:{
+                    brand: brand,
+                    sub_Brand: brandModel,
+                    places: parseInt(nbr_places),
+                    lux: luxe,
+                    model:{
+                        connect:{
+                            id: model.id
+                        }
+                    },
+                    images:{
+                        connect: imagesIDS.map((id) => ({ id }))
                     }
                 }
-            }
-        })
-        return res.status(200).json(newVehicle)
-    } catch (err) {
+            })
+            return res.status(200).json(newVehicle)
+        } catch (err) {
+            return res.status(500).json(err)
+        }
+    }).catch((err)=>{
         return res.status(500).json(err)
-    }
+    })
     
 }
 

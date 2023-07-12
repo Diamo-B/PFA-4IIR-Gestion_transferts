@@ -21,6 +21,13 @@ let getByModel = async (req,res) => {
         let vehicules = await prisma.vehicule.findMany({
             where:{
                 modelId: model.id
+            },
+            include:{
+                images: {
+                    select:{
+                        path: true
+                    }
+                }
             }
         })
         if(vehicules.length === 0)

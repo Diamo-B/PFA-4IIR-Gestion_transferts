@@ -2,7 +2,11 @@ const prisma = require("../../prisma/prismaInstance")
 
 let getAll = async (req,res) => {
     try {
-        let Vehicules = await prisma.vehicule.findMany({});
+        let Vehicules = await prisma.vehicule.findMany({
+            include:{
+                images: true
+            }
+        });
         if(Vehicules.length === 0)
         {
             return res.status(400).json({err: "No Vehicules Were found."})

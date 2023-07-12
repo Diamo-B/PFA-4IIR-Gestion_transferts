@@ -81,7 +81,7 @@ let Login = () => {
   } else
     return (
       <>
-        <div className="flex bg-indigo-200 min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="flex bg-indigo-200 min-h-full flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8">
           {bannedError ? (
             <div className="w-1/2 h-2/4 flex flex-col items-center justify-center bg-white rounded-lg py-6">
               <h1 className="text-3xl font-bold text-red-500">Banned</h1>

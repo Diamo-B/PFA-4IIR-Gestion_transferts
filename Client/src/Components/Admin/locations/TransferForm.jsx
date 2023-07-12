@@ -92,7 +92,6 @@ const TransferForm = ({ windowType }) => {
       })
         .then(async (res) => {
           let result = await res.json();
-          disptach(addPath(result.newPath));
           result.code == "P2002"
             ? disptach(
                 setToast({
@@ -108,7 +107,7 @@ const TransferForm = ({ windowType }) => {
                   message: "A new Path was created successfully!!",
                   reload: false,
                 })
-              );
+              ) &&  disptach(addPath(result.newPath));
           disptach(closeWindow());
         })
         .catch((err) => {

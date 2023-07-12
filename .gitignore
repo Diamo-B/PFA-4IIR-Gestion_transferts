@@ -9,6 +9,7 @@ lerna-debug.log*
 toDo
 node_modules
 Server/.env
+Server/public
 *.env
 dist
 dist-ssr

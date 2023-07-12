@@ -8,6 +8,7 @@ const getAllActive = async (req, res) => {
             },
             include: {
                 model: true,
+                images: true
             }
         })
         if(!vehicules)

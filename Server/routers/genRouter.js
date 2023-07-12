@@ -37,9 +37,31 @@ router.get('/',(req,res) => {
   return res.status(200).json("hello api root");
 })
 
-router.get('/images/:filename', (req, res) => {
-  const { filename } = req.params;
-  res.sendFile(`../public/imgs/${filename}`, { root: __dirname });
+const fs = require("fs");
+const multer = require("multer");
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/imgs');
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${file.originalname}`);
+  }
 });
+
+// pass the path and the filename to multer
+var upload = multer({ storage: storage });
+
+router.get("/images/:imageName", (req, res) => {
+    const imageName = req.params.imageName;
+    console.log(imageName);
+    const readStream = fs.createReadStream(`public/imgs/${imageName}`);
+    readStream.pipe(res);
+});
+
+router.post("/images/upload", upload.array("images", 10), (req, res) => {
+  const imageNames = req.files.map(file => file.filename);
+  return res.status(200).json(imageNames);
+});
+
 
 module.exports = router;

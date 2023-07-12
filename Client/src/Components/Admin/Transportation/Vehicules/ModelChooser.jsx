@@ -1,8 +1,6 @@
 import Select from "react-select";
 import { useEffect } from "react";
 import {
-  activateLoading,
-  disableLoading,
   setOptions,
   setSelectedModel,
 } from "../../../../Redux/Admin/Transportation";
@@ -16,9 +14,7 @@ const ModelChooser = () => {
     let dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(activateLoading());
         dispatch(setOptions(models));
-        dispatch(disableLoading());
     }, [models]);
 
 

@@ -8,9 +8,24 @@ const useOnMountEffects = () => {
     let dispatch = useDispatch();
     let { getValues } = useFormContext();
 
+    let travelers = null;
+    let categoryToPick = null;
+
+    useEffect(() => {
+        travelers = getValues("travelers");
+        if(travelers)
+        {
+            travelers <= 6 ? categoryToPick = "Regular"
+            :
+            travelers > 6 && travelers <=50 ? categoryToPick = "Mini Bus"
+            :
+            categoryToPick = "Bus"
+        }
+    },[])
+
     useEffect(() => {
         dispatch(isLoading())
-        if(!isNaN(getValues("travelers")))
+        if(!isNaN(travelers))
         {
             fetch("/api/vehicule/getAll/Active", {
                 method: "GET",
@@ -22,8 +37,10 @@ const useOnMountEffects = () => {
                 let response = await res.json();
                 let luxury = getValues("luxury");
                 console.log(response, luxury)
-                let filtered = response.filter(vehicule => vehicule.lux == luxury && vehicule.places >= getValues("travelers")); 
-                dispatch(setRecommendedVehicles(filtered))
+                let filtered = response.filter(vehicule => (vehicule.model.label == categoryToPick) && (luxury ? true : !vehicule.lux) );
+                let final = filtered.filter(vehicule => vehicule.places >= travelers)
+                dispatch(setRecommendedVehicles(final))
+                console.log(categoryToPick, filtered);
             }).catch(err => {
                 console.log(err)
                 dispatch(setToast({

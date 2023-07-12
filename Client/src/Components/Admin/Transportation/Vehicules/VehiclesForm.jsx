@@ -1,12 +1,14 @@
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import {setToast} from "../../../../Redux/Gen/toast";
-import {disableVehicleCreateMode} from "../../../../Redux/Admin/Transportation";
+import {disableVehicleCreateMode, showImagesPanel} from "../../../../Redux/Admin/Transportation";
+import { useFormContext } from "react-hook-form";
 
-
-const VehiclesForm = ({register,errors,setValue}) => {
+const VehiclesForm = () => {
 
     const dispatch = useDispatch();
+
+    const {register, formState:{errors}, setValue} = useFormContext();
 
     useEffect(() => {
         const errorMessages = Object.values(errors)
@@ -60,6 +62,15 @@ const VehiclesForm = ({register,errors,setValue}) => {
                     <div
                         className={`w-10 h-5 bg-gray-400 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:right-5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500`}></div>
                 </label>
+            </td>
+            <td className="px-7 py-4">
+                <div className="flex justify-center gap-3">
+                    <button type="button" className="font-bold hover:text-emerald-500 cursor-pointer"
+                        onClick={()=>dispatch(showImagesPanel())}
+                    >
+                        Add
+                    </button>
+                </div>
             </td>
             <td className="px-6 py-4">
                 <div className="flex justify-center gap-3">
